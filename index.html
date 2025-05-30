@@ -7,6 +7,10 @@
     <link rel="icon" href="https://media.discordapp.net/attachments/1377937684525224000/1377937709561024603/iflexnew.png?ex=683ac7fe&is=6839767e&hm=9f2c0f8ab97dd09a6807993e34dfb0286b00806463d673e68099253d4c0e805e&=&width=666&height=666" type="image/x-icon">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
+        html, body {
+            overflow-x: hidden; /* Prevent horizontal scrolling */
+        }
+
         body {
             margin: 0;
             font-family: 'Inter', sans-serif;
@@ -453,6 +457,7 @@
             .nav-button {
                 width: 100%;
                 max-width: 300px;
+                min-width: unset; /* Allow buttons to shrink more */
             }
             .thumbnail-grid {
                 grid-template-columns: 1fr;
@@ -467,12 +472,12 @@
                 width: 95%;
             }
             .brainstormer-buttons {
-                flex-direction: column; /* Stack buttons on small mobile */
+                flex-direction: column;
                 width: 100%;
-                max-width: 300px; /* Limit button width */
+                max-width: 300px;
             }
             .brainstormer-button {
-                width: 100%; /* Make buttons take full width of their container */
+                width: 100%;
             }
             #backToTopBtn {
                 bottom: 20px;
@@ -501,6 +506,12 @@
             .social-button img {
                 width: 40px;
                 height: 40px;
+            }
+            .social-links {
+                grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); /* Adjusted for smaller screens */
+            }
+            #backToTopBtn {
+                bottom: 10px; /* Further reduced for very small screens */
             }
         }
     </style>
