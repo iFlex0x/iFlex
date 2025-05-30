@@ -9,8 +9,7 @@ exports.handler = async function(event, context) {
     }
 
     try {
-        // Retrieve the API key from Netlify's environment variables
-        const apiKey = process.env.GEMINI_API_KEY; //
+        const apiKey = process.env.GEMINI_API_KEY;
         if (!apiKey) {
             console.error("GEMINI_API_KEY environment variable is not set.");
             return {
@@ -32,6 +31,7 @@ exports.handler = async function(event, context) {
             };
         }
 
+        // The prompt remains the same to ask for 3-5 concepts
         const prompt = `Generate 3-5 creative and engaging YouTube thumbnail concepts for a video about "${videoTopic}". For each concept, suggest:
         - A visual idea (what should be in the image)
         - A dominant color palette/mood
@@ -45,7 +45,7 @@ exports.handler = async function(event, context) {
                 parts: [{ text: prompt }],
             }],
             generationConfig: {
-                maxOutputTokens: 200,
+                maxOutputTokens: 1000, // Increased from 200 to 1000 to allow full response
             },
         });
 
