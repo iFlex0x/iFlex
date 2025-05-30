@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>iFlex - Thumbnail Designer Portfolio</title>
+    <title>iFlex</title>
+    <link rel="icon" href="https://media.discordapp.net/attachments/1377937684525224000/1377937709561024603/iflexnew.png?ex=683ac7fe&is=6839767e&hm=9f2c0f8ab97dd09a6807993e34dfb0286b00806463d673e68099253d4c0e805e&=&width=666&height=666" type="image/x-icon">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         body {
@@ -33,6 +34,17 @@
             background: radial-gradient(ellipse at center, rgba(0,0,0,0) 0%, rgba(0,0,0,0.5) 70%, rgba(0,0,0,0.9) 100%);
             pointer-events: none;
             z-index: 1;
+        }
+
+        .vignette-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(ellipse at center, rgba(0,0,0,0) 0%, rgba(0,0,0,0.2) 60%, rgba(0,0,0,0.5) 100%);
+            pointer-events: none;
+            z-index: 999;
         }
 
         .container {
@@ -266,8 +278,9 @@
                 -8px -8px 15px rgba(70, 70, 70, 0.1);
         }
         .social-button img {
-            width: 50px;
-            height: 50px;
+            width: 55px;
+            height: 55px;
+            object-fit: contain;
             margin-bottom: 10px;
             filter: invert(1);
             opacity: 0.8;
@@ -485,6 +498,8 @@
     </style>
 </head>
 <body>
+    <div class="vignette-overlay"></div>
+
     <div class="container">
         <header>
             <div class="logo-container">
@@ -503,7 +518,7 @@
                     <p>Links</p>
                 </a>
                 <a href="#brainstormer-section" class="nav-button">
-                    <img src="https://placehold.co/100x100/3a3a3a/e0e0e0?text=AI" alt="Brainstormer Icon">
+                    <img src="https://media.discordapp.net/attachments/1377937684525224000/1377982009212932156/brain-512.png?ex=683af140&is=68399fc0&hm=044676c200334350cd26890993a4bd3e3f80c4b378704586c7155e5089238dc4&=&width=461&height=461" alt="Brainstormer Icon">
                     <p>Brainstormer</p>
                 </a>
             </div>
@@ -621,11 +636,10 @@
                 brainstormButton.disabled = true;
 
                 try {
-                    // This is the new endpoint for your Netlify Function
                     const response = await fetch('/.netlify/functions/brainstorm', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ topic: topic }) // Send the topic to your function
+                        body: JSON.stringify({ topic: topic })
                     });
 
                     if (!response.ok) {
@@ -634,7 +648,6 @@
                     }
 
                     const result = await response.json();
-                    // The serverless function will return the concepts in a 'concepts' field
                     brainstormOutput.textContent = result.concepts; 
                 } catch (error) {
                     console.error("Error calling Netlify Function:", error);
