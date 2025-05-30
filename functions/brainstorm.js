@@ -1,4 +1,5 @@
 const { GoogleGenerativeAI } = require("@google/generative-ai");
+const marked = require("marked"); // Import the marked library
 
 exports.handler = async function(event, context) {
     if (event.httpMethod !== "POST") {
@@ -31,13 +32,13 @@ exports.handler = async function(event, context) {
             };
         }
 
-        // The prompt remains the same to ask for 3-5 concepts
+        // The prompt remains the same to ask for 3-5 concepts, expecting markdown formatting
         const prompt = `Generate 3-5 creative and engaging YouTube thumbnail concepts for a video about "${videoTopic}". For each concept, suggest:
-        - A visual idea (what should be in the image)
-        - A dominant color palette/mood
-        - A potential text overlay (short and catchy)
+        - **Visual Idea:** (what should be in the image)
+        - **Dominant Color Palette/Mood:** (suggestions for colors and overall feeling)
+        - **Potential Text Overlay:** (short and catchy text)
 
-        Format the output clearly with bullet points for each concept.`;
+        Format the output clearly using markdown, including bolding for concept titles and sub-sections, and bullet points for lists.`;
 
         const chat = model.startChat({
             history: [{
@@ -52,10 +53,13 @@ exports.handler = async function(event, context) {
         const result = await chat.sendMessage(prompt);
         const responseText = await result.response.text();
 
+        // Convert the markdown response to HTML
+        const htmlConcepts = marked.parse(responseText);
+
         return {
             statusCode: 200,
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ concepts: responseText }),
+            body: JSON.stringify({ concepts: htmlConcepts }), // Send HTML back to the client
         };
 
     } catch (error) {
