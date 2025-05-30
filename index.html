@@ -25,7 +25,7 @@
             box-sizing: border-box;
             position: relative;
             scroll-behavior: smooth;
-            cursor: url('images/custom-pointer.png'), auto;
+            cursor: url('https://media.discordapp.net/attachments/1377937684525224000/1378036287474241576/free-cursor-icon-download-in-svg-png-gif-file-formats--arrow-nova-pack-solid-miscellaneous-icons-451359.png?ex=683b23cd&is=6839d24d&hm=5c5d9a60206c344f1a9236f47a4d9a66a7c8f4162df58576c73884ac7c9c0377&=&width=230&height=230'), auto;
             /* Subtle background animation */
             animation: background-pulse 15s infinite alternate;
         }
@@ -42,7 +42,7 @@
             z-index: 1;
         }
 
-        /* Particle Canvas */
+        /* Particle Canvas for Background */
         #particleCanvas {
             position: fixed;
             top: 0;
@@ -51,6 +51,17 @@
             height: 100%;
             z-index: -1; /* Behind all content */
             pointer-events: none; /* Allows clicks to pass through */
+        }
+
+        /* Cursor Trail Canvas */
+        #cursorTrailCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1001; /* Above most content, below modals */
+            pointer-events: none; /* Crucial: allows clicks to pass through */
         }
 
         .vignette-overlay {
@@ -195,8 +206,8 @@
             font-size: 0.8em;
             color: #999;
             padding-top: 20px;
-            /* Ensure enough space for the back to top button */
-            padding-bottom: 60px; /* Increased padding-bottom */
+            /* Ensure enough space for the back to top button and its margin */
+            padding-bottom: 80px; /* Adjusted to accommodate back to top button at bottom: 30px */
         }
         footer a {
             color: #999;
@@ -230,6 +241,17 @@
             box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
         }
 
+        /* Scroll-Triggered Animations */
+        .show-on-scroll {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+
+        .show-on-scroll.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
 
         .portfolio-section {
             padding: 40px 0;
@@ -581,7 +603,7 @@
 
         #backToTopBtn {
             position: fixed;
-            bottom: 30px; /* Adjusted to be above the footer content */
+            bottom: 30px; /* User requested value */
             left: 50%;
             transform: translateX(-50%);
             background-color: #3a3a3a;
@@ -841,7 +863,7 @@
 </head>
 <body>
     <canvas id="particleCanvas"></canvas>
-    <div class="vignette-overlay"></div>
+    <canvas id="cursorTrailCanvas"></canvas> <div class="vignette-overlay"></div>
 
     <div class="container">
         <header>
@@ -849,10 +871,10 @@
                 <img src="https://media.discordapp.net/attachments/1377937684525224000/1377937709561024603/iflexnew.png?ex=683ac7fe&is=6839767e&hm=9f2c0f8ab97dd09a6807993e34dfb0286b00806463d673e68099253d4c0e805e&=&width=666&height=666" alt="iFlex Logo">
             </div>
             <h1>iFlex</h1> 
-            <div class="status-indicator">
+            <div class="status-indicator show-on-scroll">
                 <span class="dot open"></span> available for hire
             </div>
-            <div class="navigation-buttons">
+            <div class="navigation-buttons show-on-scroll">
                 <a href="#my-work-section" class="nav-button">
                     <img src="https://media.discordapp.net/attachments/1377937684525224000/1377952065749516348/document.png?ex=683ad55d&is=683983dd&hm=43fdf58fe7088528529a4454c74518b8896e985947e8918b3ffa1f623c9bdb87&=&width=461&height=461" alt="My Work Icon">
                     <p>My Work</p>
@@ -868,7 +890,7 @@
             </div>
         </header>
 
-        <section id="my-work-section" class="portfolio-section">
+        <section id="my-work-section" class="portfolio-section show-on-scroll">
             <h2>My Work</h2>
             <div class="thumbnail-grid">
                 <div class="thumbnail-item">
@@ -902,7 +924,7 @@
                 </div>
         </section>
 
-        <section id="brainstormer-section" class="portfolio-section brainstormer-section">
+        <section id="brainstormer-section" class="portfolio-section show-on-scroll">
             <h2>Thumbnail Concept Brainstormer ✨</h2>
             <div class="brainstormer-input-area">
                 <textarea id="videoTopicInput" placeholder="Enter video topic (e.g., 'DIY Home Renovation,' 'Epic Gaming Moments,' 'Travel Guide to Paris')"></textarea>
@@ -925,7 +947,7 @@
             </div>
         </section>
 
-        <section id="contact-section" class="portfolio-section">
+        <section id="contact-section" class="portfolio-section show-on-scroll">
             <h2>Links</h2>
             <div class="contact-info">
                 <p class="email-address">ad.iflex@hotmail.com</p>
@@ -954,7 +976,7 @@
             </div>
         </section>
 
-        <footer>
+        <footer class="show-on-scroll">
             <p>© 2025 iFlex. All rights reserved.</p>
             <div class="footer-buttons">
                 <a href="#" id="legalBtn" class="footer-button">Legal</a>
@@ -985,7 +1007,7 @@
         <div class="modal-content">
             <button class="modal-close-btn">×</button>
             <h2>About iFlex</h2>
-            <p>Welcome to my site, your hub for creative digital solutions! I specialize in crafting compelling visual content, particularly high-impact YouTube thumbnails designed to boost engagement and click-through rates(CTR).</p>
+            <p>Welcome to iFlex, your hub for creative digital solutions! I specialize in crafting compelling visual content, particularly high-impact YouTube thumbnails designed to boost engagement and click-through rates.</p>
             <p>My passion lies in understanding the unique needs of content creators and translating their ideas into visually stunning and effective assets. With a keen eye for design and a strategic approach, I aim to help your content stand out in a crowded digital landscape.</p>
             <p>The "Thumbnail Concept Brainstormer" on this site is a testament to my commitment to innovation and efficiency, offering a glimpse into the creative process and providing instant inspiration.</p>
             <p>I'm always looking for exciting new projects and collaborations. Feel free to explore my work and reach out if you're ready to elevate your visual presence!</p>
@@ -1033,7 +1055,6 @@
 
             modalCloseBtns.forEach(btn => {
                 btn.addEventListener('click', (e) => {
-                    // Find the parent modal-overlay and close it
                     const modalOverlay = e.target.closest('.modal-overlay');
                     if (modalOverlay) {
                         closeModal(modalOverlay);
@@ -1041,7 +1062,6 @@
                 });
             });
 
-            // Close modal if clicking outside the content
             legalModal.addEventListener('click', (e) => {
                 if (e.target === legalModal) {
                     closeModal(legalModal);
@@ -1062,7 +1082,7 @@
                 }
 
                 loadingIndicator.classList.add('active');
-                brainstormOutput.innerHTML = ''; // Use innerHTML
+                brainstormOutput.innerHTML = '';
                 brainstormButton.disabled = true;
 
                 try {
@@ -1078,9 +1098,8 @@
                     }
 
                     const result = await response.json();
-                    brainstormOutput.innerHTML = result.concepts; // Use innerHTML here
+                    brainstormOutput.innerHTML = result.concepts;
 
-                    // Add Copy and Save buttons after concepts are loaded
                     addConceptActionButtons();
 
                 } catch (error) {
@@ -1099,19 +1118,15 @@
 
             // --- Copy and Save Logic for Brainstormer Output ---
             function addConceptActionButtons() {
-                // Assuming concepts are wrapped in paragraphs or list items by the AI
-                const concepts = brainstormOutput.querySelectorAll('p, li'); // Select all paragraphs or list items
+                const concepts = brainstormOutput.querySelectorAll('p, li');
 
                 concepts.forEach((conceptElement, index) => {
-                    // Avoid adding buttons to empty or very short elements
                     if (conceptElement.textContent.trim().length < 20) return; 
 
-                    // Create a container for buttons to keep them together
                     const buttonContainer = document.createElement('span');
-                    buttonContainer.style.marginLeft = '15px'; // Space from text
-                    buttonContainer.style.whiteSpace = 'nowrap'; // Keep buttons on one line
+                    buttonContainer.style.marginLeft = '15px';
+                    buttonContainer.style.whiteSpace = 'nowrap';
 
-                    // Copy Button
                     const copyBtn = document.createElement('button');
                     copyBtn.textContent = 'Copy';
                     copyBtn.classList.add('copy-button');
@@ -1121,11 +1136,10 @@
                     };
                     buttonContainer.appendChild(copyBtn);
 
-                    // Save Button
                     const saveBtn = document.createElement('button');
                     saveBtn.textContent = 'Save';
-                    saveBtn.classList.add('copy-button'); // Reusing style for now
-                    saveBtn.style.backgroundColor = '#4CAF50'; // Green for save
+                    saveBtn.classList.add('copy-button');
+                    saveBtn.style.backgroundColor = '#4CAF50';
                     saveBtn.style.marginLeft = '5px';
                     saveBtn.onclick = () => {
                         saveConcept(conceptElement.textContent);
@@ -1133,7 +1147,6 @@
                     };
                     buttonContainer.appendChild(saveBtn);
 
-                    // Append the button container to the concept element
                     conceptElement.appendChild(buttonContainer);
                 });
             }
@@ -1205,7 +1218,7 @@
 
                     savedConceptsList.querySelectorAll('.remove-button').forEach(button => {
                         button.addEventListener('click', (e) => {
-                            const conceptToRemove = e.target.parentNode.textContent.replace(' Remove', '').trim(); // Get text, remove ' Remove'
+                            const conceptToRemove = e.target.parentNode.textContent.replace(' Remove', '').trim();
                             removeConcept(conceptToRemove);
                         });
                     });
@@ -1221,7 +1234,6 @@
                 renderSavedConcepts();
             });
 
-            // Initial render of saved concepts on page load
             renderSavedConcepts();
 
             // --- Copyright Message ---
@@ -1242,16 +1254,19 @@
             document.querySelectorAll('a[href^="#"]').forEach(anchor => {
                 anchor.addEventListener('click', function (e) {
                     const href = this.getAttribute('href');
-                    // Only perform smooth scroll if the href is not just '#'
+                    // Only perform smooth scroll if the href is not just '#' (which is handled by modals)
                     if (href === '#') {
-                        e.preventDefault(); // Prevent default for '#' links
-                        return; // Skip smooth scroll for these links
+                        e.preventDefault(); 
+                        return; 
                     }
                     e.preventDefault();
 
-                    document.querySelector(href).scrollIntoView({
-                        behavior: 'smooth'
-                    });
+                    const targetElement = document.querySelector(href);
+                    if (targetElement) { // Ensure the target element exists
+                        targetElement.scrollIntoView({
+                            behavior: 'smooth'
+                        });
+                    }
                 });
             });
 
@@ -1272,45 +1287,44 @@
             });
 
             // --- Particle Background ---
-            const canvas = document.getElementById('particleCanvas');
-            const ctx = canvas.getContext('2d');
+            const particleCanvas = document.getElementById('particleCanvas');
+            const particleCtx = particleCanvas.getContext('2d');
             let particles = [];
-            const particleCount = 50; // Number of particles
-            const maxRadius = 1.5; // Max particle size
-            const minRadius = 0.5; // Min particle size
-            const maxSpeed = 0.3; // Max particle speed
+            const particleCount = 50; 
+            const maxRadius = 1.5; 
+            const minRadius = 0.5; 
+            const maxSpeed = 0.3; 
 
-            function resizeCanvas() {
-                canvas.width = window.innerWidth;
-                canvas.height = window.innerHeight;
+            function resizeParticleCanvas() {
+                particleCanvas.width = window.innerWidth;
+                particleCanvas.height = window.innerHeight;
             }
 
             class Particle {
                 constructor() {
-                    this.x = Math.random() * canvas.width;
-                    this.y = Math.random() * canvas.height;
+                    this.x = Math.random() * particleCanvas.width;
+                    this.y = Math.random() * particleCanvas.height;
                     this.radius = Math.random() * (maxRadius - minRadius) + minRadius;
-                    this.color = `rgba(255, 255, 255, ${Math.random() * 0.2 + 0.05})`; // Very faint white
+                    this.color = `rgba(255, 255, 255, ${Math.random() * 0.2 + 0.05})`;
                     this.speedX = (Math.random() - 0.5) * maxSpeed;
                     this.speedY = (Math.random() - 0.5) * maxSpeed;
                 }
 
                 draw() {
-                    ctx.beginPath();
-                    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-                    ctx.fillStyle = this.color;
-                    ctx.fill();
+                    particleCtx.beginPath();
+                    particleCtx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                    particleCtx.fillStyle = this.color;
+                    particleCtx.fill();
                 }
 
                 update() {
                     this.x += this.speedX;
                     this.y += this.speedY;
 
-                    // Wrap particles around the screen
-                    if (this.x < 0 - this.radius) this.x = canvas.width + this.radius;
-                    if (this.x > canvas.width + this.radius) this.x = 0 - this.radius;
-                    if (this.y < 0 - this.radius) this.y = canvas.height + this.radius;
-                    if (this.y > canvas.height + this.radius) this.y = 0 - this.radius;
+                    if (this.x < 0 - this.radius) this.x = particleCanvas.width + this.radius;
+                    if (this.x > particleCanvas.width + this.radius) this.x = 0 - this.radius;
+                    if (this.y < 0 - this.radius) this.y = particleCanvas.height + this.radius;
+                    if (this.y > particleCanvas.height + this.radius) this.y = 0 - this.radius;
                 }
             }
 
@@ -1323,7 +1337,7 @@
 
             function animateParticles() {
                 requestAnimationFrame(animateParticles);
-                ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear canvas
+                particleCtx.clearRect(0, 0, particleCanvas.width, particleCanvas.height);
 
                 particles.forEach(particle => {
                     particle.update();
@@ -1331,15 +1345,97 @@
                 });
             }
 
-            // Initialize and start particles
-            resizeCanvas();
+            resizeParticleCanvas();
             initParticles();
             animateParticles();
-
-            // Re-initialize particles on window resize
             window.addEventListener('resize', () => {
-                resizeCanvas();
-                initParticles(); // Re-distribute particles for new canvas size
+                resizeParticleCanvas();
+                initParticles();
+            });
+
+            // --- Cursor Trail Particles ---
+            const cursorTrailCanvas = document.getElementById('cursorTrailCanvas');
+            const cursorTrailCtx = cursorTrailCanvas.getContext('2d');
+            let cursorParticles = [];
+            const cursorParticleMaxAge = 60; // frames
+            const cursorParticleSize = 1;
+            const cursorParticleDensity = 2; // how many particles per mousemove event
+
+            function resizeCursorTrailCanvas() {
+                cursorTrailCanvas.width = window.innerWidth;
+                cursorTrailCanvas.height = window.innerHeight;
+            }
+
+            class CursorParticle {
+                constructor(x, y) {
+                    this.x = x;
+                    this.y = y;
+                    this.radius = cursorParticleSize;
+                    this.alpha = 0.5; // Initial opacity
+                    this.life = 0;
+                    this.speedX = (Math.random() - 0.5) * 0.5; // Very subtle spread
+                    this.speedY = (Math.random() - 0.5) * 0.5;
+                }
+
+                draw() {
+                    cursorTrailCtx.beginPath();
+                    cursorTrailCtx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                    cursorTrailCtx.fillStyle = `rgba(255, 255, 255, ${this.alpha})`; // White, fading
+                    cursorTrailCtx.fill();
+                }
+
+                update() {
+                    this.x += this.speedX;
+                    this.y += this.speedY;
+                    this.life++;
+                    this.alpha = 0.5 - (this.life / cursorParticleMaxAge) * 0.5; // Fade out
+                    if (this.alpha < 0) this.alpha = 0;
+                }
+            }
+
+            function animateCursorTrail() {
+                requestAnimationFrame(animateCursorTrail);
+                cursorTrailCtx.clearRect(0, 0, cursorTrailCanvas.width, cursorTrailCanvas.height);
+
+                for (let i = cursorParticles.length - 1; i >= 0; i--) {
+                    cursorParticles[i].update();
+                    if (cursorParticles[i].life >= cursorParticleMaxAge || cursorParticles[i].alpha <= 0) {
+                        cursorParticles.splice(i, 1);
+                    } else {
+                        cursorParticles[i].draw();
+                    }
+                }
+            }
+
+            document.addEventListener('mousemove', (e) => {
+                for (let i = 0; i < cursorParticleDensity; i++) {
+                    cursorParticles.push(new CursorParticle(e.clientX, e.clientY));
+                }
+            });
+
+            resizeCursorTrailCanvas();
+            animateCursorTrail();
+            window.addEventListener('resize', resizeCursorTrailCanvas);
+
+
+            // --- Intersection Observer for Scroll Animations ---
+            const observerOptions = {
+                root: null, // viewport
+                rootMargin: '0px',
+                threshold: 0.1 // Trigger when 10% of the item is visible
+            };
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                        observer.unobserve(entry.target); // Stop observing once animated
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.show-on-scroll').forEach(element => {
+                observer.observe(element);
             });
         });
     </script>
