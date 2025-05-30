@@ -1,0 +1,16 @@
+{
+  "name": "iflexportfolio",
+  "version": "1.0.0",
+  "description": "NICE PORTFOLIO",
+  "main": "index.js",
+  "scripts": {
+    "build": "echo 'No main site build command needed if only HTML/JS' || exit 0",
+    "start": "netlify dev"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@google/generative-ai": "^0.11.3"
+  }
+}
