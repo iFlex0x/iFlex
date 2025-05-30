@@ -25,7 +25,7 @@
             box-sizing: border-box;
             position: relative;
             scroll-behavior: smooth;
-            cursor: url('https://media.discordapp.net/attachments/1377937684525224000/1378036287474241576/free-cursor-icon-download-in-svg-png-gif-file-formats--arrow-nova-pack-solid-miscellaneous-icons-451359.png?ex=683b23cd&is=6839d24d&hm=5c5d9a60206c344f1a9236f47a4d9a66a7c8f4162df58576c73884ac7c9c0377&=&width=230&height=230'), auto;
+            cursor: url('images/custom-pointer.png'), auto; /* Your custom cursor */
             /* Subtle background animation */
             animation: background-pulse 15s infinite alternate;
         }
@@ -234,6 +234,7 @@
             box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.3), inset -2px -2px 5px rgba(70, 70, 70, 0.1);
             font-size: 0.9em;
             white-space: nowrap; /* Prevent button text from wrapping */
+            box-sizing: border-box; /* Added for consistent sizing */
         }
         .footer-button:hover {
             background-color: #4a4a4a;
@@ -679,11 +680,12 @@
                 -10px -10px 20px rgba(70, 70, 70, 0.05);
             text-align: left;
             max-width: 600px;
-            width: 90%;
+            width: 90%; /* Default width */
             position: relative;
             transform: scale(0.9);
             opacity: 0;
             transition: transform 0.3s ease, opacity 0.3s ease;
+            box-sizing: border-box; /* Crucial for consistent sizing */
         }
 
         .modal-overlay.show .modal-content {
@@ -796,17 +798,29 @@
                 width: 100%;
             }
             #backToTopBtn {
-                bottom: 70px; /* Adjusted for smaller screens */
+                bottom: 70px; /* Adjusted for smaller screens to clear footer */
                 padding: 12px 15px;
                 font-size: 0.9em;
             }
             .footer-buttons {
-                flex-direction: column;
+                flex-direction: column; /* Stack buttons vertically */
                 gap: 10px;
+                align-items: center; /* Center them */
             }
             .footer-button {
-                width: 100%;
-                max-width: 200px; /* Limit width on small screens */
+                width: 80%; /* Make them a percentage of available width */
+                max-width: 250px; /* Cap their max width */
+            }
+
+            /* Modal adjustments for smaller screens */
+            .modal-content {
+                padding: 20px; /* Reduced padding */
+                width: 95%; /* More of the screen width */
+            }
+            .modal-close-btn {
+                top: 10px; /* Adjust close button position */
+                right: 10px;
+                font-size: 1.3em; /* Slightly smaller close button */
             }
         }
 
@@ -837,6 +851,22 @@
             }
             #backToTopBtn {
                 bottom: 60px; /* Further adjusted */
+            }
+            .footer-button {
+                width: 90%; /* Increase width for very small screens */
+            }
+            /* Further modal adjustments for very small screens */
+            .modal-content {
+                padding: 15px; /* Further reduce padding */
+                width: 90%; /* Keep some margin on each side */
+                min-height: unset; /* Allow height to adjust naturally */
+                max-height: 85vh; /* Max height to prevent overflow */
+                overflow-y: auto; /* Enable scrolling for long content */
+            }
+            .modal-close-btn {
+                top: 8px; /* Fine-tune close button position */
+                right: 8px;
+                font-size: 1.1em; /* Make it smaller */
             }
         }
 
