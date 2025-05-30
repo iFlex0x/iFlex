@@ -1,0 +1,9 @@
+{
+  "name": "netlify-functions",
+  "version": "1.0.0",
+  "description": "Serverless functions for iFlex portfolio",
+  "main": "brainstorm.js",
+  "dependencies": {
+    "@google/generative-ai": "^0.11.3"
+  }
+}
