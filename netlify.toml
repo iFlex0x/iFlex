@@ -1,9 +1,9 @@
 [build]
-  command = "npm install && npm run build" # Or "npm install" if no other build steps
-  publish = "." # Assuming your index.html is at the root for deployment
+  command = "npm install && npm run build" 
+  publish = "." 
 
 [functions]
-  directory = "functions" # IMPORTANT: Points to the new folder
+  directory = "functions" 
 
 [[plugins]]
 package = "@netlify/plugin-functions-install-core"
