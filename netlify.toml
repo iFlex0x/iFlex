@@ -1,8 +1,9 @@
 [build]
-  command = "npm install && npm run build" # Keep this build command as it handles root package.json.
-                                           # If you don't have a specific 'build' step for your site,
-                                           # you might change it to just "npm install".
+  command = "npm install && npm run build" # Or "npm install" if no other build steps
   publish = "." # Assuming your index.html is at the root for deployment
 
-[functions] # Use the [functions] section to specify the functions directory
-  directory = "." # This tells Netlify to look for functions directly in the root of your repo
+[functions]
+  directory = "functions" # IMPORTANT: Points to the new folder
+
+[[plugins]]
+package = "@netlify/plugin-functions-install-core"
