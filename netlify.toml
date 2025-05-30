@@ -1,0 +1,3 @@
+[build]
+  publish = "."          # Tells Netlify your website files are in the root
+  functions = "functions"  # Tells Netlify where your serverless functions are
