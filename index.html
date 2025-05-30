@@ -25,8 +25,7 @@
             box-sizing: border-box;
             position: relative;
             scroll-behavior: smooth;
-            cursor: url('images/custom-pointer.png'), auto; /* Your custom cursor */
-            /* Subtle background animation */
+            cursor: url('images/custom-pointer.png'), auto;
             animation: background-pulse 15s infinite alternate;
         }
 
@@ -42,26 +41,24 @@
             z-index: 1;
         }
 
-        /* Particle Canvas for Background */
         #particleCanvas {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: -1; /* Behind all content */
-            pointer-events: none; /* Allows clicks to pass through */
+            z-index: -1;
+            pointer-events: none;
         }
 
-        /* Cursor Trail Canvas */
         #cursorTrailCanvas {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: 1001; /* Above most content, below modals */
-            pointer-events: none; /* Crucial: allows clicks to pass through */
+            z-index: 1001;
+            pointer-events: none;
         }
 
         .vignette-overlay {
@@ -93,13 +90,12 @@
             flex-direction: column;
             gap: 40px;
             min-height: calc(100vh - 40px);
-            transition: filter 0.3s ease; /* For blur effect */
+            transition: filter 0.3s ease;
         }
 
-        /* Blur effect for container when modal is open */
         body.modal-open .container {
             filter: blur(5px);
-            pointer-events: none; /* Disable interaction with blurred content */
+            pointer-events: none;
         }
 
         .logo-container {
@@ -110,7 +106,6 @@
             height: auto;
             display: block;
             margin: 0 auto;
-            /* Initial fade-in and slight scale */
             animation: fade-in-scale 1.5s ease-out forwards;
         }
 
@@ -144,7 +139,6 @@
         .dot.open {
             background-color: #4CAF50;
             box-shadow: 0 0 8px #4CAF50;
-            /* Pulsing animation for the green dot */
             animation: pulse 1.5s infinite alternate;
         }
 
@@ -165,7 +159,7 @@
             text-decoration: none;
             color: #e0e0e0;
             font-size: 1.2em;
-            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease, filter 0.3s ease; /* Added filter */
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease, filter 0.3s ease;
             box-shadow: 
                 inset 2px 2px 5px rgba(0, 0, 0, 0.3),
                 inset -2px -2px 5px rgba(70, 70, 70, 0.1),
@@ -177,14 +171,14 @@
         }
         .nav-button:hover {
             background-color: #4a4a4a;
-            transform: translateY(-3px) scale(1.02); /* Slight scale on hover */
+            transform: translateY(-3px) scale(1.02);
             box-shadow: 
                 inset 1px 1px 3px rgba(0, 0, 0, 0.4), 
                 inset -1px -1px 3px rgba(70, 70, 70, 0.2),
                 8px 8px 15px rgba(0, 0, 0, 0.6),
                 -8px -8px 15px rgba(70, 70, 70, 0.1),
-                0 0 20px rgba(76, 175, 80, 0.4); /* Green glow on hover */
-            filter: brightness(1.2); /* Slight brightness increase */
+                0 0 20px rgba(76, 175, 80, 0.4);
+            filter: brightness(1.2);
         }
         .nav-button img {
             width: 100px;
@@ -192,10 +186,10 @@
             margin-bottom: 15px;
             filter: invert(1);
             opacity: 0.8;
-            transition: transform 0.3s ease; /* Added transition for image */
+            transition: transform 0.3s ease;
         }
         .nav-button:hover img {
-            transform: rotate(5deg); /* Subtle rotation on image hover */
+            transform: rotate(5deg);
         }
         .nav-button p {
             margin: 0;
@@ -206,8 +200,7 @@
             font-size: 0.8em;
             color: #999;
             padding-top: 20px;
-            /* Ensure enough space for the back to top button and its margin */
-            padding-bottom: 80px; /* Adjusted to accommodate back to top button at bottom: 30px */
+            padding-bottom: 80px;
         }
         footer a {
             color: #999;
@@ -233,8 +226,8 @@
             transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
             box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.3), inset -2px -2px 5px rgba(70, 70, 70, 0.1);
             font-size: 0.9em;
-            white-space: nowrap; /* Prevent button text from wrapping */
-            box-sizing: border-box; /* Added for consistent sizing */
+            white-space: nowrap;
+            box-sizing: border-box;
         }
         .footer-button:hover {
             background-color: #4a4a4a;
@@ -242,7 +235,6 @@
             box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
         }
 
-        /* Scroll-Triggered Animations */
         .show-on-scroll {
             opacity: 0;
             transform: translateY(20px);
@@ -268,7 +260,6 @@
             color: #ffffff;
             margin-bottom: 40px;
             letter-spacing: 1px;
-            /* Subtle text shadow animation */
             animation: text-glow 3s infinite alternate;
         }
 
@@ -287,19 +278,19 @@
                 inset -2px -2px 5px rgba(70, 70, 70, 0.1),
                 5px 5px 10px rgba(0, 0, 0, 0.4),
                 -5px -5px 10px rgba(70, 70, 70, 0.05);
-            transition: transform 0.2s ease, box-shadow 0.3s ease, filter 0.3s ease; /* Added filter */
+            transition: transform 0.2s ease, box-shadow 0.3s ease, filter 0.3s ease;
             text-align: left;
             padding-bottom: 15px;
         }
         .thumbnail-item:hover {
-            transform: translateY(-5px) scale(1.01); /* Slight scale on hover */
+            transform: translateY(-5px) scale(1.01);
             box-shadow: 
                 inset 1px 1px 3px rgba(0, 0, 0, 0.4), 
                 inset -1px -1px 3px rgba(70, 70, 70, 0.2),
                 8px 8px 15px rgba(0, 0, 0, 0.6),
                 -8px -8px 15px rgba(70, 70, 70, 0.1),
-                0 0 15px rgba(255, 255, 255, 0.2); /* Subtle white glow */
-            filter: brightness(1.1); /* Slight brightness increase */
+                0 0 15px rgba(255, 255, 255, 0.2);
+            filter: brightness(1.1);
         }
         .thumbnail-item img {
             width: 100%;
@@ -308,10 +299,10 @@
             object-fit: cover;
             display: block;
             border-radius: 15px 15px 0 0;
-            transition: transform 0.3s ease; /* Added transition for image */
+            transition: transform 0.3s ease;
         }
         .thumbnail-item:hover img {
-            transform: scale(1.05); /* Zoom effect on image hover */
+            transform: scale(1.05);
         }
         .thumbnail-item p {
             margin: 15px 15px 0;
@@ -337,7 +328,7 @@
         }
         .email-address:hover {
             background-color: #4a4a4a;
-            box-shadow: 0 0 15px rgba(255, 255, 255, 0.1); /* Subtle glow */
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
         }
         .social-links {
             display: grid;
@@ -357,7 +348,7 @@
             text-decoration: none;
             color: #e0e0e0;
             font-size: 0.9em;
-            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease, filter 0.3s ease; /* Added filter */
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease, filter 0.3s ease;
             box-shadow: 
                 inset 2px 2px 5px rgba(0, 0, 0, 0.3),
                 inset -2px -2px 5px rgba(70, 70, 70, 0.1),
@@ -366,14 +357,14 @@
         }
         .social-button:hover {
             background-color: #4a4a4a;
-            transform: translateY(-3px) scale(1.02); /* Slight scale on hover */
+            transform: translateY(-3px) scale(1.02);
             box-shadow: 
                 inset 1px 1px 3px rgba(0, 0, 0, 0.4), 
                 inset -1px -1px 3px rgba(70, 70, 70, 0.2),
                 8px 8px 15px rgba(0, 0, 0, 0.6),
                 -8px -8px 15px rgba(70, 70, 70, 0.1),
-                0 0 20px rgba(255, 255, 255, 0.3); /* White glow on hover */
-            filter: brightness(1.2); /* Slight brightness increase */
+                0 0 20px rgba(255, 255, 255, 0.3);
+            filter: brightness(1.2);
         }
         .social-button img {
             width: 55px;
@@ -382,10 +373,10 @@
             margin-bottom: 10px;
             filter: invert(1);
             opacity: 0.8;
-            transition: transform 0.3s ease; /* Added transition for image */
+            transition: transform 0.3s ease;
         }
         .social-button:hover img {
-            transform: rotate(5deg); /* Subtle rotation on image hover */
+            transform: rotate(5deg);
         }
         .social-button p {
             margin: 0;
@@ -403,7 +394,7 @@
             color: #ffffff;
             margin-bottom: 30px;
             letter-spacing: 1px;
-            animation: text-glow 3s infinite alternate; /* Applied text glow */
+            animation: text-glow 3s infinite alternate;
         }
         .brainstormer-input-area {
             display: flex;
@@ -428,7 +419,7 @@
             transition: box-shadow 0.3s ease;
         }
         .brainstormer-input-area textarea:focus {
-            box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.3), inset -2px -2px 5px rgba(70, 70, 70, 0.1), 0 0 10px rgba(76, 175, 80, 0.5); /* Green glow on focus */
+            box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.3), inset -2px -2px 5px rgba(70, 70, 70, 0.1), 0 0 10px rgba(76, 175, 80, 0.5);
         }
         .brainstormer-input-area textarea::placeholder {
             color: #bbb;
@@ -456,7 +447,7 @@
         .brainstormer-button:hover {
             background-color: #45a049;
             transform: translateY(-3px) scale(1.02);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6), 0 0 25px rgba(76, 175, 80, 0.6); /* Enhanced green glow */
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6), 0 0 25px rgba(76, 175, 80, 0.6);
         }
         .brainstormer-button:disabled {
             background-color: #666;
@@ -472,13 +463,13 @@
             max-height: 500px;
             overflow-y: auto;
             box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.3), inset -2px -2px 5px rgba(70, 70, 70, 0.1);
-            white-space: pre-wrap; /* Ensures line breaks are respected */
-            word-wrap: break-word; /* Prevents overflow for long words */
+            white-space: pre-wrap;
+            word-wrap: break-word;
             color: #e0e0e0;
             font-size: 1em;
             line-height: 1.6;
             transition: box-shadow 0.3s ease;
-            position: relative; /* For positioning copy buttons */
+            position: relative;
         }
         .loading-indicator {
             display: none;
@@ -488,7 +479,7 @@
         }
         .loading-indicator.active {
             display: block;
-            animation: bounce 0.8s infinite alternate; /* Loading animation */
+            animation: bounce 0.8s infinite alternate;
         }
 
         .copy-button {
@@ -517,7 +508,6 @@
             opacity: 1;
         }
         
-        /* Saved Concepts Section */
         .saved-concepts-section {
             margin-top: 30px;
             border-top: 1px solid rgba(255, 255, 255, 0.05);
@@ -604,7 +594,7 @@
 
         #backToTopBtn {
             position: fixed;
-            bottom: 30px; /* User requested value */
+            bottom: 30px;
             left: 50%;
             transform: translateX(-50%);
             background-color: #3a3a3a;
@@ -629,13 +619,13 @@
 
         #backToTopBtn:hover {
             background-color: #4a4a4a;
-            transform: translateX(-50%) translateY(-5px) scale(1.05); /* More pronounced lift and scale */
+            transform: translateX(-50%) translateY(-5px) scale(1.05);
             box-shadow: 
                 inset 1px 1px 3px rgba(0, 0, 0, 0.4), 
                 inset -1px -1px 3px rgba(70, 70, 70, 0.2),
                 8px 8px 15px rgba(0, 0, 0, 0.6),
                 -8px -8px 15px rgba(70, 70, 70, 0.1),
-                0 0 20px rgba(255, 255, 255, 0.4); /* White glow */
+                0 0 20px rgba(255, 255, 255, 0.4);
         }
 
         #backToTopBtn.show {
@@ -643,7 +633,6 @@
             pointer-events: auto;
         }
 
-        /* Modal Styles */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -658,14 +647,14 @@
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.3s ease;
-            backdrop-filter: blur(0px); /* Initial state for blur transition */
-            -webkit-backdrop-filter: blur(0px); /* Safari support */
+            backdrop-filter: blur(0px);
+            -webkit-backdrop-filter: blur(0px);
         }
 
         .modal-overlay.show {
             opacity: 1;
             pointer-events: auto;
-            backdrop-filter: blur(5px); /* Apply blur on show */
+            backdrop-filter: blur(5px);
             -webkit-backdrop-filter: blur(5px);
         }
 
@@ -680,12 +669,12 @@
                 -10px -10px 20px rgba(70, 70, 70, 0.05);
             text-align: left;
             max-width: 600px;
-            width: 90%; /* Default width */
+            width: 90%;
             position: relative;
             transform: scale(0.9);
             opacity: 0;
             transition: transform 0.3s ease, opacity 0.3s ease;
-            box-sizing: border-box; /* Crucial for consistent sizing */
+            box-sizing: border-box;
         }
 
         .modal-overlay.show .modal-content {
@@ -729,7 +718,6 @@
         }
 
 
-        /* Keyframe Animations */
         @keyframes pulse {
             0% { transform: scale(1); opacity: 1; }
             50% { transform: scale(1.1); opacity: 0.7; }
@@ -798,29 +786,28 @@
                 width: 100%;
             }
             #backToTopBtn {
-                bottom: 70px; /* Adjusted for smaller screens to clear footer */
+                bottom: 70px;
                 padding: 12px 15px;
                 font-size: 0.9em;
             }
             .footer-buttons {
-                flex-direction: column; /* Stack buttons vertically */
+                flex-direction: column;
                 gap: 10px;
-                align-items: center; /* Center them */
+                align-items: center;
             }
             .footer-button {
-                width: 80%; /* Make them a percentage of available width */
-                max-width: 250px; /* Cap their max width */
+                width: 80%;
+                max-width: 250px;
             }
 
-            /* Modal adjustments for smaller screens */
             .modal-content {
-                padding: 20px; /* Reduced padding */
-                width: 95%; /* More of the screen width */
+                padding: 20px;
+                width: 95%;
             }
             .modal-close-btn {
-                top: 10px; /* Adjust close button position */
+                top: 10px;
                 right: 10px;
-                font-size: 1.3em; /* Slightly smaller close button */
+                font-size: 1.3em;
             }
         }
 
@@ -850,23 +837,22 @@
                 grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
             }
             #backToTopBtn {
-                bottom: 60px; /* Further adjusted */
+                bottom: 60px;
             }
             .footer-button {
-                width: 90%; /* Increase width for very small screens */
+                width: 90%;
             }
-            /* Further modal adjustments for very small screens */
             .modal-content {
-                padding: 15px; /* Further reduce padding */
-                width: 90%; /* Keep some margin on each side */
-                min-height: unset; /* Allow height to adjust naturally */
-                max-height: 85vh; /* Max height to prevent overflow */
-                overflow-y: auto; /* Enable scrolling for long content */
+                padding: 15px;
+                width: 90%;
+                min-height: unset;
+                max-height: 85vh;
+                overflow-y: auto;
             }
             .modal-close-btn {
-                top: 8px; /* Fine-tune close button position */
+                top: 8px;
                 right: 8px;
-                font-size: 1.1em; /* Make it smaller */
+                font-size: 1.1em;
             }
         }
 
@@ -885,7 +871,7 @@
                 width: calc(100% - 30px);
             }
             #backToTopBtn {
-                bottom: 50px; /* Even further adjusted */
+                bottom: 50px;
                 padding: 10px 12px;
             }
         }
@@ -893,7 +879,8 @@
 </head>
 <body>
     <canvas id="particleCanvas"></canvas>
-    <canvas id="cursorTrailCanvas"></canvas> <div class="vignette-overlay"></div>
+    <canvas id="cursorTrailCanvas"></canvas>
+    <div class="vignette-overlay"></div>
 
     <div class="container">
         <header>
@@ -1062,7 +1049,6 @@
             const savedConceptsList = document.getElementById('savedConceptsList');
             const clearAllSavedButton = document.getElementById('clearAllSavedButton');
 
-            // --- Modal Functions ---
             function openModal(modalElement) {
                 modalElement.classList.add('show');
                 document.body.classList.add('modal-open');
@@ -1103,7 +1089,6 @@
                 }
             });
 
-            // --- Brainstormer Functions ---
             brainstormButton.addEventListener('click', async () => {
                 const topic = videoTopicInput.value.trim();
                 if (!topic) {
@@ -1146,7 +1131,6 @@
                 brainstormOutput.innerHTML = 'Your AI-generated thumbnail concepts will appear here.';
             });
 
-            // --- Copy and Save Logic for Brainstormer Output ---
             function addConceptActionButtons() {
                 const concepts = brainstormOutput.querySelectorAll('p, li');
 
@@ -1222,7 +1206,6 @@
                 }, 1000);
             }
 
-            // --- Local Storage for Saved Concepts ---
             let savedConcepts = JSON.parse(localStorage.getItem('iflexSavedConcepts')) || [];
 
             function saveConcept(conceptText) {
@@ -1266,7 +1249,6 @@
 
             renderSavedConcepts();
 
-            // --- Copyright Message ---
             document.addEventListener('contextmenu', function(e) {
                 e.preventDefault();
 
@@ -1280,11 +1262,9 @@
                 }, 1500);
             });
 
-            // --- Smooth Scrolling for Nav Buttons ---
             document.querySelectorAll('a[href^="#"]').forEach(anchor => {
                 anchor.addEventListener('click', function (e) {
                     const href = this.getAttribute('href');
-                    // Only perform smooth scroll if the href is not just '#' (which is handled by modals)
                     if (href === '#') {
                         e.preventDefault(); 
                         return; 
@@ -1292,7 +1272,7 @@
                     e.preventDefault();
 
                     const targetElement = document.querySelector(href);
-                    if (targetElement) { // Ensure the target element exists
+                    if (targetElement) {
                         targetElement.scrollIntoView({
                             behavior: 'smooth'
                         });
@@ -1300,7 +1280,6 @@
                 });
             });
 
-            // --- Back to Top Button Logic ---
             window.addEventListener('scroll', () => {
                 if (window.scrollY > 300) {
                     backToTopBtn.classList.add('show');
@@ -1316,7 +1295,6 @@
                 });
             });
 
-            // --- Particle Background ---
             const particleCanvas = document.getElementById('particleCanvas');
             const particleCtx = particleCanvas.getContext('2d');
             let particles = [];
@@ -1383,13 +1361,12 @@
                 initParticles();
             });
 
-            // --- Cursor Trail Particles ---
             const cursorTrailCanvas = document.getElementById('cursorTrailCanvas');
             const cursorTrailCtx = cursorTrailCanvas.getContext('2d');
             let cursorParticles = [];
-            const cursorParticleMaxAge = 60; // frames
+            const cursorParticleMaxAge = 60;
             const cursorParticleSize = 1;
-            const cursorParticleDensity = 2; // how many particles per mousemove event
+            const cursorParticleDensity = 2;
 
             function resizeCursorTrailCanvas() {
                 cursorTrailCanvas.width = window.innerWidth;
@@ -1401,16 +1378,16 @@
                     this.x = x;
                     this.y = y;
                     this.radius = cursorParticleSize;
-                    this.alpha = 0.5; // Initial opacity
+                    this.alpha = 0.5;
                     this.life = 0;
-                    this.speedX = (Math.random() - 0.5) * 0.5; // Very subtle spread
+                    this.speedX = (Math.random() - 0.5) * 0.5;
                     this.speedY = (Math.random() - 0.5) * 0.5;
                 }
 
                 draw() {
                     cursorTrailCtx.beginPath();
                     cursorTrailCtx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-                    cursorTrailCtx.fillStyle = `rgba(255, 255, 255, ${this.alpha})`; // White, fading
+                    cursorTrailCtx.fillStyle = `rgba(255, 255, 255, ${this.alpha})`;
                     cursorTrailCtx.fill();
                 }
 
@@ -1418,7 +1395,7 @@
                     this.x += this.speedX;
                     this.y += this.speedY;
                     this.life++;
-                    this.alpha = 0.5 - (this.life / cursorParticleMaxAge) * 0.5; // Fade out
+                    this.alpha = 0.5 - (this.life / cursorParticleMaxAge) * 0.5;
                     if (this.alpha < 0) this.alpha = 0;
                 }
             }
@@ -1448,18 +1425,17 @@
             window.addEventListener('resize', resizeCursorTrailCanvas);
 
 
-            // --- Intersection Observer for Scroll Animations ---
             const observerOptions = {
-                root: null, // viewport
+                root: null,
                 rootMargin: '0px',
-                threshold: 0.1 // Trigger when 10% of the item is visible
+                threshold: 0.1
             };
 
             const observer = new IntersectionObserver((entries, observer) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
                         entry.target.classList.add('active');
-                        observer.unobserve(entry.target); // Stop observing once animated
+                        observer.unobserve(entry.target);
                     }
                 });
             }, observerOptions);
