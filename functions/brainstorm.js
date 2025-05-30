@@ -46,7 +46,7 @@ exports.handler = async function(event, context) {
                 parts: [{ text: prompt }],
             }],
             generationConfig: {
-                maxOutputTokens: 1000, // Increased from 200 to 1000 to allow full response
+                maxOutputTokens: 1000, // Increased to 1000 to allow full response
             },
         });
 
