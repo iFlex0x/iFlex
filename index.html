@@ -26,6 +26,8 @@
             position: relative;
             scroll-behavior: smooth;
             cursor: url('images/custom-pointer.png'), auto;
+            /* Subtle background animation */
+            animation: background-pulse 15s infinite alternate;
         }
 
         body::before {
@@ -79,6 +81,8 @@
             height: auto;
             display: block;
             margin: 0 auto;
+            /* Initial fade-in and slight scale */
+            animation: fade-in-scale 1.5s ease-out forwards;
         }
 
         h1 {
@@ -111,6 +115,8 @@
         .dot.open {
             background-color: #4CAF50;
             box-shadow: 0 0 8px #4CAF50;
+            /* Pulsing animation for the green dot */
+            animation: pulse 1.5s infinite alternate;
         }
 
         .navigation-buttons {
@@ -130,7 +136,7 @@
             text-decoration: none;
             color: #e0e0e0;
             font-size: 1.2em;
-            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease, filter 0.3s ease; /* Added filter */
             box-shadow: 
                 inset 2px 2px 5px rgba(0, 0, 0, 0.3),
                 inset -2px -2px 5px rgba(70, 70, 70, 0.1),
@@ -142,12 +148,14 @@
         }
         .nav-button:hover {
             background-color: #4a4a4a;
-            transform: translateY(-3px);
+            transform: translateY(-3px) scale(1.02); /* Slight scale on hover */
             box-shadow: 
                 inset 1px 1px 3px rgba(0, 0, 0, 0.4), 
                 inset -1px -1px 3px rgba(70, 70, 70, 0.2),
                 8px 8px 15px rgba(0, 0, 0, 0.6),
-                -8px -8px 15px rgba(70, 70, 70, 0.1);
+                -8px -8px 15px rgba(70, 70, 70, 0.1),
+                0 0 20px rgba(76, 175, 80, 0.4); /* Green glow on hover */
+            filter: brightness(1.2); /* Slight brightness increase */
         }
         .nav-button img {
             width: 100px;
@@ -155,6 +163,10 @@
             margin-bottom: 15px;
             filter: invert(1);
             opacity: 0.8;
+            transition: transform 0.3s ease; /* Added transition for image */
+        }
+        .nav-button:hover img {
+            transform: rotate(5deg); /* Subtle rotation on image hover */
         }
         .nav-button p {
             margin: 0;
@@ -189,6 +201,8 @@
             color: #ffffff;
             margin-bottom: 40px;
             letter-spacing: 1px;
+            /* Subtle text shadow animation */
+            animation: text-glow 3s infinite alternate;
         }
 
         .thumbnail-grid {
@@ -206,17 +220,19 @@
                 inset -2px -2px 5px rgba(70, 70, 70, 0.1),
                 5px 5px 10px rgba(0, 0, 0, 0.4),
                 -5px -5px 10px rgba(70, 70, 70, 0.05);
-            transition: transform 0.2s ease, box-shadow 0.3s ease;
+            transition: transform 0.2s ease, box-shadow 0.3s ease, filter 0.3s ease; /* Added filter */
             text-align: left;
             padding-bottom: 15px;
         }
         .thumbnail-item:hover {
-            transform: translateY(-5px);
+            transform: translateY(-5px) scale(1.01); /* Slight scale on hover */
             box-shadow: 
                 inset 1px 1px 3px rgba(0, 0, 0, 0.4), 
                 inset -1px -1px 3px rgba(70, 70, 70, 0.2),
                 8px 8px 15px rgba(0, 0, 0, 0.6),
-                -8px -8px 15px rgba(70, 70, 70, 0.1);
+                -8px -8px 15px rgba(70, 70, 70, 0.1),
+                0 0 15px rgba(255, 255, 255, 0.2); /* Subtle white glow */
+            filter: brightness(1.1); /* Slight brightness increase */
         }
         .thumbnail-item img {
             width: 100%;
@@ -225,6 +241,10 @@
             object-fit: cover;
             display: block;
             border-radius: 15px 15px 0 0;
+            transition: transform 0.3s ease; /* Added transition for image */
+        }
+        .thumbnail-item:hover img {
+            transform: scale(1.05); /* Zoom effect on image hover */
         }
         .thumbnail-item p {
             margin: 15px 15px 0;
@@ -246,6 +266,11 @@
             font-size: 1.1em;
             color: #e0e0e0;
             box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.3), inset -2px -2px 5px rgba(70, 70, 70, 0.1);
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .email-address:hover {
+            background-color: #4a4a4a;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.1); /* Subtle glow */
         }
         .social-links {
             display: grid;
@@ -265,7 +290,7 @@
             text-decoration: none;
             color: #e0e0e0;
             font-size: 0.9em;
-            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease, filter 0.3s ease; /* Added filter */
             box-shadow: 
                 inset 2px 2px 5px rgba(0, 0, 0, 0.3),
                 inset -2px -2px 5px rgba(70, 70, 70, 0.1),
@@ -274,12 +299,14 @@
         }
         .social-button:hover {
             background-color: #4a4a4a;
-            transform: translateY(-3px);
+            transform: translateY(-3px) scale(1.02); /* Slight scale on hover */
             box-shadow: 
                 inset 1px 1px 3px rgba(0, 0, 0, 0.4), 
                 inset -1px -1px 3px rgba(70, 70, 70, 0.2),
                 8px 8px 15px rgba(0, 0, 0, 0.6),
-                -8px -8px 15px rgba(70, 70, 70, 0.1);
+                -8px -8px 15px rgba(70, 70, 70, 0.1),
+                0 0 20px rgba(255, 255, 255, 0.3); /* White glow on hover */
+            filter: brightness(1.2); /* Slight brightness increase */
         }
         .social-button img {
             width: 55px;
@@ -288,6 +315,10 @@
             margin-bottom: 10px;
             filter: invert(1);
             opacity: 0.8;
+            transition: transform 0.3s ease; /* Added transition for image */
+        }
+        .social-button:hover img {
+            transform: rotate(5deg); /* Subtle rotation on image hover */
         }
         .social-button p {
             margin: 0;
@@ -305,6 +336,7 @@
             color: #ffffff;
             margin-bottom: 30px;
             letter-spacing: 1px;
+            animation: text-glow 3s infinite alternate; /* Applied text glow */
         }
         .brainstormer-input-area {
             display: flex;
@@ -326,6 +358,10 @@
             min-height: 80px;
             box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.3), inset -2px -2px 5px rgba(70, 70, 70, 0.1);
             outline: none;
+            transition: box-shadow 0.3s ease;
+        }
+        .brainstormer-input-area textarea:focus {
+            box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.3), inset -2px -2px 5px rgba(70, 70, 70, 0.1), 0 0 10px rgba(76, 175, 80, 0.5); /* Green glow on focus */
         }
         .brainstormer-input-area textarea::placeholder {
             color: #bbb;
@@ -352,8 +388,8 @@
         }
         .brainstormer-button:hover {
             background-color: #45a049;
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6), 0 0 25px rgba(76, 175, 80, 0.6); /* Enhanced green glow */
         }
         .brainstormer-button:disabled {
             background-color: #666;
@@ -366,14 +402,15 @@
             border-radius: 15px;
             padding: 25px;
             text-align: left;
-            max-height: 500px; /* Increased max-height */
-            overflow-y: auto; /* Enable vertical scrolling */
+            max-height: 500px;
+            overflow-y: auto;
             box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.3), inset -2px -2px 5px rgba(70, 70, 70, 0.1);
             white-space: pre-wrap;
             word-wrap: break-word;
             color: #e0e0e0;
             font-size: 1em;
             line-height: 1.6;
+            transition: box-shadow 0.3s ease;
         }
         .loading-indicator {
             display: none;
@@ -383,6 +420,7 @@
         }
         .loading-indicator.active {
             display: block;
+            animation: bounce 0.8s infinite alternate; /* Loading animation */
         }
 
         .copyright-message {
@@ -429,17 +467,47 @@
 
         #backToTopBtn:hover {
             background-color: #4a4a4a;
-            transform: translateX(-50%) translateY(-3px);
+            transform: translateX(-50%) translateY(-5px) scale(1.05); /* More pronounced lift and scale */
             box-shadow: 
                 inset 1px 1px 3px rgba(0, 0, 0, 0.4), 
                 inset -1px -1px 3px rgba(70, 70, 70, 0.2),
                 8px 8px 15px rgba(0, 0, 0, 0.6),
-                -8px -8px 15px rgba(70, 70, 70, 0.1);
+                -8px -8px 15px rgba(70, 70, 70, 0.1),
+                0 0 20px rgba(255, 255, 255, 0.4); /* White glow */
         }
 
         #backToTopBtn.show {
             opacity: 1;
             pointer-events: auto;
+        }
+
+        /* Keyframe Animations */
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.7; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes fade-in-scale {
+            0% { opacity: 0; transform: scale(0.8); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes text-glow {
+            0% { text-shadow: 0 0 5px rgba(255, 255, 255, 0.1); }
+            50% { text-shadow: 0 0 15px rgba(255, 255, 255, 0.4); }
+            100% { text-shadow: 0 0 5px rgba(255, 255, 255, 0.1); }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        @keyframes background-pulse {
+            0% { background-color: #1a1a1a; }
+            50% { background-color: #202020; }
+            100% { background-color: #1a1a1a; }
         }
 
         @media (max-width: 768px) {
