@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         html, body {
-            overflow-x: hidden; /* Prevent horizontal scrolling */
+            overflow-x: hidden;
         }
 
         body {
@@ -455,9 +455,10 @@
                 align-items: center;
             }
             .nav-button {
-                width: 100%;
+                width: calc(100% - 60px); /* Adjusted width to account for padding */
                 max-width: 300px;
-                min-width: unset; /* Allow buttons to shrink more */
+                min-width: unset;
+                padding: 20px 30px; /* Ensure consistent padding */
             }
             .thumbnail-grid {
                 grid-template-columns: 1fr;
@@ -494,7 +495,8 @@
                 font-size: 2em;
             }
             .nav-button {
-                padding: 20px 30px;
+                padding: 15px 20px; /* Reduced padding for very small screens */
+                width: calc(100% - 40px); /* Adjusted width for new padding */
             }
             .nav-button img {
                 width: 80px;
@@ -508,10 +510,30 @@
                 height: 40px;
             }
             .social-links {
-                grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); /* Adjusted for smaller screens */
+                grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
             }
             #backToTopBtn {
-                bottom: 10px; /* Further reduced for very small screens */
+                bottom: 10px;
+            }
+        }
+
+        @media (max-width: 320px) {
+            .container {
+                padding: 10px; /* Even smaller padding for very narrow screens */
+            }
+            .nav-button {
+                padding: 10px 15px; /* Further reduced padding */
+                width: calc(100% - 30px); /* Adjusted width for new padding */
+            }
+            .social-links {
+                grid-template-columns: 1fr; /* Stack social buttons on very small screens */
+            }
+            .social-button {
+                width: calc(100% - 30px); /* Adjust social button width */
+            }
+            #backToTopBtn {
+                bottom: 5px; /* Ensure it's always visible */
+                padding: 10px 12px;
             }
         }
     </style>
