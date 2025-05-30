@@ -366,7 +366,8 @@
             border-radius: 15px;
             padding: 25px;
             text-align: left;
-            min-height: 100px;
+            max-height: 300px; /* Set a max height */
+            overflow-y: auto; /* Enable vertical scrolling */
             box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.3), inset -2px -2px 5px rgba(70, 70, 70, 0.1);
             white-space: pre-wrap;
             word-wrap: break-word;
@@ -455,10 +456,10 @@
                 align-items: center;
             }
             .nav-button {
-                width: calc(100% - 60px); /* Adjusted width to account for padding */
+                width: calc(100% - 60px);
                 max-width: 300px;
                 min-width: unset;
-                padding: 20px 30px; /* Ensure consistent padding */
+                padding: 20px 30px;
             }
             .thumbnail-grid {
                 grid-template-columns: 1fr;
@@ -495,8 +496,8 @@
                 font-size: 2em;
             }
             .nav-button {
-                padding: 15px 20px; /* Reduced padding for very small screens */
-                width: calc(100% - 40px); /* Adjusted width for new padding */
+                padding: 15px 20px;
+                width: calc(100% - 40px);
             }
             .nav-button img {
                 width: 80px;
@@ -519,20 +520,20 @@
 
         @media (max-width: 320px) {
             .container {
-                padding: 10px; /* Even smaller padding for very narrow screens */
+                padding: 10px;
             }
             .nav-button {
-                padding: 10px 15px; /* Further reduced padding */
-                width: calc(100% - 30px); /* Adjusted width for new padding */
+                padding: 10px 15px;
+                width: calc(100% - 30px);
             }
             .social-links {
-                grid-template-columns: 1fr; /* Stack social buttons on very small screens */
+                grid-template-columns: 1fr;
             }
             .social-button {
-                width: calc(100% - 30px); /* Adjust social button width */
+                width: calc(100% - 30px);
             }
             #backToTopBtn {
-                bottom: 5px; /* Ensure it's always visible */
+                bottom: 5px;
                 padding: 10px 12px;
             }
         }
