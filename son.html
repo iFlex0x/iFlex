@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iFlex - My AI Son</title>
+    <link rel="icon" href="https://media.discordapp.net/attachments/1377937684525224000/1377937709561024603/iflexnew.png?ex=683ac7fe&is=6839767e&hm=9f2c0f8ab97dd09a6807993e34dfb0286b00806463d673e68099253d4c0e805e&=&width=666&height=666" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        html, body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background-color: #1a1a1a;
+            color: #e0e0e0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
+            position: relative;
+            overflow-x: hidden;
+            animation: background-pulse 15s infinite alternate;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(ellipse at center, rgba(0,0,0,0) 0%, rgba(0,0,0,0.5) 70%, rgba(0,0,0,0.9) 100%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        #particleCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .chat-container {
+            background-color: #2c2c2c;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 
+                inset 5px 5px 10px rgba(0, 0, 0, 0.3),
+                inset -5px -5px 10px rgba(70, 70, 70, 0.1),
+                10px 10px 20px rgba(0, 0, 0, 0.6),
+                -10px -10px 20px rgba(70, 70, 70, 0.05);
+            text-align: center;
+            max-width: 700px;
+            width: 100%;
+            height: 80vh; /* Fixed height for chat area */
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            z-index: 2;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            color: #ffffff;
+            margin-bottom: 20px;
+            letter-spacing: 1px;
+            animation: text-glow 3s infinite alternate;
+        }
+
+        .chat-display {
+            flex-grow: 1;
+            background-color: #3a3a3a;
+            border-radius: 15px;
+            padding: 15px;
+            overflow-y: auto;
+            text-align: left;
+            box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.3), inset -2px -2px 5px rgba(70, 70, 70, 0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 10px 15px;
+            border-radius: 15px;
+            word-wrap: break-word;
+            line-height: 1.4;
+        }
+
+        .user-message {
+            background-color: #4CAF50;
+            align-self: flex-end;
+            border-bottom-right-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .bot-message {
+            background-color: #555;
+            align-self: flex-start;
+            border-bottom-left-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .chat-input-area {
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-input-area textarea {
+            flex-grow: 1;
+            padding: 12px 15px;
+            border-radius: 15px;
+            border: none;
+            background-color: #3a3a3a;
+            color: #e0e0e0;
+            font-size: 1em;
+            resize: none; /* Prevent manual resizing */
+            min-height: 40px;
+            max-height: 100px; /* Limit height as user types */
+            box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.3), inset -2px -2px 5px rgba(70, 70, 70, 0.1);
+            outline: none;
+            transition: box-shadow 0.3s ease;
+            box-sizing: border-box;
+        }
+        .chat-input-area textarea:focus {
+            box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.3), inset -2px -2px 5px rgba(70, 70, 70, 0.1), 0 0 10px rgba(76, 175, 80, 0.5);
+        }
+        .chat-input-area textarea::placeholder {
+            color: #bbb;
+        }
+
+        .chat-button {
+            background-color: #4CAF50;
+            color: #ffffff;
+            padding: 12px 20px;
+            border-radius: 15px;
+            border: none;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+            white-space: nowrap; /* Prevent text wrapping */
+        }
+        .chat-button:hover {
+            background-color: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6), 0 0 25px rgba(76, 175, 80, 0.6);
+        }
+        .chat-button:disabled {
+            background-color: #666;
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+        }
+
+        .loading-dots {
+            display: none;
+            align-self: flex-start;
+            margin-top: 10px;
+            color: #bbb;
+            font-size: 1.5em;
+            animation: typing-dots 1s infinite steps(3, end);
+        }
+        .loading-dots.active {
+            display: block;
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        .action-button {
+            background-color: #3a3a3a;
+            color: #e0e0e0;
+            padding: 10px 20px;
+            border-radius: 10px;
+            border: none;
+            font-size: 0.9em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.3), inset -2px -2px 5px rgba(70, 70, 70, 0.1);
+        }
+        .action-button:hover {
+            background-color: #4a4a4a;
+            transform: translateY(-2px);
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+        }
+
+        /* Keyframe Animations */
+        @keyframes background-pulse {
+            0% { background-color: #1a1a1a; }
+            50% { background-color: #202020; }
+            100% { background-color: #1a1a1a; }
+        }
+        @keyframes text-glow {
+            0% { text-shadow: 0 0 5px rgba(255, 255, 255, 0.1); }
+            50% { text-shadow: 0 0 15px rgba(255, 255, 255, 0.4); }
+            100% { text-shadow: 0 0 5px rgba(255, 255, 255, 0.1); }
+        }
+        @keyframes typing-dots {
+            0%, 20% { content: "."; }
+            40% { content: ".."; }
+            60%, 100% { content: "..."; }
+        }
+
+        @media (max-width: 768px) {
+            .chat-container {
+                padding: 15px;
+                height: 90vh; /* More screen height on mobile */
+            }
+            h1 {
+                font-size: 2em;
+            }
+            .chat-input-area {
+                flex-direction: column;
+            }
+            .chat-button {
+                width: 100%;
+            }
+            .action-buttons {
+                flex-direction: column;
+            }
+            .action-button {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            .chat-container {
+                padding: 10px;
+                height: 95vh;
+            }
+            h1 {
+                font-size: 1.8em;
+            }
+            .message {
+                padding: 8px 12px;
+                font-size: 0.9em;
+            }
+            .chat-input-area textarea {
+                padding: 10px;
+                font-size: 0.9em;
+            }
+            .chat-button {
+                padding: 10px 15px;
+                font-size: 0.9em;
+            }
+            .action-button {
+                padding: 8px 15px;
+                font-size: 0.8em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="particleCanvas"></canvas>
+    <div class="chat-container">
+        <h1>My AI Son</h1>
+        <div id="chatDisplay" class="chat-display">
+            <div class="bot-message message">Hello! I'm iFlex's AI Son. How can I help you today?</div>
+        </div>
+        <div id="loadingDots" class="loading-dots"></div>
+        <div class="chat-input-area">
+            <textarea id="chatInput" placeholder="Type your message..."></textarea>
+            <button id="sendMessageBtn" class="chat-button">Send</button>
+        </div>
+        <div class="action-buttons">
+            <button id="resetChatBtn" class="action-button">Reset Chat</button>
+            <button id="backToPortfolioBtn" class="action-button">Back to Portfolio</button>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/uuid/8.3.2/uuid.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const chatDisplay = document.getElementById('chatDisplay');
+            const chatInput = document.getElementById('chatInput');
+            const sendMessageBtn = document.getElementById('sendMessageBtn');
+            const loadingDots = document.getElementById('loadingDots');
+            const resetChatBtn = document.getElementById('resetChatBtn');
+            const backToPortfolioBtn = document.getElementById('backToPortfolioBtn');
+
+            let userId = localStorage.getItem('aiSonUserId');
+            let channelId = localStorage.getItem('aiSonChannelId'); // Using a fixed channel ID per user for simplicity
+
+            if (!userId) {
+                userId = uuid.v4(); // Generate a new UUID for the user
+                localStorage.setItem('aiSonUserId', userId);
+            }
+            if (!channelId) {
+                channelId = uuid.v4(); // Generate a new UUID for the conversation channel
+                localStorage.setItem('aiSonChannelId', channelId);
+            }
+
+            // Function to add a message to the chat display
+            function addMessage(text, sender) {
+                const messageDiv = document.createElement('div');
+                messageDiv.classList.add('message');
+                messageDiv.classList.add(sender === 'user' ? 'user-message' : 'bot-message');
+                messageDiv.textContent = text;
+                chatDisplay.appendChild(messageDiv);
+                chatDisplay.scrollTop = chatDisplay.scrollHeight; // Scroll to bottom
+            }
+
+            // Function to send a message to the AI
+            async function sendMessage() {
+                const message = chatInput.value.trim();
+                if (!message) return;
+
+                addMessage(message, 'user');
+                chatInput.value = ''; // Clear input
+                chatInput.style.height = 'auto'; // Reset textarea height
+                sendMessageBtn.disabled = true;
+                loadingDots.classList.add('active');
+
+                try {
+                    const response = await fetch('/.netlify/functions/shapes-chat', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-User-Id': userId, // Pass user ID for context
+                            'X-Channel-Id': channelId // Pass channel ID for conversation context
+                        },
+                        body: JSON.stringify({ message: message })
+                    });
+
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(`API Error: ${response.status} - ${errorData.error || 'Unknown error'}`);
+                    }
+
+                    const data = await response.json();
+                    addMessage(data.response, 'bot'); // Display bot's response
+
+                } catch (error) {
+                    console.error('Error sending message:', error);
+                    addMessage(`Error: ${error.message}. Please try again.`, 'bot');
+                } finally {
+                    sendMessageBtn.disabled = false;
+                    loadingDots.classList.remove('active');
+                }
+            }
+
+            // Event Listeners
+            sendMessageBtn.addEventListener('click', sendMessage);
+            chatInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) { // Send on Enter, allow Shift+Enter for new line
+                    e.preventDefault();
+                    sendMessage();
+                }
+            });
+
+            // Auto-resize textarea
+            chatInput.addEventListener('input', () => {
+                chatInput.style.height = 'auto';
+                chatInput.style.height = (chatInput.scrollHeight) + 'px';
+            });
+
+            resetChatBtn.addEventListener('click', () => {
+                localStorage.removeItem('aiSonChannelId'); // Clear channel ID to start new conversation
+                channelId = uuid.v4(); // Generate a new one
+                localStorage.setItem('aiSonChannelId', channelId);
+                chatDisplay.innerHTML = '<div class="bot-message message">Chat has been reset. Hello! How can I help you today?</div>';
+                chatInput.value = '';
+                chatInput.style.height = 'auto';
+            });
+
+            backToPortfolioBtn.addEventListener('click', () => {
+                window.location.href = 'index.html'; // Redirect back to the main portfolio page
+            });
+
+            // --- Particle Background (reused from index.html) ---
+            const canvas = document.getElementById('particleCanvas');
+            const ctx = canvas.getContext('2d');
+            let particles = [];
+            const particleCount = 50;
+            const maxRadius = 1.5;
+            const minRadius = 0.5;
+            const maxSpeed = 0.3;
+
+            function resizeCanvas() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+
+            class Particle {
+                constructor() {
+                    this.x = Math.random() * canvas.width;
+                    this.y = Math.random() * canvas.height;
+                    this.radius = Math.random() * (maxRadius - minRadius) + minRadius;
+                    this.color = `rgba(255, 255, 255, ${Math.random() * 0.2 + 0.05})`;
+                    this.speedX = (Math.random() - 0.5) * maxSpeed;
+                    this.speedY = (Math.random() - 0.5) * maxSpeed;
+                }
+
+                draw() {
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = this.color;
+                    ctx.fill();
+                }
+
+                update() {
+                    this.x += this.speedX;
+                    this.y += this.speedY;
+
+                    if (this.x < 0 - this.radius) this.x = canvas.width + this.radius;
+                    if (this.x > canvas.width + this.radius) this.x = 0 - this.radius;
+                    if (this.y < 0 - this.radius) this.y = canvas.height + this.radius;
+                    if (this.y > canvas.height + this.radius) this.y = 0 - this.radius;
+                }
+            }
+
+            function initParticles() {
+                particles = [];
+                for (let i = 0; i < particleCount; i++) {
+                    particles.push(new Particle());
+                }
+            }
+
+            function animateParticles() {
+                requestAnimationFrame(animateParticles);
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                particles.forEach(particle => {
+                    particle.update();
+                    particle.draw();
+                });
+            }
+
+            resizeCanvas();
+            initParticles();
+            animateParticles();
+            window.addEventListener('resize', () => {
+                resizeCanvas();
+                initParticles();
+            });
+        });
+    </script>
+</body>
+</html>
