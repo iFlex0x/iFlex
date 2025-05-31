@@ -2,7 +2,6 @@
 const { OpenAI } = require("openai");
 
 exports.handler = async function(event, context) {
-    // Only allow POST requests
     if (event.httpMethod !== "POST") {
         return {
             statusCode: 405,
@@ -11,7 +10,6 @@ exports.handler = async function(event, context) {
     }
 
     try {
-        // Retrieve API key and shape username from Netlify environment variables
         const shapesApiKey = process.env.SHAPESINC_API_KEY;
         const shapesShapeUsername = process.env.SHAPESINC_SHAPE_USERNAME;
 
@@ -25,8 +23,12 @@ exports.handler = async function(event, context) {
 
         const body = JSON.parse(event.body);
         const userMessage = body.message;
-        const userId = event.headers['x-user-id']; // Get X-User-Id from request headers
-        const channelId = event.headers['x-channel-id']; // Get X-Channel-Id from request headers
+        const userId = event.headers['x-user-id'];
+        const channelId = event.headers['x-channel-id'];
+
+        // Debugging: Log received headers
+        console.log('Netlify Function - Received X-User-Id:', userId);
+        console.log('Netlify Function - Received X-Channel-Id:', channelId);
 
         if (!userMessage || !userId || !channelId) {
             return {
@@ -35,26 +37,22 @@ exports.handler = async function(event, context) {
             };
         }
 
-        // Initialize Shapes API client
         const shapes_client = new OpenAI({
             apiKey: shapesApiKey,
             baseURL: "https://api.shapes.inc/v1",
         });
 
-        // Make the API call to Shapes.inc
         const response = await shapes_client.chat.completions.create({
-            model: `shapesinc/${shapesShapeUsername}`, // Use the configured shape username
+            model: `shapesinc/${shapesShapeUsername}`,
             messages: [
                 { role: "user", content: userMessage }
             ],
-            // Pass custom headers for user identification and conversation context
             extra_headers: {
                 "X-User-Id": userId,
                 "X-Channel-Id": channelId,
             }
         });
 
-        // Extract the bot's response
         const botResponse = response.choices[0].message.content;
 
         return {
