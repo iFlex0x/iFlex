@@ -58,7 +58,7 @@
             text-align: center;
             max-width: 700px;
             width: 100%;
-            height: 80vh; /* Fixed height for chat area */
+            height: 80vh;
             display: flex;
             flex-direction: column;
             gap: 15px;
@@ -122,9 +122,9 @@
             background-color: #3a3a3a;
             color: #e0e0e0;
             font-size: 1em;
-            resize: none; /* Prevent manual resizing */
+            resize: none;
             min-height: 40px;
-            max-height: 100px; /* Limit height as user types */
+            max-height: 100px;
             box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.3), inset -2px -2px 5px rgba(70, 70, 70, 0.1);
             outline: none;
             transition: box-shadow 0.3s ease;
@@ -147,7 +147,7 @@
             cursor: pointer;
             transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
-            white-space: nowrap; /* Prevent text wrapping */
+            white-space: nowrap;
         }
         .chat-button:hover {
             background-color: #45a049;
@@ -197,7 +197,6 @@
             box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
         }
 
-        /* Keyframe Animations */
         @keyframes background-pulse {
             0% { background-color: #1a1a1a; }
             50% { background-color: #202020; }
@@ -217,7 +216,7 @@
         @media (max-width: 768px) {
             .chat-container {
                 padding: 15px;
-                height: 90vh; /* More screen height on mobile */
+                height: 90vh;
             }
             h1 {
                 font-size: 2em;
@@ -271,7 +270,7 @@
     <div class="chat-container">
         <h1>My AI Son</h1>
         <div id="chatDisplay" class="chat-display">
-            <div class="bot-message message">Hello! I'm iFlex's AI Son. How can I help you today?</div>
+            <div class="bot-message message">Hello! I'm your AI Son. How can I help you today?</div>
         </div>
         <div id="loadingDots" class="loading-dots"></div>
         <div class="chat-input-area">
@@ -295,45 +294,51 @@
             const backToPortfolioBtn = document.getElementById('backToPortfolioBtn');
 
             let userId = localStorage.getItem('aiSonUserId');
-            let channelId = localStorage.getItem('aiSonChannelId'); // Using a fixed channel ID per user for simplicity
+            let channelId = localStorage.getItem('aiSonChannelId');
 
             if (!userId) {
-                userId = uuid.v4(); // Generate a new UUID for the user
+                userId = uuid.v4();
                 localStorage.setItem('aiSonUserId', userId);
             }
             if (!channelId) {
-                channelId = uuid.v4(); // Generate a new UUID for the conversation channel
+                channelId = uuid.v4();
                 localStorage.setItem('aiSonChannelId', channelId);
             }
 
-            // Function to add a message to the chat display
+            // Debugging: Log IDs on page load
+            console.log('Frontend (son.html) - Loaded User ID:', userId);
+            console.log('Frontend (son.html) - Loaded Channel ID:', channelId);
+
             function addMessage(text, sender) {
                 const messageDiv = document.createElement('div');
                 messageDiv.classList.add('message');
                 messageDiv.classList.add(sender === 'user' ? 'user-message' : 'bot-message');
                 messageDiv.textContent = text;
                 chatDisplay.appendChild(messageDiv);
-                chatDisplay.scrollTop = chatDisplay.scrollHeight; // Scroll to bottom
+                chatDisplay.scrollTop = chatDisplay.scrollHeight;
             }
 
-            // Function to send a message to the AI
             async function sendMessage() {
                 const message = chatInput.value.trim();
                 if (!message) return;
 
                 addMessage(message, 'user');
-                chatInput.value = ''; // Clear input
-                chatInput.style.height = 'auto'; // Reset textarea height
+                chatInput.value = '';
+                chatInput.style.height = 'auto';
                 sendMessageBtn.disabled = true;
                 loadingDots.classList.add('active');
+
+                // Debugging: Log IDs before sending request
+                console.log('Frontend (son.html) - Sending with User ID:', userId);
+                console.log('Frontend (son.html) - Sending with Channel ID:', channelId);
 
                 try {
                     const response = await fetch('/.netlify/functions/shapes-chat', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
-                            'X-User-Id': userId, // Pass user ID for context
-                            'X-Channel-Id': channelId // Pass channel ID for conversation context
+                            'X-User-Id': userId,
+                            'X-Channel-Id': channelId
                         },
                         body: JSON.stringify({ message: message })
                     });
@@ -344,7 +349,7 @@
                     }
 
                     const data = await response.json();
-                    addMessage(data.response, 'bot'); // Display bot's response
+                    addMessage(data.response, 'bot');
 
                 } catch (error) {
                     console.error('Error sending message:', error);
@@ -355,35 +360,34 @@
                 }
             }
 
-            // Event Listeners
             sendMessageBtn.addEventListener('click', sendMessage);
             chatInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter' && !e.shiftKey) { // Send on Enter, allow Shift+Enter for new line
+                if (e.key === 'Enter' && !e.shiftKey) {
                     e.preventDefault();
                     sendMessage();
                 }
             });
 
-            // Auto-resize textarea
             chatInput.addEventListener('input', () => {
                 chatInput.style.height = 'auto';
                 chatInput.style.height = (chatInput.scrollHeight) + 'px';
             });
 
             resetChatBtn.addEventListener('click', () => {
-                localStorage.removeItem('aiSonChannelId'); // Clear channel ID to start new conversation
-                channelId = uuid.v4(); // Generate a new one
+                localStorage.removeItem('aiSonChannelId');
+                channelId = uuid.v4();
                 localStorage.setItem('aiSonChannelId', channelId);
                 chatDisplay.innerHTML = '<div class="bot-message message">Chat has been reset. Hello! How can I help you today?</div>';
                 chatInput.value = '';
                 chatInput.style.height = 'auto';
+                // Debugging: Log new Channel ID after reset
+                console.log('Frontend (son.html) - Chat Reset. New Channel ID:', channelId);
             });
 
             backToPortfolioBtn.addEventListener('click', () => {
-                window.location.href = 'index.html'; // Redirect back to the main portfolio page
+                window.location.href = 'index.html';
             });
 
-            // --- Particle Background (reused from index.html) ---
             const canvas = document.getElementById('particleCanvas');
             const ctx = canvas.getContext('2d');
             let particles = [];
