@@ -4,8 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>iFlex</title>
-    <link rel="icon" href="https://media.discordapp.net/attachments/1377937684525224000/1377937709561024603/iflexnew.png?ex=683ac7fe&is=6839767e&hm=9f2c0f8ab97dd09a6807993e34dfb0286b00806463d673e68099253d4c0e805e&=&width=666&height=666" type="image/x-icon">
+    <link rel="icon" href="images/iflexnew.png" type="image/x-icon">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <style>
         html, body {
             overflow-x: hidden;
@@ -25,7 +26,7 @@
             box-sizing: border-box;
             position: relative;
             scroll-behavior: smooth;
-            cursor: url('images/custom-pointer.png'), auto;
+            cursor: url(images/cursor.png), auto;
             animation: background-pulse 15s infinite alternate;
         }
 
@@ -675,6 +676,8 @@
             opacity: 0;
             transition: transform 0.3s ease, opacity 0.3s ease;
             box-sizing: border-box;
+            max-height: 90vh; /* Added for scrolling */
+            overflow-y: auto; /* Added for scrolling */
         }
 
         .modal-overlay.show .modal-content {
@@ -803,6 +806,7 @@
             .modal-content {
                 padding: 20px;
                 width: 95%;
+                max-height: 85vh; /* Adjusted for mobile */
             }
             .modal-close-btn {
                 top: 10px;
@@ -885,7 +889,7 @@
     <div class="container">
         <header>
             <div class="logo-container">
-                <img src="https://media.discordapp.net/attachments/1377937684525224000/1377937709561024603/iflexnew.png?ex=683ac7fe&is=6839767e&hm=9f2c0f8ab97dd09a6807993e34dfb0286b00806463d673e68099253d4c0e805e&=&width=666&height=666" alt="iFlex Logo">
+                <img src="images/iflexnew.png" alt="iFlex Logo">
             </div>
             <h1>iFlex</h1> 
             <div class="status-indicator show-on-scroll">
@@ -893,19 +897,19 @@
             </div>
             <div class="navigation-buttons show-on-scroll">
                 <a href="#my-work-section" class="nav-button">
-                    <img src="https://media.discordapp.net/attachments/1377937684525224000/1377952065749516348/document.png?ex=683ad55d&is=683983dd&hm=43fdf58fe7088528529a4454c74518b8896e985947e8918b3ffa1f623c9bdb87&=&width=461&height=461" alt="My Work Icon">
+                    <img src="images/document.png" alt="My Work Icon">
                     <p>My Work</p>
                 </a>
                 <a href="#contact-section" class="nav-button">
-                    <img src="https://media.discordapp.net/attachments/1377937684525224000/1377951788019482685/external-link.png?ex=683ad51b&is=6839839b&hm=7eed749a4fc2c973d3ea107c8a3713dacee6bd36f8afa1fc2f30ed383d48943a&=&width=461&height=461" alt="Contact Icon">
+                    <img src="images/external-link.png" alt="Contact Icon">
                     <p>Links</p>
                 </a>
                 <a href="#brainstormer-section" class="nav-button">
-                    <img src="https://media.discordapp.net/attachments/1377937684525224000/1377982009212932156/brain-512.png?ex=683af140&is=68399fc0&hm=044676c200334350cd26890993a4bd3e3f80c4b378704586c7155e5089238dc4&=&width=461&height=461" alt="Brainstormer Icon">
+                    <img src="images/brain-512.png" alt="Brainstormer Icon">
                     <p>Brainstormer</p>
                 </a>
                 <a href="son.html" class="nav-button">
-                    <img src="https://media.discordapp.net/attachments/1377937684525224000/1378426349693173851/Mark_RGB_White.png?ex=683c8f13&is=683b3d93&hm=a7db5a26d3e3ad6c089766001810e400db8ddfb06048c0d19d2fcda710c6c279&=&width=666&height=666" alt="AI Son Icon">
+                    <img src="images/Mark_RGB_White.png" alt="AI Son Icon">
                     <p>My AI Son</p>
                 </a>
             </div>
@@ -915,31 +919,31 @@
             <h2>My Work</h2>
             <div class="thumbnail-grid">
                 <div class="thumbnail-item">
-                    <img src="https://media.discordapp.net/attachments/1377937684525224000/1377940081532473425/1bgolf.png?ex=683aca34&is=683978b4&hm=643abea9a03dbeace78ebdd0b26367531f4c1107dc174bf1a2a8c8a864d22e39&=&width=495&height=278" alt="Thumbnail 1">
+                    <img src="images/1bgolf.png" alt="Thumbnail 1">
                     <p>The $1 Billion Golf Resort You’ve Probably Never Heard Of…</p>
                 </div>
                 <div class="thumbnail-item">
-                    <img src="https://media.discordapp.net/attachments/1377937684525224000/1377950788982145145/Ep.2_V2.png?ex=683ad42d&is=683982ad&hm=6d8159c4413e449626dd14ede6c8218c4410813fd76880287d0e6c52b76bbe1a&=&width=1018&height=572" alt="Thumbnail 7">
+                    <img src="images/Ep.2_V2.png" alt="Thumbnail 7">
                     <p>Developer Secrets & Future Updates | Combat Talk #2</p>
                 </div>
                 <div class="thumbnail-item">
-                    <img src="https://media.discordapp.net/attachments/1377937684525224000/1377947775198564434/FALSEIDOLS_V3.jpg?ex=683ad15e&is=68397fde&hm=4e5299da6c146b574d4dbe3959687f50148a8314cd3e89a8dc5e0af164d8f517&=&width=1018&height=572" alt="Thumbnail 2">
+                    <img src="images/FALSEIDOLS_V3.jpg" alt="Thumbnail 2">
                     <p>South Park's Take on Celebrity Culture & Endorsements</p>
                 </div>
                 <div class="thumbnail-item">
-                    <img src="https://media.discordapp.net/attachments/1377937684525224000/1377948697287196744/zero_work_ethics_V2.jpg?ex=683ad23a&is=683980ba&hm=1d53d87af68196f901b515d35ffc91fe5227b4ec0b921636604846ad960de7d8&=&width=1018&height=572" alt="Thumbnail 3">
+                    <img src="images/zero_work_ethics_V2.jpg" alt="Thumbnail 3">
                     <p>When Your Work Ethic Goes Missing (South Park)</p>
                 </div>
                 <div class="thumbnail-item">
-                    <img src="https://media.discordapp.net/attachments/1377937684525224000/1377949091996372993/No_affordable_housing.png?ex=683ad298&is=68398118&hm=2e81d648924cef1f4260028fb484d55090feecea0bd902447983c2ab635d8506&=&width=1018&height=572" alt="Thumbnail 4">
+                    <img src="images/No_affordable_housing.png" alt="Thumbnail 4">
                     <p>South Park Explains: Why Can't Anyone Afford A House?!</p>
                 </div>
                 <div class="thumbnail-item">
-                    <img src="https://media.discordapp.net/attachments/1377937684525224000/1377949654167326753/Shelbyv1.jpg?ex=683ad31e&is=6839819e&hm=437f0b79570f7b96c421bb664b799e3ff76f0ace3956bd8f08059c0a95ac7c4f&=&width=1018&height=572" alt="Thumbnail 5">
+                    <img src="images/Shelbyv1.jpg" alt="Thumbnail 5">
                     <p>The Most FRUSTRATING Gaming Experience EVER!</p>
                 </div>
                 <div class="thumbnail-item">
-                    <img src="https://media.discordapp.net/attachments/1377937684525224000/1377950080325128307/EveryAgentShelbyREWORKV4.jpg?ex=683ad384&is=68398204&hm=505f241e2f13e836ddc0b49663e23f44bfe9d4361b3412cc461f704681ad1467&=&width=1018&height=572" alt="Thumbnail 6">
+                    <img src="images/EveryAgentShelbyREWORKV4.jpg" alt="Thumbnail 6">
                     <p>I Played a Different Valorant Agent EVERY DAY For a Month! (Insane Challenge)</p>
                 </div>
                 </div>
@@ -974,23 +978,23 @@
                 <p class="email-address">ad.iflex@hotmail.com</p>
                 <div class="social-links">
                     <a href="https://discord.com/invite/cPCEAPhcYy" target="_blank" class="social-button">
-                        <img src="https://media.discordapp.net/attachments/1377937684525224000/1377943384341090334/discord.png?ex=683acd47&is=68397bc7&hm=08793e8425e816208f27e35e837691b07da619197c34425f6b45f638bb958a9a&=&width=461&height=461" alt="Discord Icon">
+                        <img src="images/discord.png" alt="Discord Icon">
                         <p>Discord<br>iFlex</p>
                     </a>
                     <a href="https://x.com/SaiFlex_1" target="_blank" class="social-button">
-                        <img src="https://cdn.discordapp.com/attachments/1377937684525224000/1377943660838129665/X_logo_2023_28white29.png?ex=683acd89&is=68397c09&hm=d5885d0497e3e14f77169c3ec649797d5be441fa5fe2e745ce1f5378d4e8af52&" alt="Twitter Icon">
+                        <img src="images/X_logo_2023_28white29.png" alt="Twitter Icon">
                         <p>X<br>@SaiFlex_1</p>
                     </a>
                     <a href="https://www.youtube.com/@saiflex" target="_blank" class="social-button">
-                        <img src="https://cdn.discordapp.com/attachments/1377937684525224000/1377943936470876190/youtube_button_PNG36.png?ex=683acdcb&is=68397c4b&hm=3c815bacf6f7cce19e2e1a7c79d8facbe14f06ceee1e97e72e5b3f3c3a742228&" alt="YouTube Icon">
+                        <img src="images/youtube_button_PNG36.png" alt="YouTube Icon">
                         <p>YouTube<br>iFlex</p>
                     </a>
                     <a href="https://www.paypal.com/paypalme/iflex8" target="_blank" class="social-button">
-                        <img src="https://media.discordapp.net/attachments/1377937684525224000/1377944834328891423/PayPal-icon-white-png-vertical.png?ex=683acea1&is=68397d21&hm=dad3f0cbceff153c06875cfe6a87760e14b44f7cf812bec386809c14bc1900a7&=&width=545&height=666" alt="YTJobs Icon">
+                        <img src="images/PayPal-icon-white-png-vertical.png" alt="YTJobs Icon">
                         <p>PayPal<br>iflex8</p>
                     </a>
                     <a href="https://www.instagram.com/saiflex.8/" target="_blank" class="social-button">
-                        <img src="https://media.discordapp.net/attachments/1377937684525224000/1377947136565710898/instagram-new.png?ex=683ad0c6&is=68397f46&hm=95af48594463e74b21916af65df71f078fa5514dbcfe0a735a0af1d57c0db412&=&width=461&height=461" alt="Instagram Icon">
+                        <img src="images/instagram-new.png" alt="Instagram Icon">
                         <p>Instagram<br>@saiflex.8</p>
                     </a>
                 </div>
@@ -1012,26 +1016,72 @@
 
     <button id="backToTopBtn">Back to Top</button>
 
-    <div id="legalModal" class="modal-overlay">
-        <div class="modal-content">
-            <button class="modal-close-btn">×</button>
-            <h2>Legal Information</h2>
-            <p>This website and its content are provided for informational and portfolio display purposes only. All intellectual property rights, including copyrights and trademarks, related to the "iFlex" brand and its original content, are reserved by iFlex.</p>
-            <p>Any use, reproduction, or distribution of the content, including but not limited to images, text, and design elements, without explicit written permission from iFlex is strictly prohibited.</p>
-            <p>The AI-generated content provided by the "Thumbnail Concept Brainstormer" is for creative inspiration only and should not be considered professional advice. iFlex is not responsible for any outcomes or consequences resulting from the use of the generated concepts.</p>
-            <p>This site may contain links to third-party websites. iFlex is not responsible for the content or privacy practices of these external sites.</p>
-            <p>By using this website, you agree to these terms and conditions.</p>
+<div id="legalModal" class="modal-overlay">
+    <div class="modal-content">
+        <button class="modal-close-btn">×</button>
+        <h2>Legal Information & Privacy Policy</h2>
+
+        <h3>1. General Disclaimer</h3>
+        <p>This website is a personal portfolio created and maintained by [Your Name/Alias]. Its purpose is to showcase my projects, skills, and interests in [e.g., web development, AI]. All content is provided for informational and demonstration purposes only.</p>
+
+        <p>All original content on this site, including text, design, and custom code (excluding third-party libraries and services), is my intellectual property. Please do not reproduce or distribute without my explicit permission.</p>
+
+        <p>This site may contain links to third-party websites. I am not responsible for the content or privacy practices of these external sites.</p>
+        <p>By using this website, you agree to these terms and conditions.</p>
+
+        <h3>2. AI Bot Disclaimer ("My AI Son")</h3>
+        <p>The "My AI Son" bot featured on this site is an AI chatbot developed for demonstration and entertainment purposes only. It is powered by a third-party AI service, <a href="https://shapes.inc/" target="_blank" rel="noopener noreferrer">Shapes.inc</a>.</p>
+        <ul>
+            <li>The bot's responses are generated by artificial intelligence and may be inaccurate, incomplete, or offensive.</li>
+            <li>Do not share any sensitive personal, financial, or confidential information with the bot.</li>
+            <li>The bot is not intended to provide professional advice (e.g., legal, medical, financial).</li>
+            <li>I am not responsible for any outcomes or consequences resulting from the use of the bot's responses.</li>
+        </ul>
+
+        <h3>3. Privacy Policy</h3>
+        <p>Your privacy is important to me. This section outlines how data is handled on this personal portfolio site.</p>
+
+        <h4>Information Collection & Use:</h4>
+        <ul>
+            <li>
+                <strong>No Direct Personal Data Collection:</strong> This website does not directly collect any personally identifiable information (e.g., your name, email address, IP address) from visitors, other than what you voluntarily provide through interactions with the AI bot.
+            </li>
+            <li>
+                <strong>AI Bot Interaction Data:</strong> When you interact with the "My AI Son" bot:
+                <ul>
+                    <li>Your messages are sent to a third-party AI service, <strong>Shapes.inc</strong>. Shapes.inc processes these messages to generate responses and maintain conversation context. Please refer to <strong>Shapes.inc's own privacy policy</strong> for detailed information on their data collection, storage, and usage practices.</li>
+                    <li>To maintain your individual conversation context, a unique User ID and Channel ID are generated and stored locally in your browser's `localStorage`. This information is used solely to differentiate your chat sessions and is not linked to any personal data collected by me. These IDs can be reset by clearing your browser's data or by using the "Reset Chat" button on the bot page.</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Analytics (Optional - if you add any):</strong> If this site were to use web analytics services (like Google Analytics in the future), only anonymized usage data would be collected to understand site performance and visitor behavior. No personally identifiable information would be shared.
+             </li>
+            </ul>
+
+         <h4>Data Storage & Security:</h4>
+            <p>No user data is stored on my personal servers. Information processed by the AI bot is handled by Shapes.inc. Local browser storage (`localStorage`) is used for user/channel IDs as described above.</p>
+
+            <h4>Your Choices:</h4>
+            <p>You can clear your browser's `localStorage` at any time to remove the locally stored User ID and Channel ID, which will start a new chat session with the bot.</p>
+
+         <h3>4. Contact Information</h3>
+         <p>If you have any questions or concerns regarding this website or its privacy practices, please feel free to contact me at:</p>
+         <p>Email: <a href="mailto:ad.iflex@hotmail.com">ad.iflex@hotmail.com</a></p>
+            <p>Last Updated: June 2, 2025</p>
         </div>
     </div>
-
     <div id="aboutModal" class="modal-overlay">
         <div class="modal-content">
             <button class="modal-close-btn">×</button>
-            <h2>About iFlex</h2>
-            <p>Welcome to iFlex, your hub for creative digital solutions! I specialize in crafting compelling visual content, particularly high-impact YouTube thumbnails designed to boost engagement and click-through rates.</p>
-            <p>My passion lies in understanding the unique needs of content creators and translating their ideas into visually stunning and effective assets. With a keen eye for design and a strategic approach, I aim to help your content stand out in a crowded digital landscape.</p>
-            <p>The "Thumbnail Concept Brainstormer" on this site is a testament to my commitment to innovation and efficiency, offering a glimpse into the creative process and providing instant inspiration.</p>
-            <p>I'm always looking for exciting new projects and collaborations. Feel free to explore my work and reach out if you're ready to elevate your visual presence!</p>
+            <h2>About Me</h2>
+            <p>Welcome! I'm iFlex, a passionate tech guy. This is my personal hub for creative digital solutions and showcasing my work.</p>
+
+            <p>My passion lies in crafting compelling digital experiences, understanding the unique needs of content creators, leveraging technology to solve problems. I specialize in creating visually stunning digital assets. With a keen eye for design and a strategic approach, I aim to help content stand out in a crowded digital landscape.</p>
+
+            <p>The "My AI Son" bot on this site is a testament to my commitment to innovation and efficiency, offering a glimpse into my exploration of AI's creative and interactive potential.</p>
+
+            <p>I'm always looking for exciting new projects and collaborations. Feel free to explore my work and reach out if you're ready to elevate your visual presence or just want to connect!</p>
+            <p>you can contact me directly at ad.iflex@hotmail.com .</p>
         </div>
     </div>
 
@@ -1117,7 +1167,8 @@
                     }
 
                     const result = await response.json();
-                    brainstormOutput.innerHTML = result.concepts;
+                    // Use marked.js to parse Markdown content
+                    brainstormOutput.innerHTML = marked.parse(result.concepts);
 
                     addConceptActionButtons();
 
@@ -1139,11 +1190,12 @@
                 const concepts = brainstormOutput.querySelectorAll('p, li');
 
                 concepts.forEach((conceptElement, index) => {
+                    // Only add buttons to elements that have substantial text
                     if (conceptElement.textContent.trim().length < 20) return; 
 
                     const buttonContainer = document.createElement('span');
                     buttonContainer.style.marginLeft = '15px';
-                    buttonContainer.style.whiteSpace = 'nowrap';
+                    buttonContainer.style.whiteSpace = 'nowrap'; // Keep buttons on one line
 
                     const copyBtn = document.createElement('button');
                     copyBtn.textContent = 'Copy';
@@ -1157,7 +1209,7 @@
                     const saveBtn = document.createElement('button');
                     saveBtn.textContent = 'Save';
                     saveBtn.classList.add('copy-button');
-                    saveBtn.style.backgroundColor = '#4CAF50';
+                    saveBtn.style.backgroundColor = '#4CAF50'; // Green for save
                     saveBtn.style.marginLeft = '5px';
                     saveBtn.onclick = () => {
                         saveConcept(conceptElement.textContent);
@@ -1210,6 +1262,7 @@
                 }, 1000);
             }
 
+            // Local Storage for Saved Concepts
             let savedConcepts = JSON.parse(localStorage.getItem('iflexSavedConcepts')) || [];
 
             function saveConcept(conceptText) {
@@ -1230,11 +1283,12 @@
                 if (savedConcepts.length > 0) {
                     savedConceptsSection.style.display = 'block';
                     savedConceptsList.innerHTML = savedConcepts.map((concept, index) => `
-                        <p>${concept} <button class="remove-button" data-index="${index}">Remove</button></p>
+                        <p>${marked.parseInline(concept)} <button class="remove-button" data-index="${index}">Remove</button></p>
                     `).join('');
 
                     savedConceptsList.querySelectorAll('.remove-button').forEach(button => {
                         button.addEventListener('click', (e) => {
+                            // Get the text content of the parent paragraph, excluding the button's text
                             const conceptToRemove = e.target.parentNode.textContent.replace(' Remove', '').trim();
                             removeConcept(conceptToRemove);
                         });
@@ -1253,6 +1307,7 @@
 
             renderSavedConcepts();
 
+            // Copyright Message on Right-Click
             document.addEventListener('contextmenu', function(e) {
                 e.preventDefault();
 
@@ -1266,9 +1321,11 @@
                 }, 1500);
             });
 
+            // Smooth Scrolling for Nav Buttons
             document.querySelectorAll('a[href^="#"]').forEach(anchor => {
                 anchor.addEventListener('click', function (e) {
                     const href = this.getAttribute('href');
+                    // Only perform smooth scroll if the href is not just '#' (which is handled by modals)
                     if (href === '#') {
                         e.preventDefault(); 
                         return; 
@@ -1284,6 +1341,7 @@
                 });
             });
 
+            // Back to Top Button Logic
             window.addEventListener('scroll', () => {
                 if (window.scrollY > 300) {
                     backToTopBtn.classList.add('show');
@@ -1299,6 +1357,7 @@
                 });
             });
 
+            // Particle Background
             const particleCanvas = document.getElementById('particleCanvas');
             const particleCtx = particleCanvas.getContext('2d');
             let particles = [];
@@ -1365,6 +1424,7 @@
                 initParticles();
             });
 
+            // Cursor Trail Particles
             const cursorTrailCanvas = document.getElementById('cursorTrailCanvas');
             const cursorTrailCtx = cursorTrailCanvas.getContext('2d');
             let cursorParticles = [];
@@ -1429,6 +1489,7 @@
             window.addEventListener('resize', resizeCursorTrailCanvas);
 
 
+            // Intersection Observer for Scroll Animations
             const observerOptions = {
                 root: null,
                 rootMargin: '0px',
