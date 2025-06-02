@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>iFlex</title>
-    <link rel="icon" href="images/iflexnew.png" type="image/png"> <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="images/iflexnew.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <style>
         html, body {
@@ -281,6 +282,7 @@
             transition: transform 0.2s ease, box-shadow 0.3s ease, filter 0.3s ease;
             text-align: left;
             padding-bottom: 15px;
+            position: relative; /* Added for loader positioning */
         }
         .thumbnail-item:hover {
             transform: translateY(-5px) scale(1.01);
@@ -299,7 +301,8 @@
             object-fit: cover;
             display: block;
             border-radius: 15px 15px 0 0;
-            transition: transform 0.3s ease;
+            transition: transform 0.3s ease, opacity 0.5s ease; /* Added opacity transition */
+            opacity: 0; /* Initially hidden */
         }
         .thumbnail-item:hover img {
             transform: scale(1.05);
@@ -308,6 +311,40 @@
             margin: 15px 15px 0;
             font-size: 1em;
             color: #ddd;
+        }
+
+        /* Thumbnail Loader Styles */
+        .thumbnail-loader {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: calc(100% - 45px); /* Adjust based on padding-bottom of thumbnail-item and p margin */
+            background-color: #444; /* Placeholder background */
+            border-radius: 15px 15px 0 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.3s ease;
+        }
+
+        .thumbnail-loader.hidden {
+            opacity: 0;
+            pointer-events: none; /* Allow clicks through when hidden */
+        }
+
+        .loader-spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid #fff;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         .contact-info {
@@ -918,30 +955,37 @@
             <h2>My Work</h2>
             <div class="thumbnail-grid">
                 <div class="thumbnail-item">
+                    <div class="thumbnail-loader"><div class="loader-spinner"></div></div>
                     <img src="images/1bgolf.png" alt="Thumbnail 1" loading="lazy">
                     <p>The $1 Billion Golf Resort You’ve Probably Never Heard Of…</p>
                 </div>
                 <div class="thumbnail-item">
+                    <div class="thumbnail-loader"><div class="loader-spinner"></div></div>
                     <img src="images/Ep.2_V2.png" alt="Thumbnail 7" loading="lazy">
                     <p>Developer Secrets & Future Updates | Combat Talk #2</p>
                 </div>
                 <div class="thumbnail-item">
+                    <div class="thumbnail-loader"><div class="loader-spinner"></div></div>
                     <img src="images/FALSEIDOLS_V3.jpg" alt="Thumbnail 2" loading="lazy">
                     <p>South Park's Take on Celebrity Culture & Endorsements</p>
                 </div>
                 <div class="thumbnail-item">
+                    <div class="thumbnail-loader"><div class="loader-spinner"></div></div>
                     <img src="images/zero_work_ethics_V2.jpg" alt="Thumbnail 3" loading="lazy">
                     <p>When Your Work Ethic Goes Missing (South Park)</p>
                 </div>
                 <div class="thumbnail-item">
+                    <div class="thumbnail-loader"><div class="loader-spinner"></div></div>
                     <img src="images/No_affordable_housing.png" alt="Thumbnail 4" loading="lazy">
                     <p>South Park Explains: Why Can't Anyone Afford A House?!</p>
                 </div>
                 <div class="thumbnail-item">
+                    <div class="thumbnail-loader"><div class="loader-spinner"></div></div>
                     <img src="images/Shelbyv1.jpg" alt="Thumbnail 5" loading="lazy">
                     <p>The Most FRUSTRATING Gaming Experience EVER!</p>
                 </div>
                 <div class="thumbnail-item">
+                    <div class="thumbnail-loader"><div class="loader-spinner"></div></div>
                     <img src="images/EveryAgentShelbyREWORKV4.jpg" alt="Thumbnail 6" loading="lazy">
                     <p>I Played a Different Valorant Agent EVERY DAY For a Month! (Insane Challenge)</p>
                 </div>
@@ -1021,7 +1065,7 @@
         <h2>Legal Information & Privacy Policy</h2>
 
         <h3>1. General Disclaimer</h3>
-        <p>This website is a personal portfolio created and maintained by [Your Name/Alias]. Its purpose is to showcase my projects, skills, and interests in [e.g., web development, AI]. All content is provided for informational and demonstration purposes only.</p>
+        <p>This website is a personal portfolio created and maintained by iFlex. Its purpose is to showcase my projects, skills. All content is provided for informational and demonstration purposes only.</p>
 
         <p>All original content on this site, including text, design, and custom code (excluding third-party libraries and services), is my intellectual property. Please do not reproduce or distribute without my explicit permission.</p>
 
@@ -1053,7 +1097,7 @@
                 </ul>
             </li>
             <li>
-                <strong>Analytics (Optional - if you add any):</strong> If this site were to use web analytics services (like Google Analytics in the future), only anonymized usage data would be collected to understand site performance and visitor behavior. No personally identifiable information would be shared.
+                <strong>Analytics:</strong> If this site were to use web analytics services (like Google Analytics in the future), only anonymized usage data would be collected to understand site performance and visitor behavior. No personally identifiable information would be shared.
              </li>
             </ul>
 
@@ -1101,6 +1145,34 @@
             const savedConceptsSection = document.getElementById('savedConceptsSection');
             const savedConceptsList = document.getElementById('savedConceptsList');
             const clearAllSavedButton = document.getElementById('clearAllSavedButton');
+
+            // Function to handle thumbnail image loading
+            function handleImageLoad(imgElement) {
+                const thumbnailLoader = imgElement.previousElementSibling; // Get the loader div
+                if (thumbnailLoader && thumbnailLoader.classList.contains('thumbnail-loader')) {
+                    thumbnailLoader.classList.add('hidden'); // Hide the loader
+                    imgElement.style.opacity = 1; // Show the image
+                }
+            }
+
+            // Attach load event listeners to all lazy-loaded images
+            document.querySelectorAll('.thumbnail-item img').forEach(img => {
+                // If image is already in cache or loaded before script runs
+                if (img.complete) {
+                    handleImageLoad(img);
+                } else {
+                    img.addEventListener('load', () => handleImageLoad(img));
+                }
+                // Optional: Add error handling for images that fail to load
+                img.addEventListener('error', () => {
+                    console.error('Failed to load image:', img.src);
+                    const thumbnailLoader = img.previousElementSibling;
+                    if (thumbnailLoader) {
+                        thumbnailLoader.innerHTML = '<p style="color: red; font-size: 0.8em;">Error</p>'; // Show error message
+                    }
+                });
+            });
+
 
             function openModal(modalElement) {
                 modalElement.classList.add('show');
