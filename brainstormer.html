@@ -781,7 +781,7 @@
                     <strong>AI Bot Interaction Data:</strong> When you interact with the "My AI Son" bot:
                     <ul>
                         <li>Your messages are sent to a third-party AI service, <strong>Shapes.inc</strong>. Shapes.inc processes these messages to generate responses and maintain conversation context. Please refer to <strong>Shapes.inc's own privacy policy</strong> for detailed information on their data collection, storage, and usage practices.</li>
-                        <li>To maintain your individual conversation context, a unique User ID and Channel ID are generated and stored locally in your browser's `localStorage`. This information is used solely to differentiate your chat sessions and is not linked to any personal data collected by me. These IDs can be reset by clearing your browser's data or by using the "Reset Chat" button on the bot page.</li>
+                        <li>To maintain your individual conversation context, a unique User ID and Channel ID is generated and stored locally in your browser's `localStorage`. This information is used solely to differentiate your chat sessions and is not linked to any personal data collected by me. These IDs can be reset by clearing your browser's data or by using the "Reset Chat" button on the bot page.</li>
                     </ul>
                 </li>
                 <li>
@@ -856,16 +856,33 @@
                         body: JSON.stringify({ topic: topic })
                     });
 
+                    // Check if the response is OK (status 200-299)
                     if (!response.ok) {
-                        const errorData = await response.json();
-                        // Updated error message to guide the user
-                        throw new Error(`API error: ${response.status} - ${errorData.error || 'Unknown error'}. Please ensure your GEMINI_API_KEY is correctly set as an environment variable in Netlify.`);
+                        let errorMessage = `API error: ${response.status} - ${response.statusText}`;
+                        try {
+                            const errorData = await response.json();
+                            errorMessage += `: ${errorData.error || 'Unknown error'}`;
+                        } catch (e) {
+                            errorMessage += `. Non-JSON error response received.`;
+                        }
+                        throw new Error(`${errorMessage}. Please ensure your GEMINI_API_KEY is correctly set as an environment variable in Netlify and check Netlify function logs for more details.`);
+                    }
+
+                    // Explicitly check Content-Type header before parsing as JSON
+                    const contentType = response.headers.get("content-type");
+                    if (!contentType || !contentType.includes("application/json")) {
+                        const textResponse = await response.text(); // Get raw text to inspect
+                        throw new Error(`Unexpected response format. Expected JSON, received: ${contentType || 'no content-type'}. Raw response (first 200 chars): "${textResponse.substring(0, 200)}..."`);
                     }
 
                     const result = await response.json();
-                    brainstormOutput.innerHTML = result.concepts;
+                    if (result.concepts) {
+                        brainstormOutput.innerHTML = result.concepts;
+                        addConceptActionButtons();
+                    } else {
+                        throw new Error('Unexpected API response structure: "concepts" field missing.');
+                    }
 
-                    addConceptActionButtons();
 
                 } catch (error) {
                     console.error("Error calling Netlify Function:", error);
@@ -964,182 +981,4 @@
 
             function saveConcept(conceptText) {
                 if (!savedConcepts.includes(conceptText)) {
-                    savedConcepts.push(conceptText);
-                    localStorage.setItem('iflexSavedConcepts', JSON.stringify(savedConcepts));
-                    renderSavedConcepts();
-                }
-            }
-
-            function removeConcept(conceptText) {
-                savedConcepts = savedConcepts.filter(concept => concept !== conceptText);
-                localStorage.setItem('iflexSavedConcepts', JSON.stringify(savedConcepts));
-                renderSavedConcepts();
-            }
-
-            function renderSavedConcepts() {
-                if (savedConcepts.length > 0) {
-                    savedConceptsSection.style.display = 'block';
-                    savedConceptsList.innerHTML = savedConcepts.map((concept, index) => `
-                        <p>${marked.parseInline(concept)} <button class="remove-button" data-index="${index}">Remove</button></p>
-                    `).join('');
-
-                    savedConceptsList.querySelectorAll('.remove-button').forEach(button => {
-                        button.addEventListener('click', (e) => {
-                            const parentP = e.target.closest('p');
-                            if (parentP) {
-                                const indexToRemove = Array.from(savedConceptsList.children).indexOf(parentP);
-                                if (indexToRemove !== -1) {
-                                    removeConcept(savedConcepts[indexToRemove]);
-                                }
-                            }
-                        });
-                    });
-                } else {
-                    savedConceptsSection.style.display = 'none';
-                    savedConceptsList.innerHTML = '<p>No concepts saved yet.</p>';
-                }
-            }
-
-            clearAllSavedButton.addEventListener('click', () => {
-                savedConcepts = [];
-                localStorage.removeItem('iflexSavedConcepts');
-                renderSavedConcepts();
-            });
-
-            renderSavedConcepts();
-
-            // --- Particle Background ---
-            const particleCanvas = document.getElementById('particleCanvas');
-            const particleCtx = particleCanvas.getContext('2d');
-            let particles = [];
-            const particleCount = 70;
-            const maxRadius = 1.2;
-            const minRadius = 0.4;
-            const maxSpeed = 0.4;
-
-            function resizeParticleCanvas() {
-                particleCanvas.width = window.innerWidth;
-                particleCanvas.height = window.innerHeight;
-            }
-
-            class Particle {
-                constructor() {
-                    this.x = Math.random() * particleCanvas.width;
-                    this.y = Math.random() * particleCanvas.height;
-                    this.radius = Math.random() * (maxRadius - minRadius) + minRadius;
-                    this.color = `rgba(77, 241, 241, ${Math.random() * 0.15 + 0.03})`;
-                    this.speedX = (Math.random() - 0.5) * maxSpeed;
-                    this.speedY = (Math.random() - 0.5) * maxSpeed;
-                }
-
-                draw() {
-                    particleCtx.beginPath();
-                    particleCtx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-                    particleCtx.fillStyle = this.color;
-                    particleCtx.shadowBlur = 5;
-                    particleCtx.shadowColor = this.color;
-                    particleCtx.fill();
-                    particleCtx.shadowBlur = 0;
-                }
-
-                update() {
-                    this.x += this.speedX;
-                    this.y += this.speedY;
-
-                    if (this.x < 0 - this.radius) this.x = particleCanvas.width + this.radius;
-                    if (this.x > particleCanvas.width + this.radius) this.x = 0 - this.radius;
-                    if (this.y < 0 - this.radius) this.y = particleCanvas.height + this.radius;
-                    if (this.y > particleCanvas.height + this.radius) this.y = 0 - this.radius;
-                }
-            }
-
-            function initParticles() {
-                particles = [];
-                for (let i = 0; i < particleCount; i++) {
-                    particles.push(new Particle());
-                }
-            }
-
-            function animateParticles() {
-                requestAnimationFrame(animateParticles);
-                particleCtx.clearRect(0, 0, particleCanvas.width, particleCanvas.height);
-
-                particles.forEach(particle => {
-                    particle.update();
-                    particle.draw();
-                });
-            }
-
-            resizeParticleCanvas();
-            initParticles();
-            animateParticles();
-            window.addEventListener('resize', () => {
-                resizeParticleCanvas();
-                initParticles();
-            });
-
-            /* --- Navigation and Modal Functionality --- */
-            menuToggle.addEventListener('click', () => {
-                navOverlay.classList.add('open');
-                body.classList.add('modal-open');
-                menuToggle.classList.add('hidden');
-            });
-
-            navCloseBtn.addEventListener('click', () => {
-                navOverlay.classList.remove('open');
-                body.classList.remove('modal-open');
-                menuToggle.classList.remove('hidden');
-            });
-
-            navLinks.forEach(link => {
-                link.addEventListener('click', () => {
-                    navOverlay.classList.remove('open');
-                    body.classList.remove('modal-open');
-                    menuToggle.classList.remove('hidden');
-                });
-            });
-
-            function openModal(modalElement) {
-                modalElement.classList.add('show');
-                body.classList.add('modal-open');
-            }
-
-            function closeModal(modalElement) {
-                modalElement.classList.remove('show');
-                body.classList.remove('modal-open');
-            }
-
-            legalBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                openModal(legalModal);
-            });
-
-            modalCloseBtns.forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    const modalOverlay = e.target.closest('.modal-overlay');
-                    if (modalOverlay) {
-                        closeModal(modalOverlay);
-                    }
-                });
-            });
-
-            legalModal.addEventListener('click', (e) => {
-                if (e.target === legalModal) {
-                    closeModal(legalModal);
-                }
-            });
-
-            /* --- Right-click Protection --- */
-            document.addEventListener('contextmenu', function(e) {
-                e.preventDefault();
-                copyrightMessage.style.left = `${e.clientX + 10}px`;
-                copyrightMessage.style.top = `${e.clientY + 10}px`;
-                copyrightMessage.classList.add('show');
-                setTimeout(() => {
-                    copyrightMessage.classList.remove('show');
-                }, 1500);
-            });
-        });
-    </script>
-</body>
-</html>
+                    savedConce
