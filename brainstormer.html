@@ -850,7 +850,7 @@
                 brainstormButton.disabled = true;
 
                 try {
-                    const response = await fetch('/.netlify/functions/brainstormer-js', { // Updated to brainstormer-js
+                    const response = await fetch('/.netlify/functions/brainstormer-js', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ topic: topic })
@@ -858,17 +858,18 @@
 
                     if (!response.ok) {
                         const errorData = await response.json();
-                        throw new Error(`API error: ${response.status} - ${errorData.error || 'Unknown error'}`);
+                        // Updated error message to guide the user
+                        throw new Error(`API error: ${response.status} - ${errorData.error || 'Unknown error'}. Please ensure your GEMINI_API_KEY is correctly set as an environment variable in Netlify.`);
                     }
 
                     const result = await response.json();
-                    brainstormOutput.innerHTML = result.concepts; // Already HTML from serverless function
+                    brainstormOutput.innerHTML = result.concepts;
 
                     addConceptActionButtons();
 
                 } catch (error) {
                     console.error("Error calling Netlify Function:", error);
-                    brainstormOutput.innerHTML = `<p style="color: #E74C3C;">Error generating concepts: ${error.message}. Please check your input or try again later.</p>`;
+                    brainstormOutput.innerHTML = `<p style="color: #E74C3C;">Error generating concepts: ${error.message}. Please try again later.</p>`;
                 } finally {
                     loadingIndicator.classList.remove('active');
                     brainstormButton.disabled = false;
@@ -881,18 +882,16 @@
             });
 
             function addConceptActionButtons() {
-                const concepts = brainstormOutput.querySelectorAll('p, li'); // Include li for markdown lists
+                const concepts = brainstormOutput.querySelectorAll('p, li');
 
                 concepts.forEach((conceptElement, index) => {
-                    // Only add buttons to elements that have substantial text
                     if (conceptElement.textContent.trim().length < 20) return; 
 
-                    // Check if buttons already exist to prevent duplication
                     if (conceptElement.querySelector('.copy-button')) return;
 
                     const buttonContainer = document.createElement('span');
                     buttonContainer.style.marginLeft = '15px';
-                    buttonContainer.style.whiteSpace = 'nowrap'; // Keep buttons on one line
+                    buttonContainer.style.whiteSpace = 'nowrap';
 
                     const copyBtn = document.createElement('button');
                     copyBtn.textContent = 'Copy';
@@ -906,11 +905,11 @@
                     const saveBtn = document.createElement('button');
                     saveBtn.textContent = 'Save';
                     saveBtn.classList.add('copy-button');
-                    saveBtn.style.background = 'linear-gradient(45deg, #4CAF50, #45a049)'; /* Green gradient for save */
+                    saveBtn.style.background = 'linear-gradient(45deg, #4CAF50, #45a049)';
                     saveBtn.style.color = '#fff';
                     saveBtn.style.marginLeft = '5px';
                     saveBtn.onclick = () => {
-                        saveConcept(conceptElement.textContent.replace(' Copy Save', '').trim()); // Clean text before saving
+                        saveConcept(conceptElement.textContent.replace(' Copy Save', '').trim());
                         showSaveMessage(saveBtn);
                     };
                     buttonContainer.appendChild(saveBtn);
@@ -986,10 +985,8 @@
 
                     savedConceptsList.querySelectorAll('.remove-button').forEach(button => {
                         button.addEventListener('click', (e) => {
-                            // Get the raw text content of the paragraph
                             const parentP = e.target.closest('p');
                             if (parentP) {
-                                // Reconstruct the original concept text from the savedConcepts array using the index
                                 const indexToRemove = Array.from(savedConceptsList.children).indexOf(parentP);
                                 if (indexToRemove !== -1) {
                                     removeConcept(savedConcepts[indexToRemove]);
