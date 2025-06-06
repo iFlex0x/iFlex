@@ -535,7 +535,7 @@
             <img src="images/iflexnew.png" alt="iFlex Logo">
         </div>
         <h1 class="hero-title">iFlex</h1>
-        <p class="hero-subtitle">Crafting immersive digital experiences through cutting-edge web development and AI innovation.</p>
+        <p class="hero-subtitle" id="discordStatusText">Crafting immersive digital experiences through cutting-edge web development and AI innovation.</p>
         
         <button class="portal-activator-button" id="portalActivator">
             <i class="fas fa-arrow-right"></i>
@@ -621,11 +621,13 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // Function to resize canvas elements
             function resizeCanvas(canvas) {
                 canvas.width = window.innerWidth;
                 canvas.height = window.innerHeight;
             }
 
+            // --- Particle Background ---
             const particleCanvas = document.getElementById('particleCanvas');
             const particleCtx = particleCanvas.getContext('2d');
             let particles = [];
@@ -687,6 +689,7 @@
                 initParticles();
             });
 
+            // --- Cursor Trail Canvas ---
             const cursorTrailCanvas = document.getElementById('cursorTrailCanvas');
             const cursorTrailCtx = cursorTrailCanvas.getContext('2d');
             let cursorParticles = [];
@@ -745,15 +748,20 @@
             animateCursorTrail();
             window.addEventListener('resize', () => resizeCanvas(cursorTrailCanvas));
 
+            // --- Navigation and Modal Elements ---
             const portalActivator = document.getElementById('portalActivator');
             const portalTransitionCircle = document.getElementById('portalTransitionCircle');
             const navOverlay = document.getElementById('navOverlay');
             const navCloseBtn = document.getElementById('navCloseBtn');
             const navLinks = document.querySelectorAll('.nav-list a');
             const body = document.body;
-            // Removed menuToggle declaration as the button is removed from the main page
-            // const menuToggle = document.getElementById('menuToggle');
+            const legalBtn = document.getElementById('legalBtn');
+            const legalModal = document.getElementById('legalModal');
+            const modalCloseBtns = document.querySelectorAll('.modal-close-btn');
+            const volumetricOverlay = document.querySelector('.volumetric-overlay');
+            const discordStatusTextElement = document.getElementById('discordStatusText'); // Our target element for status
 
+            // --- Portal Activator Logic ---
             portalActivator.addEventListener('click', () => {
                 const rect = portalActivator.getBoundingClientRect();
                 portalTransitionCircle.style.left = `${rect.left + rect.width / 2}px`;
@@ -767,18 +775,15 @@
                     portalTransitionCircle.classList.remove('active');
                     portalActivator.style.opacity = '0';
                     portalActivator.style.pointerEvents = 'none';
-                    // Removed menuToggle logic as it's not present on this page
-                    // menuToggle.classList.add('active'); 
                 }, { once: true });
             });
 
+            // --- Navigation Overlay Logic ---
             navCloseBtn.addEventListener('click', () => {
                 navOverlay.classList.remove('open');
                 body.classList.remove('modal-open');
                 portalActivator.style.opacity = '1';
                 portalActivator.style.pointerEvents = 'auto';
-                // Removed menuToggle logic
-                // menuToggle.classList.remove('active');
             });
 
             navLinks.forEach(link => {
@@ -787,15 +792,10 @@
                     body.classList.remove('modal-open');
                     portalActivator.style.opacity = '1';
                     portalActivator.style.pointerEvents = 'auto';
-                    // Removed menuToggle logic
-                    // menuToggle.classList.remove('active');
                 });
             });
 
-            const legalBtn = document.getElementById('legalBtn');
-            const legalModal = document.getElementById('legalModal');
-            const modalCloseBtns = document.querySelectorAll('.modal-close-btn');
-
+            // --- Modal Logic (Legal Info) ---
             function openModal(modalElement) {
                 modalElement.classList.add('show');
                 body.classList.add('modal-open');
@@ -826,8 +826,7 @@
                 }
             });
 
-            const volumetricOverlay = document.querySelector('.volumetric-overlay');
-
+            // --- Volumetric Overlay Parallax Effect ---
             document.addEventListener('mousemove', (e) => {
                 const mouseX = e.clientX / window.innerWidth - 0.5;
                 const mouseY = e.clientY / window.innerHeight - 0.5;
@@ -842,6 +841,94 @@
                     volumetricOverlay.style.transform = `scale(1.2) translate(${touchX * 15}px, ${touchY * 15}px)`;
                 }
             });
+
+            // --- Lanyard Discord Status Integration ---
+            // REPLACE THIS WITH YOUR ACTUAL DISCORD USER ID
+            const DISCORD_USER_ID = '1007939118925361212'; 
+            const LANYARD_API_URL = `https://api.lanyard.rest/v1/users/${DISCORD_USER_ID}`;
+            const defaultStatus = "Crafting immersive digital experiences through cutting-edge web development and AI innovation.";
+
+            async function fetchDiscordStatus() {
+                if (DISCORD_USER_ID === '1007939118925361212' || !DISCORD_USER_ID) {
+                    console.warn('Discord User ID not set. Please update DISCORD_USER_ID in index.html script.');
+                    discordStatusTextElement.textContent = defaultStatus;
+                    return;
+                }
+
+                try {
+                    const response = await fetch(LANYARD_API_URL);
+                    if (!response.ok) {
+                        // Attempt to read error message if available, otherwise use status text
+                        const errorText = await response.text();
+                        console.error(`Lanyard API HTTP error! Status: ${response.status}. Response: ${errorText.substring(0, 100)}`);
+                        discordStatusTextElement.textContent = `Could not fetch Discord status. (Error: ${response.status})`;
+                        return;
+                    }
+                    const data = await response.json();
+
+                    if (data.success && data.data) {
+                        let statusMessage = defaultStatus; // Fallback to default
+
+                        // Check for custom status
+                        if (data.data.activities && data.data.activities.length > 0) {
+                            const customStatus = data.data.activities.find(activity => activity.type === 4); // Type 4 is custom status
+                            if (customStatus && customStatus.state) {
+                                statusMessage = customStatus.state;
+                            } else {
+                                // If no custom status, try to get presence (online, idle, dnd, offline)
+                                switch (data.data.discord_status) {
+                                    case 'online':
+                                        statusMessage = "Online and ready to innovate!";
+                                        break;
+                                    case 'idle':
+                                        statusMessage = "Idle, but ideas are always brewing...";
+                                        break;
+                                    case 'dnd':
+                                        statusMessage = "Do Not Disturb: Focused on a big project!";
+                                        break;
+                                    case 'offline':
+                                        statusMessage = "Currently offline, but the code never sleeps.";
+                                        break;
+                                    default:
+                                        // If discord_status is unknown or not present, fallback to default status
+                                        statusMessage = defaultStatus;
+                                }
+                            }
+                        } else {
+                            // If no activities array or it's empty, use discord_status
+                             switch (data.data.discord_status) {
+                                    case 'online':
+                                        statusMessage = "Online and ready to innovate!";
+                                        break;
+                                    case 'idle':
+                                        statusMessage = "Idle, but ideas are always brewing...";
+                                        break;
+                                    case 'dnd':
+                                        statusMessage = "Do Not Disturb: Focused on a big project!";
+                                        break;
+                                    case 'offline':
+                                        statusMessage = "Currently offline, but the code never sleeps.";
+                                        break;
+                                    default:
+                                        statusMessage = defaultStatus;
+                                }
+                        }
+                        discordStatusTextElement.textContent = statusMessage;
+                    } else {
+                        console.warn('Lanyard API returned success: false or missing data:', data);
+                        discordStatusTextElement.textContent = defaultStatus; // Fallback
+                    }
+                } catch (error) {
+                    console.error('Error fetching Discord status from Lanyard:', error);
+                    discordStatusTextElement.textContent = `Error fetching status: ${error.message}. Please check Lanyard setup.`; // More detailed error
+                }
+            }
+
+            // Fetch immediately on load
+            fetchDiscordStatus();
+            // Fetch every 30 seconds to keep it updated (Lanyard has rate limits, avoid too frequent calls)
+            setInterval(fetchDiscordStatus, 30000); // 30 seconds
+
         });
     </script>
 </body>
