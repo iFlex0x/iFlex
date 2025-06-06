@@ -860,10 +860,12 @@
                     if (!response.ok) {
                         let errorMessage = `API error: ${response.status} - ${response.statusText}`;
                         try {
-                            const errorData = await response.json();
+                            const errorData = await response.json(); // Attempt to parse JSON error
                             errorMessage += `: ${errorData.error || 'Unknown error'}`;
                         } catch (e) {
-                            errorMessage += `. Non-JSON error response received.`;
+                            // If response is not JSON, get raw text for debugging
+                            const rawText = await response.text();
+                            errorMessage += `. Non-JSON error response received. Raw: "${rawText.substring(0, 100)}..."`;
                         }
                         throw new Error(`${errorMessage}. Please ensure your GEMINI_API_KEY is correctly set as an environment variable in Netlify and check Netlify function logs for more details.`);
                     }
@@ -877,7 +879,9 @@
 
                     const result = await response.json();
                     if (result.concepts) {
-                        brainstormOutput.innerHTML = result.concepts;
+                        // The brainstormer-js Netlify function already converts markdown to HTML using 'marked.parse()'.
+                        // So, we can directly assign the returned HTML to innerHTML.
+                        brainstormOutput.innerHTML = result.concepts; 
                         addConceptActionButtons();
                     } else {
                         throw new Error('Unexpected API response structure: "concepts" field missing.');
@@ -926,7 +930,10 @@
                     saveBtn.style.color = '#fff';
                     saveBtn.style.marginLeft = '5px';
                     saveBtn.onclick = () => {
-                        saveConcept(conceptElement.textContent.replace(' Copy Save', '').trim());
+                        // Before saving, ensure we get the clean text without "Copy Save" buttons
+                        const conceptTextToSave = conceptElement.cloneNode(true);
+                        conceptTextToSave.querySelectorAll('.copy-button, .copy-message').forEach(el => el.remove());
+                        saveConcept(conceptTextToSave.textContent.trim());
                         showSaveMessage(saveBtn);
                     };
                     buttonContainer.appendChild(saveBtn);
@@ -981,4 +988,183 @@
 
             function saveConcept(conceptText) {
                 if (!savedConcepts.includes(conceptText)) {
-                    savedConce
+                    savedConcepts.push(conceptText);
+                    localStorage.setItem('iflexSavedConcepts', JSON.stringify(savedConcepts));
+                    renderSavedConcepts();
+                }
+            }
+
+            function removeConcept(conceptText) {
+                savedConcepts = savedConcepts.filter(concept => concept !== conceptText);
+                localStorage.setItem('iflexSavedConcepts', JSON.stringify(savedConcepts));
+                renderSavedConcepts();
+            }
+
+            function renderSavedConcepts() {
+                if (savedConcepts.length > 0) {
+                    savedConceptsSection.style.display = 'block';
+                    savedConceptsList.innerHTML = savedConcepts.map((concept, index) => {
+                        // Use marked.parseInline for saved concepts to ensure they are rendered correctly if they contain markdown
+                        return `<p>${marked.parseInline(concept)} <button class="remove-button" data-index="${index}">Remove</button></p>`;
+                    }).join('');
+
+                    savedConceptsList.querySelectorAll('.remove-button').forEach(button => {
+                        button.addEventListener('click', (e) => {
+                            const parentP = e.target.closest('p');
+                            if (parentP) {
+                                const indexToRemove = Array.from(savedConceptsList.children).indexOf(parentP);
+                                if (indexToRemove !== -1) {
+                                    removeConcept(savedConcepts[indexToRemove]);
+                                }
+                            }
+                        });
+                    });
+                } else {
+                    savedConceptsSection.style.display = 'none';
+                    savedConceptsList.innerHTML = '<p>No concepts saved yet.</p>';
+                }
+            }
+
+            clearAllSavedButton.addEventListener('click', () => {
+                savedConcepts = [];
+                localStorage.removeItem('iflexSavedConcepts');
+                renderSavedConcepts();
+            });
+
+            renderSavedConcepts();
+
+            // --- Particle Background ---
+            const particleCanvas = document.getElementById('particleCanvas');
+            const particleCtx = particleCanvas.getContext('2d');
+            let particles = [];
+            const particleCount = 70;
+            const maxRadius = 1.2;
+            const minRadius = 0.4;
+            const maxSpeed = 0.4;
+
+            function resizeParticleCanvas() {
+                particleCanvas.width = window.innerWidth;
+                particleCanvas.height = window.innerHeight;
+            }
+
+            class Particle {
+                constructor() {
+                    this.x = Math.random() * particleCanvas.width;
+                    this.y = Math.random() * particleCanvas.height;
+                    this.radius = Math.random() * (maxRadius - minRadius) + minRadius;
+                    this.color = `rgba(77, 241, 241, ${Math.random() * 0.15 + 0.03})`;
+                    this.speedX = (Math.random() - 0.5) * maxSpeed;
+                    this.speedY = (Math.random() - 0.5) * maxSpeed;
+                }
+
+                draw() {
+                    particleCtx.beginPath();
+                    particleCtx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                    particleCtx.fillStyle = this.color;
+                    particleCtx.shadowBlur = 5;
+                    particleCtx.shadowColor = this.color;
+                    particleCtx.fill();
+                    particleCtx.shadowBlur = 0;
+                }
+
+                update() {
+                    this.x += this.speedX;
+                    this.y += this.speedY;
+
+                    if (this.x < 0 - this.radius) this.x = particleCanvas.width + this.radius;
+                    if (this.x > particleCanvas.width + this.radius) this.x = 0 - this.radius;
+                    if (this.y < 0 - this.radius) this.y = particleCanvas.height + this.radius;
+                    if (this.y > particleCanvas.height + this.radius) this.y = 0 - this.radius;
+                }
+            }
+
+            function initParticles() {
+                particles = [];
+                for (let i = 0; i < particleCount; i++) {
+                    particles.push(new Particle());
+                }
+            }
+
+            function animateParticles() {
+                requestAnimationFrame(animateParticles);
+                particleCtx.clearRect(0, 0, particleCanvas.width, particleCanvas.height);
+
+                particles.forEach(particle => {
+                    particle.update();
+                    particle.draw();
+                });
+            }
+
+            resizeParticleCanvas();
+            initParticles();
+            animateParticles();
+            window.addEventListener('resize', () => {
+                resizeParticleCanvas();
+                initParticles();
+            });
+
+            /* --- Navigation and Modal Functionality --- */
+            menuToggle.addEventListener('click', () => {
+                navOverlay.classList.add('open');
+                body.classList.add('modal-open');
+                menuToggle.classList.add('hidden');
+            });
+
+            navCloseBtn.addEventListener('click', () => {
+                navOverlay.classList.remove('open');
+                body.classList.remove('modal-open');
+                menuToggle.classList.remove('hidden');
+            });
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    navOverlay.classList.remove('open');
+                    body.classList.remove('modal-open');
+                    menuToggle.classList.remove('hidden');
+                });
+            });
+
+            function openModal(modalElement) {
+                modalElement.classList.add('show');
+                body.classList.add('modal-open');
+            }
+
+            function closeModal(modalElement) {
+                modalElement.classList.remove('show');
+                body.classList.remove('modal-open');
+            }
+
+            legalBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                openModal(legalModal);
+            });
+
+            modalCloseBtns.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const modalOverlay = e.target.closest('.modal-overlay');
+                    if (modalOverlay) {
+                        closeModal(modalOverlay);
+                    }
+                });
+            });
+
+            legalModal.addEventListener('click', (e) => {
+                if (e.target === legalModal) {
+                    closeModal(legalModal);
+                }
+            });
+
+            /* --- Right-click Protection --- */
+            document.addEventListener('contextmenu', function(e) {
+                e.preventDefault();
+                copyrightMessage.style.left = `${e.clientX + 10}px`;
+                copyrightMessage.style.top = `${e.clientY + 10}px`;
+                copyrightMessage.classList.add('show');
+                setTimeout(() => {
+                    copyrightMessage.classList.remove('show');
+                }, 1500);
+            });
+        });
+    </script>
+</body>
+</html>
