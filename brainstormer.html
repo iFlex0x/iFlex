@@ -837,7 +837,7 @@
             const copyrightMessage = document.getElementById('copyrightMessage');
             const body = document.body;
 
-            // --- Brainstormer Functionality ---
+            // --- Brainstormer Functionality (Adapted from old index.html) ---
             brainstormButton.addEventListener('click', async () => {
                 const topic = videoTopicInput.value.trim();
                 if (!topic) {
@@ -850,36 +850,38 @@
                 brainstormButton.disabled = true;
 
                 try {
-                    const response = await fetch('/.netlify/functions/brainstormer-js', {
+                    // Using the old endpoint and direct JSON parsing
+                    const response = await fetch('/.netlify/functions/brainstorm', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ topic: topic })
                     });
 
-                    // Read the response body as text first
-                    const responseText = await response.text(); 
                     let result;
-
-                    // Attempt to parse it as JSON
                     try {
-                        result = JSON.parse(responseText);
+                        // Attempt to parse the response as JSON. This is the single read.
+                        result = await response.json();
                     } catch (jsonError) {
-                        // If JSON parsing fails, it means the server sent a non-JSON response
-                        throw new Error(`Invalid JSON response from server. Raw response: "${responseText.substring(0, 200)}..." (Error: ${jsonError.message})`);
+                        // If JSON parsing fails, it means the server didn't send valid JSON.
+                        // We still capture the raw text to help debug.
+                        const rawText = await response.text().catch(() => "N/A (stream already consumed)"); // Catch error if text() is also consumed
+                        throw new Error(`Invalid JSON response from server. Raw response: "${rawText.substring(0, 200)}..." (Error: ${jsonError.message})`);
                     }
+                    
 
                     // Check if the response was successful based on the HTTP status
                     if (!response.ok) {
-                        throw new Error(`API error: ${response.status} - ${response.statusText}. Server response: ${result.error || 'Unknown error'}. Please ensure your GEMINI_API_KEY is correctly set as an environment variable in Netlify and check Netlify function logs for more details.`);
+                        // If response.ok is false, it's an HTTP error, but we expect JSON error details.
+                        // We rely on 'result' already containing the parsed JSON (or error info).
+                        throw new Error(`API error: ${response.status} - ${response.statusText}. Server message: ${result.error || 'Unknown error'}. Please check Netlify function logs.`);
                     }
 
                     if (result.concepts) {
-                        // The brainstormer-js Netlify function already converts markdown to HTML using 'marked.parse()'.
-                        // So, we can directly assign the returned HTML to innerHTML.
-                        brainstormOutput.innerHTML = result.concepts; 
+                        // Use marked.parse() as in the old index.html, assuming the function returns Markdown.
+                        brainstormOutput.innerHTML = marked.parse(result.concepts); 
                         addConceptActionButtons();
                     } else {
-                        throw new Error('Unexpected API response structure: "concepts" field missing.');
+                        throw new Error('Unexpected API response structure: "concepts" field missing from successful response.');
                     }
 
 
@@ -925,7 +927,6 @@
                     saveBtn.style.color = '#fff';
                     saveBtn.style.marginLeft = '5px';
                     saveBtn.onclick = () => {
-                        // Before saving, ensure we get the clean text without "Copy Save" buttons
                         const conceptTextToSave = conceptElement.cloneNode(true);
                         conceptTextToSave.querySelectorAll('.copy-button, .copy-message').forEach(el => el.remove());
                         saveConcept(conceptTextToSave.textContent.trim());
@@ -999,7 +1000,6 @@
                 if (savedConcepts.length > 0) {
                     savedConceptsSection.style.display = 'block';
                     savedConceptsList.innerHTML = savedConcepts.map((concept, index) => {
-                        // Use marked.parseInline for saved concepts to ensure they are rendered correctly if they contain markdown
                         return `<p>${marked.parseInline(concept)} <button class="remove-button" data-index="${index}">Remove</button></p>`;
                     }).join('');
 
