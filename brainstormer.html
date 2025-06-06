@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iFlex - Brainstormer</title>
+    <link rel="icon" href="images/iflexnew.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        /* Global & Reset Styles: Ensures full viewport coverage and consistent base */
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            width: 100vw;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+            background-color: #1a1a1a; /* Base dark background */
+            color: #e0e0e0; /* Light text for contrast */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            overflow-x: hidden; /* Prevent horizontal scroll */
+            overflow-y: auto; /* Allow vertical scrolling for content */
+            scroll-behavior: smooth;
+            cursor: url(images/cursor.png), auto; /* Custom cursor */
+            position: relative;
+        }
+
+        /* Subtle pulsating background gradient */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at top left, rgba(231, 76, 60, 0.05) 0%, rgba(26, 26, 26, 0) 50%),
+                        radial-gradient(circle at bottom right, rgba(52, 152, 219, 0.05) 0%, rgba(26, 26, 26, 0) 50%);
+            background-size: 200% 200%;
+            animation: gradient-shift 20s ease-in-out infinite alternate;
+            pointer-events: none;
+            z-index: -1; /* Behind all content */
+        }
+
+        /* Main content container: Centers and constrains the main content area */
+        .main-container {
+            flex-grow: 1; /* Allows it to expand and push footer to bottom */
+            width: 100%;
+            max-width: 900px; /* Max width for readability */
+            padding: clamp(60px, 8vh, 100px) clamp(20px, 5vw, 50px) clamp(40px, 6vh, 80px); /* Responsive padding */
+            box-sizing: border-box;
+            z-index: 2; /* Ensures content is above most background elements */
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Center content horizontally */
+            text-align: center; /* Default text alignment for page title */
+        }
+
+        /* Page Title: Consistent with landing page's main title */
+        .page-title {
+            font-size: clamp(2.5em, 7vw, 4em);
+            color: #ffffff;
+            margin-bottom: clamp(30px, 5vh, 60px);
+            letter-spacing: 2px;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
+            font-weight: 800; /* Bold typography */
+            opacity: 0;
+            transform: translateY(-20px);
+            animation: slideIn 0.8s ease-out forwards;
+        }
+
+        /* Content Card: Main interactive area */
+        .content-card {
+            background-color: rgba(44, 44, 44, 0.9); /* Slightly transparent for depth */
+            border-radius: 20px;
+            padding: clamp(25px, 5vw, 50px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5), inset 0 0 15px rgba(255, 255, 255, 0.05); /* Enhanced shadow */
+            text-align: center;
+            width: 100%;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 1s ease-out 0.3s forwards;
+            backdrop-filter: blur(5px); /* Subtle blur effect */
+            -webkit-backdrop-filter: blur(5px);
+        }
+
+        .content-card h2 {
+            font-size: clamp(1.8em, 4vw, 2.5em);
+            color: #E74C3C; /* Accent color */
+            margin-bottom: clamp(20px, 3vh, 30px);
+            letter-spacing: 1px;
+            text-shadow: 0 0 10px rgba(231, 76, 60, 0.5);
+            font-weight: 700;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: clamp(15px, 2.5vw, 25px);
+            margin-bottom: clamp(20px, 3.5vw, 30px);
+        }
+
+        textarea {
+            width: 90%;
+            max-width: 600px;
+            padding: clamp(12px, 2vw, 18px);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background-color: rgba(58, 58, 58, 0.7); /* Slightly transparent */
+            color: #e0e0e0;
+            font-size: clamp(0.95em, 1.8vw, 1.1em);
+            resize: vertical;
+            min-height: 100px;
+            box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.3);
+            outline: none;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        textarea:focus {
+            border-color: #E74C3C; /* Accent border on focus */
+            box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.5), 0 0 15px rgba(231, 76, 60, 0.4);
+        }
+        textarea::placeholder {
+            color: #bbb;
+            opacity: 0.7;
+        }
+
+        .button-group {
+            display: flex;
+            gap: clamp(15px, 2.5vw, 25px);
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .primary-button, .secondary-button {
+            padding: clamp(12px, 2vw, 18px) clamp(25px, 4vw, 40px);
+            border-radius: 15px;
+            font-size: clamp(1em, 1.8vw, 1.1em);
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease-in-out;
+            position: relative;
+            overflow: hidden;
+            border: none;
+        }
+
+        .primary-button {
+            background: linear-gradient(45deg, #E74C3C, #C0392B); /* Red/orange gradient */
+            color: #ffffff;
+            box-shadow: 0 8px 20px rgba(231, 76, 60, 0.4);
+        }
+        .primary-button:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 12px 25px rgba(231, 76, 60, 0.6);
+            filter: brightness(1.15);
+        }
+        .primary-button:disabled {
+            background: #666;
+            box-shadow: none;
+            cursor: not-allowed;
+            transform: none;
+            filter: none;
+        }
+
+        .secondary-button {
+            background: rgba(58, 58, 58, 0.7); /* Dark semi-transparent */
+            color: #e0e0e0;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        .secondary-button:hover {
+            background: rgba(70, 70, 70, 0.8);
+            border-color: #E74C3C;
+            transform: translateY(-3px) scale(1.01);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4), 0 0 10px rgba(231, 76, 60, 0.3);
+        }
+        .secondary-button:disabled {
+            background: #666;
+            border-color: #666;
+            box-shadow: none;
+            cursor: not-allowed;
+            transform: none;
+            filter: none;
+        }
+
+        .loading-indicator {
+            margin-top: 25px;
+            color: #bbb;
+            font-style: italic;
+            font-size: clamp(0.9em, 1.8vw, 1em);
+            animation: pulse 1.5s infinite ease-in-out;
+            display: none;
+        }
+        .loading-indicator.active {
+            display: block;
+        }
+
+        .output-area {
+            background-color: rgba(58, 58, 58, 0.7);
+            border-radius: 15px;
+            padding: clamp(20px, 3.5vw, 30px);
+            text-align: left;
+            max-height: 400px; /* Controlled height */
+            overflow-y: auto;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.4);
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            color: #e0e0e0;
+            font-size: clamp(0.95em, 1.8vw, 1.05em);
+            line-height: 1.7;
+            margin-top: clamp(30px, 5vh, 50px);
+            position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        .output-area:empty {
+            border-color: transparent; /* Hide border if empty */
+            box-shadow: none;
+            min-height: 50px;
+        }
+        .output-area p {
+            margin-bottom: 10px;
+        }
+        .output-area p:last-child {
+            margin-bottom: 0;
+        }
+        .output-area strong {
+            color: #4CAF50; /* Green for important text in output */
+        }
+        .output-area ul {
+            list-style: none;
+            padding-left: 0;
+            margin-top: 15px;
+        }
+        .output-area li {
+            margin-bottom: 8px;
+            position: relative;
+            padding-left: 20px;
+        }
+        .output-area li::before {
+            content: '➤'; /* Custom bullet point */
+            color: #E74C3C; /* Red accent for bullet */
+            position: absolute;
+            left: 0;
+            font-size: 1em;
+            line-height: 1.6;
+        }
+
+        .action-buttons {
+            display: inline-flex;
+            gap: 8px;
+            margin-left: 15px;
+            white-space: nowrap;
+        }
+
+        .copy-save-button {
+            background-color: rgba(100, 100, 100, 0.7);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 6px 12px;
+            font-size: 0.8em;
+            cursor: pointer;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+        }
+        .copy-save-button:hover {
+            background-color: rgba(120, 120, 120, 0.9);
+            transform: translateY(-1px);
+        }
+        .copy-save-button.save {
+            background-color: rgba(76, 175, 80, 0.7); /* Green for save */
+        }
+        .copy-save-button.save:hover {
+            background-color: rgba(76, 175, 80, 0.9);
+        }
+
+        .feedback-message {
+            display: inline-block;
+            margin-left: 10px;
+            color: #4CAF50;
+            font-size: 0.8em;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+        .feedback-message.show {
+            opacity: 1;
+        }
+
+        .saved-concepts-section {
+            margin-top: clamp(40px, 6vh, 80px);
+            width: 100%;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: clamp(30px, 5vh, 60px);
+        }
+        .saved-concepts-section h3 {
+            font-size: clamp(1.6em, 3.2vw, 2em);
+            color: #ffffff;
+            margin-bottom: clamp(20px, 3.5vh, 40px);
+            font-weight: 700;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+        }
+
+        .saved-list {
+            background-color: rgba(58, 58, 58, 0.7);
+            border-radius: 15px;
+            padding: clamp(20px, 3.5vw, 30px);
+            max-height: 350px;
+            overflow-y: auto;
+            text-align: left;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        .saved-list p {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+            position: relative;
+            padding-right: 80px; /* Space for remove button */
+            word-wrap: break-word;
+            font-size: clamp(0.9em, 1.8vw, 1em);
+            line-height: 1.6;
+        }
+        .saved-list p:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        .remove-button {
+            background: linear-gradient(45deg, #f44336, #d32f2f);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 5px 10px;
+            font-size: 0.75em;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            font-weight: 600;
+        }
+        .remove-button:hover {
+            filter: brightness(1.15);
+            transform: translateY(-60%) scale(1.05);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+        }
+
+        /* Global Footer Styles: Always visible at the bottom of the page */
+        footer {
+            width: 100%;
+            text-align: center;
+            font-size: clamp(0.7em, 1.5vw, 0.9em);
+            color: #999;
+            padding: clamp(10px, 1.5vh, 20px) 0;
+            z-index: 2;
+            background-color: #1a1a1a;
+            position: relative;
+            flex-shrink: 0;
+        }
+        .footer-buttons {
+            display: flex;
+            justify-content: center;
+            gap: clamp(10px, 2vw, 20px);
+            margin-top: clamp(10px, 1.5vw, 15px);
+            flex-wrap: wrap;
+        }
+        .footer-button {
+            background-color: #3a3a3a;
+            color: #e0e0e0;
+            padding: clamp(8px, 1.5vw, 10px) clamp(15px, 3vw, 20px);
+            border-radius: 10px;
+            text-decoration: none;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.3), inset -2px -2px 5px rgba(70, 70, 70, 0.1);
+            font-size: 1em;
+            white-space: nowrap;
+            box-sizing: border-box;
+        }
+        .footer-button:hover {
+            background-color: #4a4a4a;
+            transform: translateY(-2px);
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+        }
+
+        /* Hamburger Menu & Overlay Navigation */
+        .menu-toggle {
+            position: fixed;
+            top: clamp(20px, 4vh, 40px);
+            right: clamp(20px, 4vw, 40px);
+            z-index: 1004;
+            background: none;
+            border: none;
+            color: #e0e0e0;
+            font-size: clamp(1.8em, 3.5vw, 2.5em);
+            cursor: pointer;
+            padding: 10px;
+            transition: transform 0.3s ease, color 0.3s ease;
+            text-shadow: 0 0 10px rgba(0,0,0,0.5);
+            touch-action: manipulation;
+        }
+        .menu-toggle:hover {
+            transform: scale(1.1);
+            color: #E74C3C;
+        }
+
+        .nav-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.98);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1003;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            pointer-events: none;
+        }
+        .nav-overlay.open {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
+        .nav-overlay-close-btn {
+            position: absolute;
+            top: clamp(20px, 4vh, 40px);
+            right: clamp(20px, 4vw, 40px);
+            z-index: 1004; /* Ensure close button is above nav items */
+            background: none;
+            border: none;
+            color: #e0e0e0;
+            font-size: clamp(2.5em, 5vw, 3em);
+            cursor: pointer;
+            transition: transform 0.3s ease, color 0.3s ease;
+            touch-action: manipulation;
+        }
+        .nav-overlay-close-btn:hover {
+            transform: rotate(90deg);
+            color: #E74C3C;
+        }
+        .nav-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            text-align: center;
+        
+        }
+        .nav-list li {
+            margin: clamp(20px, 4vh, 40px) 0;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+        .nav-overlay.open .nav-list li {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .nav-overlay.open .nav-list li:nth-child(1) { transition-delay: 0.1s; }
+        .nav-overlay.open .nav-list li:nth-child(2) { transition-delay: 0.2s; }
+        .nav-overlay.open .nav-list li:nth-child(3) { transition-delay: 0.3s; }
+        .nav-overlay.open .nav-list li:nth-child(4) { transition-delay: 0.4s; }
+        .nav-overlay.open .nav-list li:nth-child(5) { transition-delay: 0.5s; }
+        .nav-list a {
+            color: #ffffff;
+            text-decoration: none;
+            font-size: clamp(2em, 5vw, 3em);
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            transition: color 0.3s ease, text-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+            padding: 5px 0;
+        }
+        .nav-list a::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: -100%;
+            width: 100%;
+            height: 4px;
+            background-color: #E74C3C;
+            transition: left 0.3s ease-out;
+        }
+        .nav-list a:hover::before {
+            left: 0;
+        }
+        .nav-list a:hover {
+            color: #E74C3C;
+            text-shadow: 0 0 20px rgba(231, 76, 60, 0.8);
+        }
+
+        /* Modal Styles - Reused from index.html, styled consistently */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1005;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+        .modal-overlay.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .modal-content {
+            background-color: #2c2c2c;
+            border-radius: 20px;
+            padding: clamp(20px, 5vw, 40px);
+            box-shadow:
+                inset 5px 5px 10px rgba(0, 0, 0, 0.3),
+                inset -5px -5px 10px rgba(70, 70, 70, 0.1),
+                0 10px 30px rgba(0, 0, 0, 0.7);
+            text-align: left;
+            max-width: 700px;
+            width: 90%;
+            position: relative;
+            transform: scale(0.8);
+            opacity: 0;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            box-sizing: border-box;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .modal-overlay.show .modal-content {
+            transform: scale(1);
+            opacity: 1;
+        }
+        .modal-close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: clamp(1.5em, 3vw, 2em);
+            color: #e0e0e0;
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+        .modal-close-btn:hover {
+            color: #E74C3C;
+        }
+        .modal-content h2 {
+            font-size: clamp(1.8em, 4vw, 2.5em);
+            color: #ffffff;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .modal-content h3 {
+            font-size: clamp(1.2em, 2.5vw, 1.6em);
+            color: #ffffff;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        .modal-content p {
+            font-size: clamp(0.9em, 1.8vw, 1em);
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        .modal-content ul {
+            list-style-type: disc;
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+        .modal-content li {
+            margin-bottom: 5px;
+        }
+        .modal-content a {
+            color: #E74C3C;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+        .modal-content a:hover {
+            color: #C0392B;
+            text-decoration: underline;
+        }
+
+        /* Animations */
+        @keyframes gradient-shift {
+            0% { background-position: 0% 0%, 100% 100%; }
+            100% { background-position: 100% 100%, 0% 0%; }
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        /* Right-click protection message */
+        .copyright-message {
+            position: fixed;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: #fff;
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-size: 0.9em;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+        .copyright-message.show {
+            opacity: 1;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .main-container {
+                padding: clamp(40px, 6vh, 80px) clamp(15px, 4vw, 30px) clamp(30px, 5vh, 60px);
+            }
+            .page-title {
+                font-size: clamp(2em, 6vw, 3.5em);
+            }
+            .content-card {
+                padding: clamp(20px, 4vw, 40px);
+            }
+            .content-card h2 {
+                font-size: clamp(1.5em, 3.5vw, 2em);
+            }
+            textarea {
+                width: 95%;
+            }
+            .button-group {
+                flex-direction: column;
+                width: 100%;
+                max-width: 300px;
+            }
+            .primary-button, .secondary-button {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-container {
+                padding: clamp(30px, 5vh, 60px) clamp(10px, 3vw, 20px) clamp(20px, 4vh, 40px);
+            }
+            .page-title {
+                font-size: clamp(1.8em, 5.5vw, 3em);
+                margin-bottom: clamp(20px, 4vh, 40px);
+            }
+            .content-card {
+                padding: clamp(15px, 3vw, 30px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Global background element for subtle gradient animation -->
+    <!-- body::before styles the main background. This replaces previous canvas elements for a cleaner look. -->
+
+    <!-- Main content container -->
+    <div class="main-container">
+        <!-- Page Title -->
+        <h1 class="page-title">AI Brainstormer</h1>
+
+        <!-- Brainstormer interactive section -->
+        <section class="content-card">
+            <h2>Generate Thumbnail Ideas</h2>
+            <div class="input-group">
+                <textarea id="videoTopicInput" placeholder="Describe your video topic (e.g., 'futuristic cityscapes,' 'ancient alien theories,' 'coding for beginners')..."></textarea>
+                <div class="button-group">
+                    <button id="generateConceptsBtn" class="primary-button">
+                        <i class="fas fa-magic"></i> Generate Concepts
+                    </button>
+                    <button id="clearInputBtn" class="secondary-button">
+                        <i class="fas fa-eraser"></i> Clear Input
+                    </button>
+                </div>
+            </div>
+
+            <div id="loadingIndicator" class="loading-indicator">
+                <i class="fas fa-spinner fa-spin"></i> Generating brilliant ideas...
+            </div>
+
+            <div id="outputArea" class="output-area">
+                Your AI-generated concepts will appear here, ready to spark your creativity.
+            </div>
+
+            <div id="savedConceptsSection" class="saved-concepts-section" style="display:none;">
+                <h3>Saved Ideas</h3>
+                <div id="savedConceptsList" class="saved-list">
+                    <p>No concepts saved yet.</p>
+                </div>
+                <button id="clearAllSavedBtn" class="secondary-button">
+                    <i class="fas fa-trash-alt"></i> Clear All Saved
+                </button>
+            </div>
+        </section>
+    </div>
+
+    <!-- Hamburger menu toggle -->
+    <button class="menu-toggle" id="menuToggle">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Full-screen Navigation Overlay -->
+    <nav class="nav-overlay" id="navOverlay">
+        <!-- Close button for the navigation overlay -->
+        <button class="nav-overlay-close-btn" id="navCloseBtn">
+            <i class="fas fa-times"></i>
+        </button>
+        <!-- Navigation links -->
+        <ul class="nav-list">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="portfolio.html">My Work</a></li>
+            <li><a href="about.html">About Me</a></li>
+            <li><a href="brainstormer.html">Brainstormer</a></li>
+            <li><a href="son.html">My AI Son</a></li>
+            <li><a href="links.html">Links</a></li>
+        </ul>
+    </nav>
+
+    <!-- Legal modal -->
+    <div id="legalModal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="modal-close-btn">×</button>
+            <h2>Legal Information & Privacy Policy</h2>
+            <h3>1. General Disclaimer</h3>
+            <p>This website is a personal portfolio created and maintained by iFlex. Its purpose is to showcase my projects, skills, and interests in web development and AI. All content is provided for informational and demonstration purposes only.</p>
+            <p>All original content on this site, including text, design, and custom code (excluding third-party libraries and services), is my intellectual property. Please do not reproduce or distribute without my explicit permission.</p>
+            <p>This site may contain links to third-party websites. I am not responsible for the content or privacy practices of these external sites.</p>
+            <p>By using this website, you agree to these terms and conditions.</p>
+            <h3>2. AI Bot Disclaimer ("My AI Son")</h3>
+            <p>The "My AI Son" bot featured on this site is an AI chatbot developed for demonstration and entertainment purposes only. It is powered by a third-party AI service, <a href="https://shapes.inc/" target="_blank" rel="noopener noreferrer">Shapes.inc</a>.</p>
+            <ul>
+                <li>The bot's responses are generated by artificial intelligence and may be inaccurate, incomplete, or offensive.</li>
+                <li>Do not share any sensitive personal, financial, or confidential information with the bot.</li>
+                <li>The bot is not intended to provide professional advice (e.g., legal, medical, financial).</li>
+                <li>I am not responsible for any outcomes or consequences resulting from the use of the bot's responses.</li>
+            </ul>
+            <h3>3. Privacy Policy</h3>
+            <p>Your privacy is important to me. This section outlines how data is handled on this personal portfolio site.</p>
+            <h4>Information Collection & Use:</h4>
+            <ul>
+                <li>
+                    <strong>No Direct Personal Data Collection:</strong> This website does not directly collect any personally identifiable information (e.g., your name, email address, IP address) from visitors, other than what you voluntarily provide through interactions with the AI bot.
+                </li>
+                <li>
+                    <strong>AI Bot Interaction Data:</strong> When you interact with the "My AI Son" bot:
+                    <ul>
+                        <li>Your messages are sent to a third-party AI service, <strong>Shapes.inc</strong>. Shapes.inc processes these messages to generate responses and maintain conversation context. Please refer to <strong>Shapes.inc's own privacy policy</strong> for detailed information on their data collection, storage, and usage practices.</li>
+                        <li>To maintain your individual conversation context, a unique User ID and Channel ID are generated and stored locally in your browser's `localStorage`. This information is used solely to differentiate your chat sessions and is not linked to any personal data collected by me. These IDs can be reset by clearing your browser's data or by using the "Reset Chat" button on the bot page.</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Analytics (Optional - if you add any):</strong> If this site were to use web analytics services (like Google Analytics in the future), only anonymized usage data would be collected to understand site performance and visitor behavior. No personally identifiable information would be shared.
+                 </li>
+                </ul>
+             <h4>Data Storage & Security:</h4>
+                <p>No user data is stored on my personal servers. Information processed by the AI bot is handled by Shapes.inc. Local browser storage (`localStorage`) is used for user/channel IDs as described above.</p>
+                <h4>Your Choices:</h4>
+                <p>You can clear your browser's `localStorage` at any time to remove the locally stored User ID and Channel ID, which will start a new chat session with the bot.</p>
+             <h3>4. Contact Information</h3>
+             <p>If you have any questions or concerns regarding this website or its privacy practices, please feel feel free to contact me at:</p>
+             <p>Email: <a href="mailto:ad.iflex@hotmail.com">ad.iflex@hotmail.com</a></p>
+                <p>Last Updated: June 2, 2025</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Global footer -->
+    <footer>
+        <p>© 2025 iFlex. All rights reserved.</p>
+        <div class="footer-buttons">
+            <a href="#" id="legalBtn" class="footer-button">Legal</a>
+        </div>
+    </footer>
+
+    <!-- Right-click protection message -->
+    <div id="copyrightMessage" class="copyright-message">
+        Content is protected. © iFlex. All rights reserved.
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // DOM Elements
+            const generateConceptsBtn = document.getElementById('generateConceptsBtn');
+            const clearInputBtn = document.getElementById('clearInputBtn');
+            const videoTopicInput = document.getElementById('videoTopicInput');
+            const outputArea = document.getElementById('outputArea');
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            const savedConceptsSection = document.getElementById('savedConceptsSection');
+            const savedConceptsList = document.getElementById('savedConceptsList');
+            const clearAllSavedBtn = document.getElementById('clearAllSavedBtn');
+            const menuToggle = document.getElementById('menuToggle');
+            const navOverlay = document.getElementById('navOverlay');
+            const navCloseBtn = document.getElementById('navCloseBtn');
+            const navLinks = document.querySelectorAll('.nav-list a');
+            const body = document.body;
+            const legalBtn = document.getElementById('legalBtn');
+            const legalModal = document.getElementById('legalModal');
+            const modalCloseBtns = document.querySelectorAll('.modal-close-btn');
+            const copyrightMessage = document.getElementById('copyrightMessage');
+
+            /* --- Navigation and Modal Functionality --- */
+            menuToggle.addEventListener('click', () => {
+                navOverlay.classList.add('open');
+                body.classList.add('modal-open');
+                menuToggle.style.visibility = 'hidden'; /* Hide hamburger when menu is open */
+            });
+
+            navCloseBtn.addEventListener('click', () => {
+                navOverlay.classList.remove('open');
+                body.classList.remove('modal-open');
+                menuToggle.style.visibility = 'visible'; /* Show hamburger when menu is closed */
+            });
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    navOverlay.classList.remove('open');
+                    body.classList.remove('modal-open');
+                    menuToggle.style.visibility = 'visible';
+                    menuToggle.style.visibility = 'hidden'; /* Show hamburger when menu is closed */
+                });
+            });
+
+            function openModal(modalElement) {
+                modalElement.classList.add('show');
+                body.classList.add('modal-open');
+            }
+
+            function closeModal(modalElement) {
+                modalElement.classList.remove('show');
+                body.classList.remove('modal-open');
+            }
+
+            legalBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                openModal(legalModal);
+            });
+
+            modalCloseBtns.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const modalOverlay = e.target.closest('.modal-overlay');
+                    if (modalOverlay) {
+                        closeModal(modalOverlay);
+                    }
+                });
+            });
+
+            legalModal.addEventListener('click', (e) => {
+                if (e.target === legalModal) {
+                    closeModal(legalModal);
+                }
+            });
+
+            /* --- Brainstormer Core Logic --- */
+            generateConceptsBtn.addEventListener('click', async () => {
+                const topic = videoTopicInput.value.trim();
+                if (!topic) {
+                    outputArea.innerHTML = "Please enter a video topic to brainstorm concepts.";
+                    return;
+                }
+
+                loadingIndicator.classList.add('active');
+                outputArea.innerHTML = '';
+                generateConceptsBtn.disabled = true;
+                clearInputBtn.disabled = true;
+
+                try {
+                    const payload = {
+                        contents: [{
+                            role: "user",
+                            parts: [{ text: `Generate 5 unique and attention-grabbing YouTube thumbnail concept ideas for a video titled "${topic}". For each idea, provide a one-sentence "Main Idea", a brief "Visual Idea" describing what the thumbnail should look like, and a compelling "Text Overlay" that would grab attention. Format each concept with clear headings for "Main Idea", "Visual Idea", and "Text Overlay".` }]
+                        }],
+                        generationConfig: {
+                            responseMimeType: "text/markdown"
+                        }
+                    };
+                    const apiKey = ""; // Canvas will provide this in runtime
+                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(`API error: ${response.status} - ${errorData.error.message || 'Unknown error'}`);
+                    }
+
+                    const result = await response.json();
+                    if (result.candidates && result.candidates.length > 0 && result.candidates[0].content && result.candidates[0].content.parts && result.candidates[0].content.parts.length > 0) {
+                        const markdownText = result.candidates[0].content.parts[0].text;
+                        outputArea.innerHTML = marked.parse(markdownText); // Render Markdown to HTML
+                        addConceptActionButtons();
+                    } else {
+                        outputArea.innerHTML = "No concepts were generated. Please try again with a different topic.";
+                    }
+
+                } catch (error) {
+                    console.error("Error generating concepts:", error);
+                    outputArea.innerHTML = `Error generating concepts: ${error.message}. Please check your input or try again later.`;
+                } finally {
+                    loadingIndicator.classList.remove('active');
+                    generateConceptsBtn.disabled = false;
+                    clearInputBtn.disabled = false;
+                }
+            });
+
+            clearInputBtn.addEventListener('click', () => {
+                videoTopicInput.value = '';
+                outputArea.innerHTML = 'Your AI-generated concepts will appear here, ready to spark your creativity.';
+            });
+
+            /* --- Copy & Save Functionality --- */
+            function addConceptActionButtons() {
+                const concepts = outputArea.querySelectorAll('p, li'); // Select both paragraphs and list items
+
+                concepts.forEach((conceptElement) => {
+                    // Only add buttons to concepts with substantial text (e.g., > 20 chars)
+                    if (conceptElement.textContent.trim().length < 20) return;
+
+                    const actionButtonsContainer = document.createElement('span');
+                    actionButtonsContainer.classList.add('action-buttons');
+
+                    const copyBtn = document.createElement('button');
+                    copyBtn.innerHTML = '<i class="far fa-copy"></i> Copy';
+                    copyBtn.classList.add('copy-save-button');
+                    copyBtn.onclick = () => {
+                        copyTextToClipboard(conceptElement.textContent.replace(/(?:Copy|Save|Remove)\s*(\w+)?/g, '').trim()); // Clean up button text
+                        showFeedbackMessage(copyBtn, 'Copied!');
+                    };
+                    actionButtonsContainer.appendChild(copyBtn);
+
+                    const saveBtn = document.createElement('button');
+                    saveBtn.innerHTML = '<i class="far fa-bookmark"></i> Save';
+                    saveBtn.classList.add('copy-save-button', 'save');
+                    saveBtn.onclick = () => {
+                        saveConcept(conceptElement.textContent.replace(/(?:Copy|Save|Remove)\s*(\w+)?/g, '').trim()); // Clean up button text
+                        showFeedbackMessage(saveBtn, 'Saved!');
+                    };
+                    actionButtonsContainer.appendChild(saveBtn);
+
+                    conceptElement.appendChild(actionButtonsContainer);
+                });
+            }
+
+            function copyTextToClipboard(text) {
+                const textarea = document.createElement('textarea');
+                textarea.value = text;
+                document.body.appendChild(textarea);
+                textarea.select();
+                try {
+                    document.execCommand('copy');
+                } catch (err) {
+                    console.error('Failed to copy text: ', err);
+                }
+                document.body.removeChild(textarea);
+            }
+
+            function showFeedbackMessage(buttonElement, message) {
+                let feedbackSpan = buttonElement.nextElementSibling;
+                if (!feedbackSpan || !feedbackSpan.classList.contains('feedback-message')) {
+                    feedbackSpan = document.createElement('span');
+                    feedbackSpan.classList.add('feedback-message');
+                    buttonElement.parentNode.insertBefore(feedbackSpan, buttonElement.nextSibling);
+                }
+                feedbackSpan.textContent = message;
+                feedbackSpan.classList.add('show');
+                setTimeout(() => {
+                    feedbackSpan.classList.remove('show');
+                }, 1000);
+            }
+
+            /* --- Local Storage for Saved Concepts --- */
+            let savedConcepts = JSON.parse(localStorage.getItem('iflexSavedConcepts')) || [];
+
+            function saveConcept(conceptText) {
+                if (!savedConcepts.includes(conceptText)) {
+                    savedConcepts.push(conceptText);
+                    localStorage.setItem('iflexSavedConcepts', JSON.stringify(savedConcepts));
+                    renderSavedConcepts();
+                }
+            }
+
+            function removeConcept(conceptText) {
+                savedConcepts = savedConcepts.filter(concept => concept !== conceptText);
+                localStorage.setItem('iflexSavedConcepts', JSON.stringify(savedConcepts));
+                renderSavedConcepts();
+            }
+
+            function renderSavedConcepts() {
+                if (savedConcepts.length > 0) {
+                    savedConceptsSection.style.display = 'block';
+                    savedConceptsList.innerHTML = savedConcepts.map((concept, index) => `
+                        <p>${marked.parseInline(concept)} <button class="remove-button" data-index="${index}"><i class="fas fa-times"></i> Remove</button></p>
+                    `).join('');
+
+                    savedConceptsList.querySelectorAll('.remove-button').forEach(button => {
+                        button.addEventListener('click', (e) => {
+                            const indexToRemove = parseInt(button.dataset.index);
+                            const rawText = savedConcepts[indexToRemove]; // Get the original text to remove
+                            removeConcept(rawText);
+                        });
+                    });
+                } else {
+                    savedConceptsSection.style.display = 'none';
+                    savedConceptsList.innerHTML = '<p>No concepts saved yet.</p>';
+                }
+            }
+
+            clearAllSavedBtn.addEventListener('click', () => {
+                savedConcepts = [];
+                localStorage.removeItem('iflexSavedConcepts');
+                renderSavedConcepts();
+            });
+
+            renderSavedConcepts(); // Initial render on page load
+
+            /* --- Right-click Protection --- */
+            document.addEventListener('contextmenu', function(e) {
+                e.preventDefault();
+                copyrightMessage.style.left = `${e.clientX + 10}px`;
+                copyrightMessage.style.top = `${e.clientY + 10}px`;
+                copyrightMessage.classList.add('show');
+                setTimeout(() => {
+                    copyrightMessage.classList.remove('show');
+                }, 1500);
+            });
+        });
+    </script>
+</body>
+</html>
