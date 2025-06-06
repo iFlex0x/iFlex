@@ -856,28 +856,23 @@
                         body: JSON.stringify({ topic: topic })
                     });
 
-                    // Check if the response is OK (status 200-299)
+                    // Read the response body as text first
+                    const responseText = await response.text(); 
+                    let result;
+
+                    // Attempt to parse it as JSON
+                    try {
+                        result = JSON.parse(responseText);
+                    } catch (jsonError) {
+                        // If JSON parsing fails, it means the server sent a non-JSON response
+                        throw new Error(`Invalid JSON response from server. Raw response: "${responseText.substring(0, 200)}..." (Error: ${jsonError.message})`);
+                    }
+
+                    // Check if the response was successful based on the HTTP status
                     if (!response.ok) {
-                        let errorMessage = `API error: ${response.status} - ${response.statusText}`;
-                        try {
-                            const errorData = await response.json(); // Attempt to parse JSON error
-                            errorMessage += `: ${errorData.error || 'Unknown error'}`;
-                        } catch (e) {
-                            // If response is not JSON, get raw text for debugging
-                            const rawText = await response.text();
-                            errorMessage += `. Non-JSON error response received. Raw: "${rawText.substring(0, 100)}..."`;
-                        }
-                        throw new Error(`${errorMessage}. Please ensure your GEMINI_API_KEY is correctly set as an environment variable in Netlify and check Netlify function logs for more details.`);
+                        throw new Error(`API error: ${response.status} - ${response.statusText}. Server response: ${result.error || 'Unknown error'}. Please ensure your GEMINI_API_KEY is correctly set as an environment variable in Netlify and check Netlify function logs for more details.`);
                     }
 
-                    // Explicitly check Content-Type header before parsing as JSON
-                    const contentType = response.headers.get("content-type");
-                    if (!contentType || !contentType.includes("application/json")) {
-                        const textResponse = await response.text(); // Get raw text to inspect
-                        throw new Error(`Unexpected response format. Expected JSON, received: ${contentType || 'no content-type'}. Raw response (first 200 chars): "${textResponse.substring(0, 200)}..."`);
-                    }
-
-                    const result = await response.json();
                     if (result.concepts) {
                         // The brainstormer-js Netlify function already converts markdown to HTML using 'marked.parse()'.
                         // So, we can directly assign the returned HTML to innerHTML.
