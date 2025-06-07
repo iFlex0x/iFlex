@@ -8,7 +8,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* Global Styles & Reset: Ensures full viewport coverage and consistent base */
         html, body {
             margin: 0;
             padding: 0;
@@ -16,20 +15,19 @@
             width: 100vw;
             box-sizing: border-box;
             font-family: 'Inter', sans-serif;
-            background-color: #0d0d0d; /* Even darker base background */
-            color: #e0e0e0; /* Light text for contrast */
+            background-color: #0d0d0d;
+            color: #e0e0e0;
             display: flex;
             flex-direction: column;
-            justify-content: space-between; /* Pushes content to center, footer to bottom */
+            justify-content: space-between;
             align-items: center;
-            overflow-x: hidden; /* Prevent horizontal scroll */
-            overflow-y: auto; /* Allow vertical scrolling for content */
+            overflow-x: hidden;
+            overflow-y: auto;
             scroll-behavior: smooth;
-            cursor: url(images/cursor.png), auto; /* Custom cursor */
+            cursor: url(images/cursor.png), auto;
             position: relative;
         }
 
-        /* Digital Grid Overlay: New background effect */
         body::before {
             content: '';
             position: fixed;
@@ -40,13 +38,12 @@
             background: 
                 linear-gradient(to right, rgba(17, 17, 17, 0.8) 1px, transparent 1px),
                 linear-gradient(to bottom, rgba(17, 17, 17, 0.8) 1px, transparent 1px);
-            background-size: 40px 40px; /* Adjust grid density */
+            background-size: 40px 40px;
             animation: grid-pulse 15s ease-in-out infinite alternate;
             pointer-events: none;
-            z-index: -1; /* Behind all content */
+            z-index: -1;
         }
         
-        /* Subtle radial gradient for depth over grid */
         body::after {
             content: '';
             position: fixed;
@@ -56,38 +53,35 @@
             bottom: 0;
             background: radial-gradient(circle at center, rgba(20, 20, 20, 0) 0%, rgba(13, 13, 13, 0.8) 70%, rgba(13, 13, 13, 1) 100%);
             pointer-events: none;
-            z-index: 0; /* Above grid, below content */
+            z-index: 0;
         }
 
-        /* Particle Canvas: Dynamic background particles (retained for depth) */
         #particleCanvas {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: -2; /* Furthest back */
+            z-index: -2;
             pointer-events: none;
         }
 
-        /* Main container for page content (chat area) */
         .main-container {
-            flex-grow: 1; /* Allows it to expand and fill space */
+            flex-grow: 1;
             width: 100%;
-            max-width: 900px; /* Max width for readability */
-            padding: clamp(60px, 8vh, 100px) clamp(20px, 5vw, 50px) clamp(40px, 6vh, 80px); /* Responsive padding */
+            max-width: 900px;
+            padding: clamp(60px, 8vh, 100px) clamp(20px, 5vw, 50px) clamp(40px, 6vh, 80px);
             box-sizing: border-box;
-            z-index: 2; /* Ensures content is above background elements */
+            z-index: 2;
             display: flex;
             flex-direction: column;
-            align-items: center; /* Center content horizontally */
-            text-align: center; /* Default text alignment for page title */
+            align-items: center;
+            text-align: center;
         }
 
-        /* Page Title */
         .page-title {
             font-size: clamp(2.5em, 7vw, 4em);
-            color: #4df1f1; /* Cyan glow for title */
+            color: #4df1f1;
             margin-bottom: clamp(30px, 5vh, 60px);
             letter-spacing: 2px;
             text-shadow: 0 0 15px rgba(77, 241, 241, 0.8), 0 0 30px rgba(77, 241, 241, 0.5);
@@ -97,15 +91,14 @@
             animation: slideIn 0.8s ease-out forwards, text-neon-glow 3s infinite alternate ease-in-out;
         }
 
-        /* Chat Container (main interactive area) */
         .chat-container {
-            background-color: rgba(25, 25, 25, 0.7); /* More transparent dark background */
-            border-radius: 25px; /* More pronounced rounded corners */
+            background-color: rgba(25, 25, 25, 0.7);
+            border-radius: 25px;
             padding: clamp(25px, 5vw, 50px);
-            box-shadow: 0 10px 30px rgba(0, 255, 255, 0.2), inset 0 0 20px rgba(0, 255, 255, 0.1); /* Cyan glow shadow */
+            box-shadow: 0 10px 30px rgba(0, 255, 255, 0.2), inset 0 0 20px rgba(0, 255, 255, 0.1);
             text-align: center;
             width: 100%;
-            height: clamp(500px, 75vh, 800px); /* Responsive height for chat area */
+            height: clamp(500px, 75vh, 800px);
             display: flex;
             flex-direction: column;
             gap: 15px;
@@ -114,81 +107,78 @@
             opacity: 0;
             transform: translateY(20px);
             animation: fadeIn 1s ease-out 0.3s forwards;
-            backdrop-filter: blur(10px); /* Stronger frosted glass effect */
+            backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(77, 241, 241, 0.3); /* Subtle cyan border */
+            border: 1px solid rgba(77, 241, 241, 0.3);
         }
 
-        /* Chat Display Area */
         .chat-display {
             flex-grow: 1;
-            background-color: rgba(0, 0, 0, 0.5); /* Very transparent, almost black */
+            background-color: rgba(0, 0, 0, 0.5);
             border-radius: 20px;
             padding: 15px;
             overflow-y: auto;
             text-align: left;
-            box-shadow: inset 0 0 10px rgba(0, 255, 255, 0.1); /* Inner cyan glow */
+            box-shadow: inset 0 0 10px rgba(0, 255, 255, 0.1);
             display: flex;
             flex-direction: column;
             gap: 10px;
-            border: 1px solid rgba(77, 241, 241, 0.1); /* Lighter border */
+            border: 1px solid rgba(77, 241, 241, 0.1);
         }
 
-        /* Individual Message Styling */
         .message {
             max-width: 80%;
             padding: 12px 18px;
-            border-radius: 20px; /* More rounded */
+            border-radius: 20px;
             word-wrap: break-word;
             line-height: 1.5;
             color: #ffffff;
             font-size: clamp(0.9em, 1.8vw, 1em);
-            position: relative; /* For glow effect */
+            position: relative;
         }
 
         .user-message {
-            background-color: rgba(76, 175, 80, 0.8); /* Slightly transparent green */
+            background-color: rgba(76, 175, 80, 0.8);
             align-self: flex-end;
-            border-bottom-right-radius: 8px; /* Softer corner on bottom right */
+            border-bottom-right-radius: 8px;
             box-shadow: 0 4px 10px rgba(76, 175, 80, 0.3);
             border: 1px solid rgba(76, 175, 80, 0.5);
             animation: message-slide-in-right 0.3s ease-out forwards;
         }
 
         .bot-message {
-            background-color: rgba(52, 152, 219, 0.7); /* Slightly transparent blue */
+            background-color: rgba(52, 152, 219, 0.7);
             align-self: flex-start;
-            border-bottom-left-radius: 8px; /* Softer corner on bottom left */
+            border-bottom-left-radius: 8px;
             box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
             border: 1px solid rgba(52, 152, 219, 0.5);
             animation: message-slide-in-left 0.3s ease-out forwards;
         }
 
-        /* Chat Input Area */
         .chat-input-area {
             display: flex;
-            gap: 12px; /* Slightly more space */
+            gap: 12px;
             margin-top: 15px;
         }
 
         .chat-input-area textarea {
             flex-grow: 1;
             padding: 15px 20px;
-            border-radius: 20px; /* More rounded */
-            border: 1px solid rgba(77, 241, 241, 0.3); /* Cyan border */
-            background-color: rgba(25, 25, 25, 0.6); /* Transparent dark */
+            border-radius: 20px;
+            border: 1px solid rgba(77, 241, 241, 0.3);
+            background-color: rgba(25, 25, 25, 0.6);
             color: #e0e0e0;
             font-size: clamp(0.95em, 1.8vw, 1.1em);
             resize: none;
-            min-height: 50px; /* Taller input */
-            max-height: 120px; /* Increased max height */
+            min-height: 50px;
+            max-height: 120px;
             box-shadow: inset 0 0 10px rgba(0, 255, 255, 0.1);
             outline: none;
             transition: border-color 0.3s ease, box-shadow 0.3s ease;
             box-sizing: border-box;
         }
         .chat-input-area textarea:focus {
-            border-color: #4df1f1; /* Brighter cyan on focus */
+            border-color: #4df1f1;
             box-shadow: inset 0 0 10px rgba(0, 255, 255, 0.3), 0 0 20px rgba(77, 241, 241, 0.5);
         }
         .chat-input-area textarea::placeholder {
@@ -196,20 +186,19 @@
             opacity: 0.8;
         }
 
-        /* Send Button */
         .chat-button {
-            background: linear-gradient(45deg, #4df1f1, #21c2c2); /* Cyan gradient */
-            color: #0d0d0d; /* Dark text on bright button */
-            padding: 15px 25px; /* Larger padding */
-            border-radius: 20px; /* More rounded */
+            background: linear-gradient(45deg, #4df1f1, #21c2c2);
+            color: #0d0d0d;
+            padding: 15px 25px;
+            border-radius: 20px;
             border: none;
             font-size: clamp(1em, 1.8vw, 1.1em);
             cursor: pointer;
             transition: all 0.3s ease-in-out;
             box-shadow: 0 8px 20px rgba(77, 241, 241, 0.4);
             white-space: nowrap;
-            font-weight: 700; /* Bolder text */
-            text-transform: uppercase; /* More impactful */
+            font-weight: 700;
+            text-transform: uppercase;
         }
         .chat-button:hover {
             transform: translateY(-5px) scale(1.05);
@@ -225,47 +214,45 @@
             color: #999;
         }
 
-        /* Loading Dots for Bot Response */
         .loading-dots {
-            display: none; /* Hidden by default */
+            display: none;
             align-self: flex-start;
             margin-top: 10px;
-            color: #4df1f1; /* Cyan dots */
-            font-size: clamp(1.5em, 2.8vw, 2em); /* Larger dots */
+            color: #4df1f1;
+            font-size: clamp(1.5em, 2.8vw, 2em);
             position: relative;
-            padding-left: 30px; /* Space for dots */
-            line-height: 1; /* Aligns dots better */
+            padding-left: 30px;
+            line-height: 1;
         }
         .loading-dots::before {
-            content: '...'; /* Actual dots animated via steps() */
+            content: '...';
             position: absolute;
             left: 0;
             top: 0;
             overflow: hidden;
-            width: 0; /* Hidden by default */
+            width: 0;
             animation: typing-dots-reveal 1s infinite steps(3, end);
         }
         .loading-dots.active {
             display: block;
         }
         .loading-dots.active::before {
-             width: auto; /* Show dots when active */
+             width: auto;
         }
 
-        /* Action Buttons (Reset, Back to Portfolio) */
         .action-buttons {
             display: flex;
             justify-content: center;
             gap: clamp(15px, 2.5vw, 25px);
-            margin-top: clamp(20px, 3.5vh, 35px); /* More spacing */
+            margin-top: clamp(20px, 3.5vh, 35px);
             flex-wrap: wrap;
         }
         .action-button {
-            background-color: rgba(30, 30, 30, 0.8); /* Darker transparent */
-            color: #4df1f1; /* Cyan text */
+            background-color: rgba(30, 30, 30, 0.8);
+            color: #4df1f1;
             padding: clamp(12px, 2vw, 18px) clamp(20px, 3.5vw, 35px);
-            border-radius: 15px; /* More rounded */
-            border: 1px solid rgba(77, 241, 241, 0.2); /* Subtle cyan border */
+            border-radius: 15px;
+            border: 1px solid rgba(77, 241, 241, 0.2);
             font-size: clamp(0.9em, 1.8vw, 1em);
             cursor: pointer;
             transition: all 0.3s ease-in-out;
@@ -274,13 +261,12 @@
         }
         .action-button:hover {
             background-color: rgba(40, 40, 40, 0.9);
-            border-color: #4df1f1; /* Brighter cyan border on hover */
+            border-color: #4df1f1;
             transform: translateY(-3px);
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5), 0 0 15px rgba(77, 241, 241, 0.4);
-            color: #ffffff; /* White text on hover for contrast */
+            color: #ffffff;
         }
 
-        /* Global Footer Styles: Always visible at the bottom of the page */
         footer {
             width: 100%;
             text-align: center;
@@ -288,7 +274,7 @@
             color: #999;
             padding: clamp(10px, 1.5vh, 20px) 0;
             z-index: 2;
-            background-color: #0d0d0d; /* Matches new body background */
+            background-color: #0d0d0d;
             position: relative;
             flex-shrink: 0;
         }
@@ -300,7 +286,7 @@
             flex-wrap: wrap;
         }
         .footer-button {
-            background-color: #1a1a1a; /* Darker footer button */
+            background-color: #1a1a1a;
             color: #e0e0e0;
             padding: clamp(8px, 1.5vw, 10px) clamp(15px, 3vw, 20px);
             border-radius: 10px;
@@ -317,7 +303,6 @@
             box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
         }
 
-        /* Hamburger Menu & Overlay Navigation (reused from index.html) */
         .menu-toggle {
             position: fixed;
             top: clamp(20px, 4vh, 40px);
@@ -329,19 +314,18 @@
             font-size: clamp(1.8em, 3.5vw, 2.5em);
             cursor: pointer;
             padding: 10px;
-            transition: transform 0.3s ease, color 0.3s ease, visibility 0.3s ease, opacity 0.3s ease; /* Added visibility and opacity */
+            transition: transform 0.3s ease, color 0.3s ease, visibility 0.3s ease, opacity 0.3s ease;
             text-shadow: 0 0 10px rgba(0,0,0,0.5);
             touch-action: manipulation;
         }
         .menu-toggle:hover {
             transform: scale(1.1);
-            color: #4df1f1; /* Cyan tint on hover */
+            color: #4df1f1;
         }
-        /* State for when menu is open */
         .menu-toggle.hidden {
             visibility: hidden;
             opacity: 0;
-            pointer-events: none; /* Ensure it's not clickable when hidden */
+            pointer-events: none;
         }
 
         .nav-overlay {
@@ -353,7 +337,7 @@
             background-color: rgba(0, 0, 0, 0.98);
             display: flex;
             flex-direction: column;
-            justify-content: center; /* This centers the content vertically */
+            justify-content: center;
             align-items: center;
             z-index: 1003;
             opacity: 0;
@@ -362,9 +346,9 @@
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             pointer-events: none;
-            padding-top: clamp(80px, 12vh, 120px); /* Ensures space for the close button */
-            padding-bottom: clamp(40px, 8vh, 80px); /* Ensures space at the bottom */
-            box-sizing: border-box; /* Include padding in height calculation */
+            padding-top: clamp(80px, 12vh, 120px);
+            padding-bottom: clamp(40px, 8vh, 80px);
+            box-sizing: border-box;
         }
         .nav-overlay.open {
             opacity: 1;
@@ -375,7 +359,7 @@
             position: absolute;
             top: clamp(20px, 4vh, 40px);
             right: clamp(20px, 4vw, 40px);
-            z-index: 1004; /* Ensure close button is above nav items */
+            z-index: 1004;
             background: none;
             border: none;
             color: #e0e0e0;
@@ -386,7 +370,7 @@
         }
         .nav-overlay-close-btn:hover {
             transform: rotate(90deg);
-            color: #4df1f1; /* Cyan close button */
+            color: #4df1f1;
         }
         .nav-list {
             list-style: none;
@@ -429,7 +413,7 @@
             left: -100%;
             width: 100%;
             height: 4px;
-            background-color: #4df1f1; /* Cyan underline */
+            background-color: #4df1f1;
             transition: left 0.3s ease-out;
         }
         .nav-list a:hover::before {
@@ -440,49 +424,48 @@
             text-shadow: 0 0 20px rgba(77, 241, 241, 0.8);
         }
 
-        /* Modal Styles (for Legal information, opens on top of everything) */
         .modal-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.8); /* Darker overlay */
+            background-color: rgba(0, 0, 0, 0.8);
             display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 1005; /* Highest z-index for modals */
+            z-index: 1005;
             opacity: 0;
-            pointer-events: none; /* Invisible and non-interactive by default */
+            pointer-events: none;
             transition: opacity 0.3s ease;
-            backdrop-filter: blur(8px); /* Blur effect */
+            backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
         }
 
         .modal-overlay.show {
             opacity: 1;
-            pointer-events: auto; /* Becomes interactive when shown */
+            pointer-events: auto;
         }
 
         .modal-content {
-            background-color: #1a1a1a; /* Darker modal background */
+            background-color: #1a1a1a;
             border-radius: 20px;
-            padding: clamp(20px, 5vw, 40px); /* Responsive padding */
+            padding: clamp(20px, 5vw, 40px);
             box-shadow:
                 inset 5px 5px 10px rgba(0, 0, 0, 0.3),
                 inset -5px -5px 10px rgba(70, 70, 70, 0.1),
-                0 10px 30px rgba(0, 0, 0, 0.7); /* More prominent shadow */
+                0 10px 30px rgba(0, 0, 0, 0.7);
             text-align: left;
-            max-width: 700px; /* Increased max-width */
-            width: 90%; /* Occupies 90% width on smaller screens */
+            max-width: 700px;
+            width: 90%;
             position: relative;
-            transform: scale(0.8); /* Initial smaller scale for entrance animation */
+            transform: scale(0.8);
             opacity: 0;
             transition: transform 0.3s ease, opacity 0.3s ease;
             box-sizing: border-box;
-            max-height: 90vh; /* Allow content to scroll if too long */
-            overflow-y: auto; /* Enable vertical scrolling */
-            border: 1px solid rgba(77, 241, 241, 0.2); /* Subtle cyan border */
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 1px solid rgba(77, 241, 241, 0.2);
         }
 
         .modal-overlay.show .modal-content {
@@ -502,12 +485,12 @@
             transition: color 0.2s ease;
         }
         .modal-close-btn:hover {
-            color: #4df1f1; /* Cyan close button */
+            color: #4df1f1;
         }
 
         .modal-content h2 {
             font-size: clamp(1.8em, 4vw, 2.5em);
-            color: #4df1f1; /* Cyan heading */
+            color: #4df1f1;
             margin-bottom: 20px;
             text-align: center;
         }
@@ -532,16 +515,15 @@
             margin-bottom: 5px;
         }
         .modal-content a {
-            color: #4df1f1; /* Cyan links */
+            color: #4df1f1;
             text-decoration: none;
             transition: color 0.2s ease;
         }
         .modal-content a:hover {
-            color: #21c2c2; /* Darker cyan on hover */
+            color: #21c2c2;
             text-decoration: underline;
         }
 
-        /* Copyright message for right-click protection */
         .copyright-message {
             position: fixed;
             background-color: rgba(0, 0, 0, 0.8);
@@ -559,7 +541,6 @@
             opacity: 1;
         }
 
-        /* Keyframe Animations */
         @keyframes gradient-shift {
             0% { background-position: 0% 0%, 100% 100%; }
             100% { background-position: 100% 100%, 0% 0%; }
@@ -597,7 +578,6 @@
             to { opacity: 1; transform: translateX(0); }
         }
 
-        /* Responsive Adjustments */
         @media (max-width: 768px) {
             .main-container {
                 padding: clamp(40px, 6vh, 80px) clamp(15px, 4vw, 30px) clamp(30px, 5vh, 60px);
@@ -688,17 +668,14 @@
             </div>
             <div class="action-buttons">
                 <button id="resetChatBtn" class="action-button">Reset Chat</button>
-                <!-- Removed "Back to Portfolio" button as requested -->
             </div>
         </div>
     </div>
 
-    <!-- Hamburger Menu Toggle (always fixed top-right) -->
     <button class="menu-toggle" id="menuToggle">
         <i class="fas fa-bars"></i>
     </button>
 
-    <!-- Full-screen Navigation Overlay (appears when menu is toggled) -->
     <nav class="nav-overlay" id="navOverlay">
         <button class="nav-overlay-close-btn" id="navCloseBtn">
             <i class="fas fa-times"></i>
@@ -713,7 +690,6 @@
         </ul>
     </nav>
 
-    <!-- Legal Information & Privacy Policy Modal -->
     <div id="legalModal" class="modal-overlay">
         <div class="modal-content">
             <button class="modal-close-btn">×</button>
@@ -768,7 +744,6 @@
             </div>
         </div>
 
-    <!-- Global Footer -->
     <footer>
         <p>© 2025 iFlex. All rights reserved.</p>
         <div class="footer-buttons">
@@ -776,7 +751,6 @@
         </div>
     </footer>
 
-    <!-- Copyright message for right-click protection -->
     <div id="copyrightMessage" class="copyright-message">
         Content is protected. © iFlex. All rights reserved.
     </div>
@@ -789,9 +763,7 @@
             const sendMessageBtn = document.getElementById('sendMessageBtn');
             const loadingDots = document.getElementById('loadingDots');
             const resetChatBtn = document.getElementById('resetChatBtn');
-            // backToPortfolioLink was removed from HTML, so no need to select it here.
 
-            // Navigation and Modal Elements
             const menuToggle = document.getElementById('menuToggle');
             const navOverlay = document.getElementById('navOverlay');
             const navCloseBtn = document.getElementById('navCloseBtn');
@@ -805,7 +777,6 @@
             let userId = localStorage.getItem('aiSonUserId');
             let channelId = localStorage.getItem('aiSonChannelId');
 
-            // Initialize UUIDs if not present in localStorage
             if (!userId) {
                 userId = uuid.v4();
                 localStorage.setItem('aiSonUserId', userId);
@@ -818,38 +789,35 @@
             console.log('Frontend (son.html) - Loaded User ID:', userId);
             console.log('Frontend (son.html) - Loaded Channel ID:', channelId);
 
-            // Function to add messages to chat display
             function addMessage(text, sender) {
                 const messageDiv = document.createElement('div');
                 messageDiv.classList.add('message');
                 messageDiv.classList.add(sender === 'user' ? 'user-message' : 'bot-message');
                 messageDiv.textContent = text;
                 chatDisplay.appendChild(messageDiv);
-                chatDisplay.scrollTop = chatDisplay.scrollHeight; // Auto-scroll to latest message
+                chatDisplay.scrollTop = chatDisplay.scrollHeight;
             }
 
-            // Function to send message to AI bot
             async function sendMessage() {
                 const message = chatInput.value.trim();
-                if (!message) return; // Don't send empty messages
+                if (!message) return;
 
-                addMessage(message, 'user'); // Display user message
-                chatInput.value = ''; // Clear input
-                chatInput.style.height = 'auto'; // Reset input height
-                sendMessageBtn.disabled = true; // Disable send button
-                loadingDots.classList.add('active'); // Show loading dots
+                addMessage(message, 'user');
+                chatInput.value = '';
+                chatInput.style.height = 'auto';
+                sendMessageBtn.disabled = true;
+                loadingDots.classList.add('active');
 
                 console.log('Frontend (son.html) - Sending with User ID:', userId);
                 console.log('Frontend (son.html) - Sending with Channel ID:', channelId);
 
                 try {
-                    // Fetch call to Netlify Function
                     const response = await fetch('/.netlify/functions/shapes-chat', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
-                            'X-User-Id': userId,     // Pass user ID
-                            'X-Channel-Id': channelId // Pass channel ID for conversation context
+                            'X-User-Id': userId,
+                            'X-Channel-Id': channelId
                         },
                         body: JSON.stringify({ message: message })
                     });
@@ -860,48 +828,44 @@
                     }
 
                     const data = await response.json();
-                    addMessage(data.response, 'bot'); // Display bot response
+                    addMessage(data.response, 'bot');
 
                 } catch (error) {
                     console.error('Error sending message:', error);
                     addMessage(`Error: ${error.message}. Please try again.`, 'bot');
                 } finally {
-                    sendMessageBtn.disabled = false; // Re-enable send button
-                    loadingDots.classList.remove('active'); // Hide loading dots
+                    sendMessageBtn.disabled = false;
+                    loadingDots.classList.remove('active');
                 }
             }
 
-            // Event Listeners for Chat
             sendMessageBtn.addEventListener('click', sendMessage);
             chatInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter' && !e.shiftKey) { // Send on Enter, allow Shift+Enter for new line
+                if (e.key === 'Enter' && !e.shiftKey) {
                     e.preventDefault();
                     sendMessage();
                 }
             });
 
-            // Auto-resize textarea based on content
             chatInput.addEventListener('input', () => {
                 chatInput.style.height = 'auto';
                 chatInput.style.height = (chatInput.scrollHeight) + 'px';
             });
 
-            // Reset Chat functionality
             resetChatBtn.addEventListener('click', () => {
-                localStorage.removeItem('aiSonChannelId'); // Remove old channel ID
-                channelId = uuid.v4(); // Generate new channel ID
-                localStorage.setItem('aiSonChannelId', channelId); // Save new channel ID
-                chatDisplay.innerHTML = '<div class="bot-message message">Chat has been reset. Hello! How can I help you today?</div>'; // Clear display
-                chatInput.value = ''; // Clear input
-                chatInput.style.height = 'auto'; // Reset input height
+                localStorage.removeItem('aiSonChannelId');
+                channelId = uuid.v4();
+                localStorage.setItem('aiSonChannelId', channelId);
+                chatDisplay.innerHTML = '<div class="bot-message message">Chat has been reset. Hello! How can I help you today?</div>';
+                chatInput.value = '';
+                chatInput.style.height = 'auto';
                 console.log('Frontend (son.html) - Chat Reset. New Channel ID:', channelId);
             });
 
-            /* --- Particle Background Setup (existing code, ensure z-index is compatible) --- */
             const particleCanvas = document.getElementById('particleCanvas');
             const particleCtx = particleCanvas.getContext('2d');
             let particles = [];
-            const particleCount = 70; /* Increased particle count for more density */
+            const particleCount = 70;
             const maxRadius = 1.2;
             const minRadius = 0.4;
             const maxSpeed = 0.4;
@@ -916,7 +880,7 @@
                     this.x = Math.random() * particleCanvas.width;
                     this.y = Math.random() * particleCanvas.height;
                     this.radius = Math.random() * (maxRadius - minRadius) + minRadius;
-                    this.color = `rgba(77, 241, 241, ${Math.random() * 0.15 + 0.03})`; /* Cyan particles */
+                    this.color = `rgba(77, 241, 241, ${Math.random() * 0.15 + 0.03})`;
                     this.speedX = (Math.random() - 0.5) * maxSpeed;
                     this.speedY = (Math.random() - 0.5) * maxSpeed;
                 }
@@ -925,17 +889,16 @@
                     particleCtx.beginPath();
                     particleCtx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
                     particleCtx.fillStyle = this.color;
-                    particleCtx.shadowBlur = 5; /* Subtle glow */
+                    particleCtx.shadowBlur = 5;
                     particleCtx.shadowColor = this.color;
                     particleCtx.fill();
-                    particleCtx.shadowBlur = 0; /* Reset for next drawings */
+                    particleCtx.shadowBlur = 0;
                 }
 
                 update() {
                     this.x += this.speedX;
                     this.y += this.speedY;
 
-                    /* Wrap particles around edges */
                     if (this.x < 0 - this.radius) this.x = particleCanvas.width + this.radius;
                     if (this.x > particleCanvas.width + this.radius) this.x = 0 - this.radius;
                     if (this.y < 0 - this.radius) this.y = particleCanvas.height + this.radius;
@@ -968,17 +931,16 @@
                 initParticles();
             });
 
-            /* --- Navigation and Modal Functionality (Re-used from other pages) --- */
             menuToggle.addEventListener('click', () => {
                 navOverlay.classList.add('open');
-                body.classList.add('modal-open'); /* Adds blur effect to main content */
-                menuToggle.classList.add('hidden'); /* Hide hamburger when menu is open */
+                body.classList.add('modal-open');
+                menuToggle.classList.add('hidden');
             });
 
             navCloseBtn.addEventListener('click', () => {
                 navOverlay.classList.remove('open');
                 body.classList.remove('modal-open');
-                menuToggle.classList.remove('hidden'); /* Show hamburger when menu is closed */
+                menuToggle.classList.remove('hidden');
             });
 
             navLinks.forEach(link => {
@@ -1019,7 +981,6 @@
                 }
             });
 
-            /* --- Right-click Protection (consistent across pages) --- */
             document.addEventListener('contextmenu', function(e) {
                 e.preventDefault();
                 copyrightMessage.style.left = `${e.clientX + 10}px`;
