@@ -8,7 +8,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* Global Styles & Reset: Ensures full viewport coverage and consistent base */
         html, body {
             margin: 0;
             padding: 0;
@@ -16,20 +15,19 @@
             width: 100vw;
             box-sizing: border-box;
             font-family: 'Inter', sans-serif;
-            background-color: #1a1a1a; /* Base dark background */
-            color: #e0e0e0; /* Light text for contrast */
+            background-color: #1a1a1a;
+            color: #e0e0e0;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             align-items: center;
-            overflow-x: hidden; /* Prevent horizontal scroll */
-            overflow-y: auto; /* Allow vertical scrolling for content */
+            overflow-x: hidden;
+            overflow-y: auto;
             scroll-behavior: smooth;
-            cursor: url(images/cursor.png), auto; /* Custom cursor */
+            cursor: url(images/cursor.png), auto;
             position: relative;
         }
 
-        /* Subtle pulsating background gradient (replaces complex canvas animations) */
         body::before {
             content: '';
             position: fixed;
@@ -42,60 +40,57 @@
             background-size: 200% 200%;
             animation: gradient-shift 20s ease-in-out infinite alternate;
             pointer-events: none;
-            z-index: -1; /* Behind all content */
+            z-index: -1;
         }
 
-        /* Main content container */
         .main-container {
-            flex-grow: 1; /* Allows it to expand and push footer to bottom */
+            flex-grow: 1;
             width: 100%;
-            max-width: 900px; /* Max width for readability */
-            padding: clamp(60px, 8vh, 100px) clamp(20px, 5vw, 50px) clamp(40px, 6vh, 80px); /* Responsive padding */
+            max-width: 900px;
+            padding: clamp(60px, 8vh, 100px) clamp(20px, 5vw, 50px) clamp(40px, 6vh, 80px);
             box-sizing: border-box;
-            z-index: 2; /* Ensures content is above most background elements */
+            z-index: 2;
             display: flex;
             flex-direction: column;
-            align-items: center; /* Center content horizontally */
-            text-align: center; /* Default text alignment for page title */
+            align-items: center;
+            text-align: center;
         }
 
-        /* Page Title: Consistent with landing page's main title */
         .page-title {
             font-size: clamp(2.5em, 7vw, 4em);
             color: #ffffff;
             margin-bottom: clamp(30px, 5vh, 60px);
             letter-spacing: 2px;
             text-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
-            font-weight: 800; /* Bold typography */
+            font-weight: 800;
             opacity: 0;
             transform: translateY(-20px);
             animation: slideIn 0.8s ease-out forwards;
         }
 
-        /* Content Card: Holds main text and sections */
         .content-card {
-            background-color: rgba(44, 44, 44, 0.9); /* Slightly transparent for depth */
+            background-color: rgba(44, 44, 44, 0.9);
             border-radius: 20px;
             padding: clamp(25px, 5vw, 50px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5), inset 0 0 15px rgba(255, 255, 255, 0.05); /* Enhanced shadow */
-            text-align: left; /* Align text left within the card */
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5), inset 0 0 15px rgba(255, 255, 255, 0.05);
+            text-align: left;
             width: 100%;
             opacity: 0;
             transform: translateY(20px);
             animation: fadeIn 1s ease-out 0.3s forwards;
-            backdrop-filter: blur(5px); /* Subtle blur effect */
+            backdrop-filter: blur(5px);
             -webkit-backdrop-filter: blur(5px);
-            line-height: 1.7; /* Improved readability for paragraphs */
+            line-height: 1.7;
         }
 
         .content-card h2 {
             font-size: clamp(1.8em, 4vw, 2.5em);
-            color: #E74C3C; /* Accent color */
+            color: #E74C3C;
             margin-bottom: clamp(20px, 3vh, 30px);
             letter-spacing: 1px;
             text-shadow: 0 0 10px rgba(231, 76, 60, 0.5);
             font-weight: 700;
-            text-align: center; /* Center section titles */
+            text-align: center;
         }
 
         .content-card h3 {
@@ -114,19 +109,18 @@
         }
 
         .content-card a {
-            color: #E74C3C; /* Red link color */
+            color: #E74C3C;
             text-decoration: none;
             transition: color 0.2s ease, text-shadow 0.2s ease;
         }
         .content-card a:hover {
-            color: #C0392B; /* Darker red on hover */
+            color: #C0392B;
             text-decoration: underline;
             text-shadow: 0 0 5px rgba(231, 76, 60, 0.5);
         }
 
-        /* Contact Button */
         .contact-button {
-            background: linear-gradient(45deg, #2196F3, #1976D2); /* Blue gradient */
+            background: linear-gradient(45deg, #2196F3, #1976D2);
             color: #ffffff;
             padding: clamp(12px, 2vw, 18px) clamp(25px, 4vw, 40px);
             border-radius: 15px;
@@ -155,7 +149,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: radial-gradient(circle at center, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%); /* Subtle internal glow */
+            background: radial-gradient(circle at center, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
             opacity: 0;
             transition: opacity 0.3s ease-in-out;
             z-index: 1;
@@ -164,7 +158,6 @@
             opacity: 1;
         }
 
-        /* Footer & Navigation - Reused from index.html, styled consistently */
         footer {
             width: 100%;
             text-align: center;
@@ -249,7 +242,7 @@
             position: absolute;
             top: clamp(20px, 4vh, 40px);
             right: clamp(20px, 4vw, 40px);
-            z-index: 1004; /* Ensure close button is above nav items */
+            z-index: 1004;
             background: none;
             border: none;
             color: #e0e0e0;
@@ -265,7 +258,7 @@
         .nav-list {
             list-style: none;
             padding: 0;
-            margin: clamp(60px, 10vh, 80px) 0 0; /* Add top margin to push content down from close button */
+            margin: clamp(60px, 10vh, 80px) 0 0;
             text-align: center;
         }
         .nav-list li {
@@ -313,7 +306,6 @@
             text-shadow: 0 0 20px rgba(231, 76, 60, 0.8);
         }
 
-        /* Modal Styles - Reused from index.html, styled consistently */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -407,7 +399,6 @@
             text-decoration: underline;
         }
 
-        /* Animations */
         @keyframes gradient-shift {
             0% { background-position: 0% 0%, 100% 100%; }
             100% { background-position: 100% 100%, 0% 0%; }
@@ -421,7 +412,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Right-click protection message */
         .copyright-message {
             position: fixed;
             background-color: rgba(0, 0, 0, 0.8);
@@ -439,7 +429,6 @@
             opacity: 1;
         }
 
-        /* Responsive Adjustments */
         @media (max-width: 768px) {
             .main-container {
                 padding: clamp(40px, 6vh, 80px) clamp(15px, 4vw, 30px) clamp(30px, 5vh, 60px);
@@ -477,15 +466,9 @@
     </style>
 </head>
 <body>
-    <!-- Global background element for subtle gradient animation -->
-    <!-- body::before styles the main background. This replaces previous canvas elements for a cleaner look. -->
-
-    <!-- Main content container -->
     <div class="main-container">
-        <!-- Page Title -->
         <h1 class="page-title">About iFlex</h1>
 
-        <!-- About Section Content -->
         <section class="content-card">
             <h2>About Me</h2>
             <p>Welcome! I'm iFlex, a passionate tech guy. This is my personal hub for everything about me.</p>
@@ -505,18 +488,14 @@
         </section>
     </div>
 
-    <!-- Hamburger Menu Toggle button -->
     <button class="menu-toggle" id="menuToggle">
         <i class="fas fa-bars"></i>
     </button>
 
-    <!-- Full-screen Navigation Overlay -->
     <nav class="nav-overlay" id="navOverlay">
-        <!-- Close button for the navigation overlay -->
         <button class="nav-overlay-close-btn" id="navCloseBtn">
             <i class="fas fa-times"></i>
         </button>
-        <!-- Navigation links -->
         <ul class="nav-list">
             <li><a href="index.html">Home</a></li>
             <li><a href="portfolio.html">My Work</a></li>
@@ -527,7 +506,6 @@
         </ul>
     </nav>
 
-    <!-- Legal Information & Privacy Policy Modal -->
     <div id="legalModal" class="modal-overlay">
         <div class="modal-content">
             <button class="modal-close-btn">×</button>
@@ -574,7 +552,6 @@
             </div>
         </div>
 
-    <!-- Global Footer -->
     <footer>
         <p>© 2025 iFlex. All rights reserved.</p>
         <div class="footer-buttons">
@@ -582,14 +559,12 @@
         </div>
     </footer>
 
-    <!-- Copyright message for right-click protection -->
     <div id="copyrightMessage" class="copyright-message">
         Content is protected. © iFlex. All rights reserved.
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // DOM Elements
             const menuToggle = document.getElementById('menuToggle');
             const navOverlay = document.getElementById('navOverlay');
             const navCloseBtn = document.getElementById('navCloseBtn');
@@ -600,18 +575,16 @@
             const modalCloseBtns = document.querySelectorAll('.modal-close-btn');
             const copyrightMessage = document.getElementById('copyrightMessage');
 
-            /* --- Navigation and Modal Functionality (consistent across pages) --- */
-           /* --- Navigation and Modal Functionality (consistent across pages) --- */
             menuToggle.addEventListener('click', () => {
                 navOverlay.classList.add('open');
                 body.classList.add('modal-open');
-                menuToggle.style.visibility = 'hidden'; /* Hide hamburger when menu is open */
+                menuToggle.style.visibility = 'hidden';
             });
 
             navCloseBtn.addEventListener('click', () => {
                 navOverlay.classList.remove('open');
                 body.classList.remove('modal-open');
-                menuToggle.style.visibility = 'visible'; /* Show hamburger when menu is closed */
+                menuToggle.style.visibility = 'visible';
             });
 
             navLinks.forEach(link => {
@@ -653,7 +626,6 @@
                 }
             });
 
-            /* --- Right-click Protection (consistent across pages) --- */
             document.addEventListener('contextmenu', function(e) {
                 e.preventDefault();
                 copyrightMessage.style.left = `${e.clientX + 10}px`;
