@@ -14,7 +14,7 @@
 
     
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:site" content="@ySaiFlex_1"> <
+    <meta name="twitter:site" content="@ySaiFlex_1"> 
     <meta name="twitter:creator" content="@SaiFlex_1"> 
     <meta name="twitter:title" content="iFlex's Zone">
     <meta name="twitter:description" content="Explore my website, portfolio, AI innovation. Crafting immersive digital experiences and pushing the boundaries of technology.">
@@ -637,13 +637,11 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Function to resize canvas elements
             function resizeCanvas(canvas) {
                 canvas.width = window.innerWidth;
                 canvas.height = window.innerHeight;
             }
 
-            // --- Particle Background ---
             const particleCanvas = document.getElementById('particleCanvas');
             const particleCtx = particleCanvas.getContext('2d');
             let particles = [];
@@ -705,7 +703,6 @@
                 initParticles();
             });
 
-            // --- Cursor Trail Canvas ---
             const cursorTrailCanvas = document.getElementById('cursorTrailCanvas');
             const cursorTrailCtx = cursorTrailCanvas.getContext('2d');
             let cursorParticles = [];
@@ -764,7 +761,6 @@
             animateCursorTrail();
             window.addEventListener('resize', () => resizeCanvas(cursorTrailCanvas));
 
-            // --- Navigation and Modal Elements ---
             const portalActivator = document.getElementById('portalActivator');
             const portalTransitionCircle = document.getElementById('portalTransitionCircle');
             const navOverlay = document.getElementById('navOverlay');
@@ -775,9 +771,8 @@
             const legalModal = document.getElementById('legalModal');
             const modalCloseBtns = document.querySelectorAll('.modal-close-btn');
             const volumetricOverlay = document.querySelector('.volumetric-overlay');
-            const discordStatusTextElement = document.getElementById('discordStatusText'); // Our target element for status
+            const discordStatusTextElement = document.getElementById('discordStatusText');
 
-            // --- Portal Activator Logic ---
             portalActivator.addEventListener('click', () => {
                 const rect = portalActivator.getBoundingClientRect();
                 portalTransitionCircle.style.left = `${rect.left + rect.width / 2}px`;
@@ -794,7 +789,6 @@
                 }, { once: true });
             });
 
-            // --- Navigation Overlay Logic ---
             navCloseBtn.addEventListener('click', () => {
                 navOverlay.classList.remove('open');
                 body.classList.remove('modal-open');
@@ -811,7 +805,6 @@
                 });
             });
 
-            // --- Modal Logic (Legal Info) ---
             function openModal(modalElement) {
                 modalElement.classList.add('show');
                 body.classList.add('modal-open');
@@ -842,7 +835,6 @@
                 }
             });
 
-            // --- Volumetric Overlay Parallax Effect ---
             document.addEventListener('mousemove', (e) => {
                 const mouseX = e.clientX / window.innerWidth - 0.5;
                 const mouseY = e.clientY / window.innerHeight - 0.5;
@@ -858,15 +850,11 @@
                 }
             });
 
-            // --- Lanyard Discord Status Integration ---
-            // THIS IS WHERE YOUR DISCORD USER ID GOES.
-            // Ensure there are NO quotes around the numerical ID.
             const DISCORD_USER_ID = 1007939118925361212; 
             const LANYARD_API_URL = `https://api.lanyard.rest/v1/users/1007939118925361212`;
             const defaultStatus = "Crafting immersive digital experiences through cutting-edge web development and AI innovation.";
 
             async function fetchDiscordStatus() {
-                // Check if the Discord User ID is the placeholder or invalid before attempting fetch
                 if (typeof DISCORD_USER_ID !== 'number' || DISCORD_USER_ID === 0 || DISCORD_USER_ID.toString().length < 18) {
                     console.warn('Discord User ID is not correctly set. Please update DISCORD_USER_ID in index.html script with your actual numerical ID.');
                     discordStatusTextElement.textContent = defaultStatus;
@@ -884,15 +872,13 @@
                     const data = await response.json();
 
                     if (data.success && data.data) {
-                        let statusMessage = defaultStatus; // Fallback to default
+                        let statusMessage = defaultStatus;
 
-                        // Prioritize custom status
                         if (data.data.activities && data.data.activities.length > 0) {
-                            const customStatus = data.data.activities.find(activity => activity.type === 4); // Type 4 is custom status
+                            const customStatus = data.data.activities.find(activity => activity.type === 4);
                             if (customStatus && customStatus.state) {
                                 statusMessage = customStatus.state;
                             } else {
-                                // If no custom status, use Discord general status
                                 switch (data.data.discord_status) {
                                     case 'online':
                                         statusMessage = "Online and ready to innovate!";
@@ -911,7 +897,6 @@
                                 }
                             }
                         } else {
-                            // If no activities, rely purely on discord_status
                              switch (data.data.discord_status) {
                                     case 'online':
                                         statusMessage = "Online and ready to innovate!";
@@ -932,7 +917,7 @@
                         discordStatusTextElement.textContent = statusMessage;
                     } else {
                         console.warn('Lanyard API returned success: false or missing data:', data);
-                        discordStatusTextElement.textContent = defaultStatus; // Fallback
+                        discordStatusTextElement.textContent = defaultStatus;
                     }
                 } catch (error) {
                     console.error('Error fetching Discord status from Lanyard:', error);
@@ -940,10 +925,8 @@
                 }
             }
 
-            // Fetch immediately on load
             fetchDiscordStatus();
-            // Fetch every 30 seconds to keep it updated (Lanyard has rate limits, avoid too frequent calls)
-            setInterval(fetchDiscordStatus, 30000); // 30 seconds
+            setInterval(fetchDiscordStatus, 30000);
 
         });
     </script>
