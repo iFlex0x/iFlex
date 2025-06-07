@@ -9,7 +9,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <style>
-        /* Global Styles & Reset: Ensures full viewport coverage and consistent base */
         html, body {
             margin: 0;
             padding: 0;
@@ -17,20 +16,19 @@
             width: 100vw;
             box-sizing: border-box;
             font-family: 'Inter', sans-serif;
-            background-color: #0d0d0d; /* Even darker base background */
-            color: #e0e0e0; /* Light text for contrast */
+            background-color: #0d0d0d;
+            color: #e0e0e0;
             display: flex;
             flex-direction: column;
-            justify-content: space-between; /* Pushes content to center, footer to bottom */
+            justify-content: space-between;
             align-items: center;
-            overflow-x: hidden; /* Prevent horizontal scroll */
-            overflow-y: auto; /* Allow vertical scrolling for content */
+            overflow-x: hidden;
+            overflow-y: auto;
             scroll-behavior: smooth;
-            cursor: url(images/cursor.png), auto; /* Custom cursor */
+            cursor: url(images/cursor.png), auto;
             position: relative;
         }
 
-        /* Digital Grid Overlay: New background effect */
         body::before {
             content: '';
             position: fixed;
@@ -41,13 +39,12 @@
             background: 
                 linear-gradient(to right, rgba(17, 17, 17, 0.8) 1px, transparent 1px),
                 linear-gradient(to bottom, rgba(17, 17, 17, 0.8) 1px, transparent 1px);
-            background-size: 40px 40px; /* Adjust grid density */
+            background-size: 40px 40px;
             animation: grid-pulse 15s ease-in-out infinite alternate;
             pointer-events: none;
-            z-index: -1; /* Behind all content */
+            z-index: -1;
         }
         
-        /* Subtle radial gradient for depth over grid */
         body::after {
             content: '';
             position: fixed;
@@ -57,38 +54,35 @@
             bottom: 0;
             background: radial-gradient(circle at center, rgba(20, 20, 20, 0) 0%, rgba(13, 13, 13, 0.8) 70%, rgba(13, 13, 13, 1) 100%);
             pointer-events: none;
-            z-index: 0; /* Above grid, below content */
+            z-index: 0;
         }
 
-        /* Particle Canvas: Dynamic background particles */
         #particleCanvas {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: -2; /* Furthest back */
+            z-index: -2;
             pointer-events: none;
         }
 
-        /* Main container for page content (brainstormer area) */
         .main-container {
-            flex-grow: 1; /* Allows it to expand and fill space */
+            flex-grow: 1;
             width: 100%;
-            max-width: 900px; /* Max width for readability */
-            padding: clamp(60px, 8vh, 100px) clamp(20px, 5vw, 50px) clamp(40px, 6vh, 80px); /* Responsive padding */
+            max-width: 900px;
+            padding: clamp(60px, 8vh, 100px) clamp(20px, 5vw, 50px) clamp(40px, 6vh, 80px);
             box-sizing: border-box;
-            z-index: 2; /* Ensures content is above background elements */
+            z-index: 2;
             display: flex;
             flex-direction: column;
-            align-items: center; /* Center content horizontally */
-            text-align: center; /* Default text alignment for page title */
+            align-items: center;
+            text-align: center;
         }
 
-        /* Page Title */
         .page-title {
             font-size: clamp(2.5em, 7vw, 4em);
-            color: #4df1f1; /* Cyan glow for title */
+            color: #4df1f1;
             margin-bottom: clamp(30px, 5vh, 60px);
             letter-spacing: 2px;
             text-shadow: 0 0 15px rgba(77, 241, 241, 0.8), 0 0 30px rgba(77, 241, 241, 0.5);
@@ -98,15 +92,13 @@
             animation: slideIn 0.8s ease-out forwards, text-neon-glow 3s infinite alternate ease-in-out;
         }
 
-        /* Brainstormer Container (main interactive area) */
         .brainstormer-container {
-            background-color: rgba(25, 25, 25, 0.7); /* More transparent dark background */
-            border-radius: 25px; /* More pronounced rounded corners */
+            background-color: rgba(25, 25, 25, 0.7);
+            border-radius: 25px;
             padding: clamp(25px, 5vw, 50px);
-            box-shadow: 0 10px 30px rgba(0, 255, 255, 0.2), inset 0 0 20px rgba(0, 255, 255, 0.1); /* Cyan glow shadow */
+            box-shadow: 0 10px 30px rgba(0, 255, 255, 0.2), inset 0 0 20px rgba(0, 255, 255, 0.1);
             text-align: center;
             width: 100%;
-            /* height: clamp(500px, 75vh, 800px); This was restrictive, removed to allow content to dictate height */
             display: flex;
             flex-direction: column;
             gap: 15px;
@@ -115,12 +107,11 @@
             opacity: 0;
             transform: translateY(20px);
             animation: fadeIn 1s ease-out 0.3s forwards;
-            backdrop-filter: blur(10px); /* Stronger frosted glass effect */
+            backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(77, 241, 241, 0.3); /* Subtle cyan border */
+            border: 1px solid rgba(77, 241, 241, 0.3);
         }
 
-        /* Brainstormer Input Area */
         .brainstormer-input-area {
             display: flex;
             flex-direction: column;
@@ -129,10 +120,10 @@
             margin-bottom: clamp(20px, 4vh, 40px);
         }
         .brainstormer-input-area textarea {
-            width: 100%; /* Changed from 80% to 100% */
+            width: 100%;
             max-width: 600px;
             padding: clamp(12px, 2vw, 15px);
-            border-radius: 15px; /* More rounded */
+            border-radius: 15px;
             border: 1px solid rgba(77, 241, 241, 0.3);
             background-color: rgba(25, 25, 25, 0.6);
             color: #e0e0e0;
@@ -157,11 +148,11 @@
             gap: clamp(15px, 3vw, 20px);
             justify-content: center;
             flex-wrap: wrap;
-            width: 100%; /* Ensures buttons take full width for wrapping */
-            max-width: 600px; /* Aligns with textarea max-width */
+            width: 100%;
+            max-width: 600px;
         }
         .brainstormer-button {
-            background: linear-gradient(45deg, #4df1f1, #21c2c2); /* Cyan gradient */
+            background: linear-gradient(45deg, #4df1f1, #21c2c2);
             color: #0d0d0d;
             padding: clamp(12px, 2vw, 18px) clamp(25px, 5vw, 35px);
             border-radius: 20px;
@@ -175,9 +166,9 @@
             gap: 10px;
             font-weight: 700;
             text-transform: uppercase;
-            flex-grow: 1; /* Allow buttons to grow */
-            min-width: 150px; /* Minimum width for buttons */
-            justify-content: center; /* Center content in button */
+            flex-grow: 1;
+            min-width: 150px;
+            justify-content: center;
         }
         .brainstormer-button:hover {
             transform: translateY(-5px) scale(1.05);
@@ -240,7 +231,7 @@
         .copy-message {
             display: inline-block;
             margin-left: 10px;
-            color: #4df1f1; /* Cyan color */
+            color: #4df1f1;
             font-size: 0.8em;
             opacity: 0;
             transition: opacity 0.3s ease-in-out;
@@ -284,7 +275,7 @@
             padding-bottom: 0;
         }
         .saved-concepts-list .remove-button {
-            background-color: rgba(231, 76, 60, 0.8); /* Red for remove */
+            background-color: rgba(231, 76, 60, 0.8);
             color: #fff;
             border: none;
             border-radius: 5px;
@@ -319,7 +310,6 @@
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
         }
 
-        /* Global Footer Styles */
         footer {
             width: 100%;
             text-align: center;
@@ -327,10 +317,10 @@
             color: #999;
             padding: clamp(10px, 1.5vh, 20px) 0;
             z-index: 2;
-            background-color: #0d0d0d; /* Matches body background */
+            background-color: #0d0d0d;
             position: relative;
             flex-shrink: 0;
-            margin-top: auto; /* Pushes footer to bottom */
+            margin-top: auto;
         }
         .footer-buttons {
             display: flex;
@@ -357,7 +347,6 @@
             box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
         }
 
-        /* Copyright message for right-click protection */
         .copyright-message {
             position: fixed;
             background-color: rgba(0, 0, 0, 0.8);
@@ -375,49 +364,48 @@
             opacity: 1;
         }
 
-        /* Modal Styles (for Legal information, opens on top of everything) */
         .modal-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.8); /* Darker overlay */
+            background-color: rgba(0, 0, 0, 0.8);
             display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 1005; /* Highest z-index for modals */
+            z-index: 1005;
             opacity: 0;
-            pointer-events: none; /* Invisible and non-interactive by default */
+            pointer-events: none;
             transition: opacity 0.3s ease;
-            backdrop-filter: blur(8px); /* Blur effect */
+            backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
         }
 
         .modal-overlay.show {
             opacity: 1;
-            pointer-events: auto; /* Becomes interactive when shown */
+            pointer-events: auto;
         }
 
         .modal-content {
-            background-color: #1a1a1a; /* Darker modal background */
+            background-color: #1a1a1a;
             border-radius: 20px;
-            padding: clamp(20px, 5vw, 40px); /* Responsive padding */
+            padding: clamp(20px, 5vw, 40px);
             box-shadow:
                 inset 5px 5px 10px rgba(0, 0, 0, 0.3),
                 inset -5px -5px 10px rgba(70, 70, 70, 0.1),
-                0 10px 30px rgba(0, 0, 0, 0.7); /* More prominent shadow */
+                0 10px 30px rgba(0, 0, 0, 0.7);
             text-align: left;
-            max-width: 700px; /* Increased max-width */
-            width: 90%; /* Occupies 90% width on smaller screens */
+            max-width: 700px;
+            width: 90%;
             position: relative;
-            transform: scale(0.8); /* Initial smaller scale for entrance animation */
+            transform: scale(0.8);
             opacity: 0;
             transition: transform 0.3s ease, opacity 0.3s ease;
             box-sizing: border-box;
-            max-height: 90vh; /* Allow content to scroll if too long */
-            overflow-y: auto; /* Enable vertical scrolling */
-            border: 1px solid rgba(77, 241, 241, 0.2); /* Subtle cyan border */
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 1px solid rgba(77, 241, 241, 0.2);
         }
 
         .modal-overlay.show .modal-content {
@@ -437,12 +425,12 @@
             transition: color 0.2s ease;
         }
         .modal-close-btn:hover {
-            color: #4df1f1; /* Cyan close button */
+            color: #4df1f1;
         }
 
         .modal-content h2 {
             font-size: clamp(1.8em, 4vw, 2.5em);
-            color: #4df1f1; /* Cyan heading */
+            color: #4df1f1;
             margin-bottom: 20px;
             text-align: center;
         }
@@ -467,16 +455,15 @@
             margin-bottom: 5px;
         }
         .modal-content a {
-            color: #4df1f1; /* Cyan links */
+            color: #4df1f1;
             text-decoration: none;
             transition: color 0.2s ease;
         }
         .modal-content a:hover {
-            color: #21c2c2; /* Darker cyan on hover */
+            color: #21c2c2;
             text-decoration: underline;
         }
 
-        /* Hamburger Menu & Overlay Navigation */
         .menu-toggle {
             position: fixed;
             top: clamp(20px, 4vh, 40px);
@@ -520,8 +507,8 @@
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             pointer-events: none;
-            padding-top: clamp(80px, 12vh, 120px); /* Space for close button */
-            padding-bottom: clamp(40px, 8vh, 80px); /* Space at bottom */
+            padding-top: clamp(80px, 12vh, 120px);
+            padding-bottom: clamp(40px, 8vh, 80px);
             box-sizing: border-box;
         }
         .nav-overlay.open {
@@ -557,7 +544,7 @@
             height: 100%;
         }
         .nav-list li {
-            margin: clamp(10px, 2vh, 20px) 0; /* Adjusted: Reduced margin for closer buttons */
+            margin: clamp(10px, 2vh, 20px) 0;
             opacity: 0;
             transform: translateY(20px);
             transition: opacity 0.4s ease, transform 0.4s ease;
@@ -590,7 +577,7 @@
             left: -100%;
             width: 100%;
             height: 4px;
-            background-color: #4df1f1; /* Cyan underline */
+            background-color: #4df1f1;
             transition: left 0.3s ease-out;
         }
         .nav-list a:hover::before {
@@ -602,7 +589,6 @@
         }
 
 
-        /* Keyframe Animations */
         @keyframes gradient-shift {
             0% { background-position: 0% 0%, 100% 100%; }
             100% { background-position: 100% 100%, 0% 0%; }
@@ -637,7 +623,6 @@
         }
 
 
-        /* Responsive Adjustments */
         @media (max-width: 768px) {
             .main-container {
                 padding: clamp(40px, 6vh, 80px) clamp(15px, 4vw, 30px) clamp(30px, 5vh, 60px);
@@ -649,11 +634,11 @@
                 padding: clamp(15px, 4vw, 40px);
             }
             .brainstormer-input-area textarea {
-                width: 100%; /* Ensure it's full width on smaller screens */
+                width: 100%;
                 padding: 10px 15px;
             }
             .brainstormer-button {
-                width: 100%; /* Buttons stack */
+                width: 100%;
                 padding: 12px 20px;
                 font-size: 0.95em;
             }
@@ -727,12 +712,10 @@
         </div>
     </div>
 
-    <!-- Hamburger Menu Toggle (always fixed top-right) -->
     <button class="menu-toggle" id="menuToggle">
         <i class="fas fa-bars"></i>
     </button>
 
-    <!-- Full-screen Navigation Overlay (appears when menu is toggled) -->
     <nav class="nav-overlay" id="navOverlay">
         <button class="nav-overlay-close-btn" id="navCloseBtn">
             <i class="fas fa-times"></i>
@@ -747,7 +730,6 @@
         </ul>
     </nav>
 
-    <!-- Legal Information & Privacy Policy Modal -->
     <div id="legalModal" class="modal-overlay">
         <div class="modal-content">
             <button class="modal-close-btn">×</button>
@@ -802,7 +784,6 @@
             </div>
         </div>
 
-    <!-- Global Footer -->
     <footer>
         <p>© 2025 iFlex. All rights reserved.</p>
         <div class="footer-buttons">
@@ -810,7 +791,6 @@
         </div>
     </footer>
 
-    <!-- Copyright message for right-click protection -->
     <div id="copyrightMessage" class="copyright-message">
         Content is protected. © iFlex. All rights reserved.
     </div>
@@ -826,7 +806,6 @@
             const savedConceptsList = document.getElementById('savedConceptsList');
             const clearAllSavedButton = document.getElementById('clearAllSavedButton');
 
-            // Navigation and Modal Elements
             const menuToggle = document.getElementById('menuToggle');
             const navOverlay = document.getElementById('navOverlay');
             const navCloseBtn = document.getElementById('navCloseBtn');
@@ -837,7 +816,6 @@
             const copyrightMessage = document.getElementById('copyrightMessage');
             const body = document.body;
 
-            // --- Brainstormer Functionality (Adapted from old index.html) ---
             brainstormButton.addEventListener('click', async () => {
                 const topic = videoTopicInput.value.trim();
                 if (!topic) {
@@ -846,11 +824,10 @@
                 }
 
                 loadingIndicator.classList.add('active');
-                brainstormOutput.innerHTML = ''; // Clear previous output
+                brainstormOutput.innerHTML = '';
                 brainstormButton.disabled = true;
 
                 try {
-                    // Using the old endpoint and direct JSON parsing
                     const response = await fetch('/.netlify/functions/brainstorm', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
@@ -859,25 +836,18 @@
 
                     let result;
                     try {
-                        // Attempt to parse the response as JSON. This is the single read.
                         result = await response.json();
                     } catch (jsonError) {
-                        // If JSON parsing fails, it means the server didn't send valid JSON.
-                        // We still capture the raw text to help debug.
-                        const rawText = await response.text().catch(() => "N/A (stream already consumed)"); // Catch error if text() is also consumed
+                        const rawText = await response.text().catch(() => "N/A (stream already consumed)");
                         throw new Error(`Invalid JSON response from server. Raw response: "${rawText.substring(0, 200)}..." (Error: ${jsonError.message})`);
                     }
                     
 
-                    // Check if the response was successful based on the HTTP status
                     if (!response.ok) {
-                        // If response.ok is false, it's an HTTP error, but we expect JSON error details.
-                        // We rely on 'result' already containing the parsed JSON (or error info).
                         throw new Error(`API error: ${response.status} - ${response.statusText}. Server message: ${result.error || 'Unknown error'}. Please check Netlify function logs.`);
                     }
 
                     if (result.concepts) {
-                        // Use marked.parse() as in the old index.html, assuming the function returns Markdown.
                         brainstormOutput.innerHTML = marked.parse(result.concepts); 
                         addConceptActionButtons();
                     } else {
@@ -979,7 +949,6 @@
                 }, 1000);
             }
 
-            // Local Storage for Saved Concepts
             let savedConcepts = JSON.parse(localStorage.getItem('iflexSavedConcepts')) || [];
 
             function saveConcept(conceptText) {
@@ -1028,7 +997,6 @@
 
             renderSavedConcepts();
 
-            // --- Particle Background ---
             const particleCanvas = document.getElementById('particleCanvas');
             const particleCtx = particleCanvas.getContext('2d');
             let particles = [];
@@ -1098,7 +1066,6 @@
                 initParticles();
             });
 
-            /* --- Navigation and Modal Functionality --- */
             menuToggle.addEventListener('click', () => {
                 navOverlay.classList.add('open');
                 body.classList.add('modal-open');
@@ -1149,7 +1116,6 @@
                 }
             });
 
-            /* --- Right-click Protection --- */
             document.addEventListener('contextmenu', function(e) {
                 e.preventDefault();
                 copyrightMessage.style.left = `${e.clientX + 10}px`;
