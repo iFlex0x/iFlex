@@ -541,170 +541,92 @@
             text-decoration: underline;
         }
 
-        /* Copyright message for right-click protection */
-        .copyright-message {
-            position: fixed;
-            background-color: rgba(0, 0, 0, 0.8);
-            color: #fff;
-            padding: 8px 15px;
-            border-radius: 8px;
-            font-size: 0.9em;
-            z-index: 1000;
-            opacity: 0;
-            transition: opacity 0.3s ease-in-out;
-            pointer-events: none;
-            white-space: nowrap;
+        /* Keyframe Animations for Cinematic Effect */
+        @keyframes background-pulse {
+            0% { background-color: #1a1a1a; }
+            50% { background-color: #202020; }
+            100% { background-color: #1a1a1a; }
         }
-        .copyright-message.show {
-            opacity: 1;
+        @keyframes initial-glow {
+            0% { box-shadow: 0 0 50px rgba(77, 241, 241, 0.2); } /* Cyan glow */
+            50% { box-shadow: 0 0 80px rgba(77, 241, 241, 0.4); }
+            100% { box-shadow: 0 0 50px rgba(77, 241, 241, 0.2); }
         }
-
-        /* Keyframe Animations */
-        @keyframes gradient-shift {
-            0% { background-position: 0% 0%, 100% 100%; }
-            100% { background-position: 100% 100%, 0% 0%; }
+        @keyframes fluid-shift {
+            0% { transform: scale(1.2) translate(0, 0); opacity: 0.3; }
+            25% { transform: scale(1.2) translate(5%, 5%); opacity: 0.4; }
+            50% { transform: scale(1.2) translate(0, 10%); opacity: 0.3; }
+            75% { transform: scale(1.2) translate(-5%, 5%); opacity: 0.4; }
+            100% { transform: scale(1.2) translate(0, 0); opacity: 0.3; }
         }
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes hero-fade-in {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
         }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes logo-pulsar-entrance {
+            0% { opacity: 0; transform: scale(0.2); filter: drop-shadow(0 0 0 rgba(77, 241, 241, 0)); }
+            50% { opacity: 1; transform: scale(1.2); filter: drop-shadow(0 0 50px rgba(77, 241, 241, 1)); } /* Intense peak cyan glow */
+            100% { opacity: 1; transform: scale(1); filter: drop-shadow(0 0 25px rgba(77, 241, 241, 0.7)); }
         }
-        @keyframes text-neon-glow {
-            0% { text-shadow: 0 0 5px rgba(77, 241, 241, 0.4), 0 0 10px rgba(77, 241, 241, 0.2); }
-            50% { text-shadow: 0 0 20px rgba(77, 241, 241, 0.8), 0 0 40px rgba(77, 241, 241, 0.5); }
-            100% { text-shadow: 0 0 5px rgba(77, 241, 241, 0.4), 0 0 10px rgba(77, 241, 241, 0.2); }
+        @keyframes logo-pulse {
+            0% { transform: scale(1); filter: drop-shadow(0 0 25px rgba(77, 241, 241, 0.7)); }
+            50% { transform: scale(1.02); filter: drop-shadow(0 0 35px rgba(77, 241, 241, 0.9)); }
+            100% { transform: scale(1); filter: drop-shadow(0 0 25px rgba(77, 241, 241, 0.7)); }
         }
-        @keyframes typing-dots-reveal {
-            0% { width: 0; }
-            33% { width: 0.33em; }
-            66% { width: 0.66em; }
-            100% { width: 1em; }
+        @keyframes logo-ripple {
+            0% { transform: scale(0.8); opacity: 0.5; }
+            100% { transform: scale(1.5); opacity: 0; }
         }
-        @keyframes grid-pulse {
-            0% { background-color: #0d0d0d; background-position: 0% 0%; }
-            50% { background-color: #1a1a1a; background-position: 10% 10%; }
-            100% { background-color: #0d0d0d; background-position: 0% 0%; }
+        @keyframes kinetic-title-entrance {
+            0% { opacity: 0; transform: translateY(-80px) scale(0.8); letter-spacing: 20px; }
+            60% { opacity: 1; transform: translateY(10px) scale(1.05); letter-spacing: 3px; }
+            100% { opacity: 1; transform: translateY(0) scale(1); letter-spacing: 5px; }
         }
-        @keyframes message-slide-in-right {
-            from { opacity: 0; transform: translateX(20px); }
-            to { opacity: 1; transform: translateX(0); }
+        @keyframes fade-in {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
         }
-        @keyframes message-slide-in-left {
-            from { opacity: 0; transform: translateX(-20px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-
-        /* Responsive Adjustments */
-        @media (max-width: 768px) {
-            .main-container {
-                padding: clamp(40px, 6vh, 80px) clamp(15px, 4vw, 30px) clamp(30px, 5vh, 60px);
-            }
-            .page-title {
-                font-size: clamp(2em, 6vw, 3.5em);
-            }
-            .chat-container {
-                padding: clamp(15px, 4vw, 40px);
-                height: clamp(400px, 80vh, 700px);
-            }
-            .message {
-                font-size: clamp(0.85em, 1.7vw, 1em);
-            }
-            .chat-input-area {
-                flex-direction: column;
-                gap: 8px;
-            }
-            .chat-input-area textarea {
-                min-height: 35px;
-                padding: 10px 15px;
-            }
-            .chat-button {
-                width: 100%;
-                padding: 12px 20px;
-                font-size: 0.95em;
-            }
-            .action-buttons {
-                flex-direction: column;
-                gap: 10px;
-            }
-            .action-button {
-                width: 100%;
-                padding: 10px 20px;
-                font-size: 0.9em;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .main-container {
-                padding: clamp(30px, 5vh, 60px) clamp(10px, 3vw, 20px) clamp(20px, 4vh, 40px);
-            }
-            .page-title {
-                font-size: clamp(1.8em, 5.5vw, 3em);
-                margin-bottom: clamp(20px, 4vh, 40px);
-            }
-            .chat-container {
-                padding: clamp(10px, 3vw, 30px);
-                height: clamp(350px, 90vh, 600px);
-            }
-            .message {
-                font-size: 0.8em;
-                padding: 8px 12px;
-            }
-            .chat-input-area textarea {
-                font-size: 0.85em;
-                padding: 8px 12px;
-            }
-            .chat-button {
-                font-size: 0.85em;
-                padding: 10px 15px;
-            }
-            .action-button {
-                font-size: 0.8em;
-                padding: 8px 15px;
-            }
-            .loading-dots {
-                font-size: 1.2em;
-            }
+        @keyframes button-pop-in {
+            0% { opacity: 0; transform: scale(0.5); }
+            70% { opacity: 1; transform: scale(1.1); }
+            100% { opacity: 1; transform: scale(1); }
         }
     </style>
 </head>
 <body>
     <canvas id="particleCanvas"></canvas>
+    <canvas id="cursorTrailCanvas"></canvas>
+    <div class="vignette-overlay"></div>
+    <div class="volumetric-overlay"></div> <!-- New fluid/light overlay -->
 
-    <div class="main-container">
-        <h1 class="page-title">My AI Son</h1>
-        <div class="chat-container">
-            <div id="chatDisplay" class="chat-display">
-                <div class="bot-message message">Hello! I'm iFlex's AI Son. How can I help you today?</div>
-            </div>
-            <div id="loadingDots" class="loading-dots">
-                <span class="dot"></span><span class="dot"></span><span class="dot"></span>
-            </div>
-            <div class="chat-input-area">
-                <textarea id="chatInput" placeholder="Type your message..."></textarea>
-                <button id="sendMessageBtn" class="chat-button">Send</button>
-            </div>
-            <div class="action-buttons">
-                <button id="resetChatBtn" class="action-button">Reset Chat</button>
-                <!-- Removed "Back to Portfolio" button as requested -->
-            </div>
+    <!-- Main Hero Section - This will take up most of the viewport height -->
+    <div class="hero-section">
+        <div class="hero-logo-container">
+            <img src="images/iflexnew.png" alt="iFlex Logo">
         </div>
+        <h1 class="hero-title">iFlex</h1>
+        <p class="hero-subtitle">Crafting immersive digital experiences through cutting-edge web development and AI innovation.</p>
+        
+        <!-- Portal Activator Button -->
+        <button class="portal-activator-button" id="portalActivator">
+            <i class="fas fa-arrow-right"></i> <!-- Example glyph: right arrow -->
+        </button>
     </div>
 
-    <!-- Hamburger Menu Toggle (always fixed top-right) -->
+    <!-- Portal Transition Circle (initially hidden) -->
+    <div class="portal-transition-circle" id="portalTransitionCircle"></div>
+
+    <!-- Hamburger Menu Toggle (initially hidden on landing page, appears on sub-pages) -->
     <button class="menu-toggle" id="menuToggle">
         <i class="fas fa-bars"></i>
     </button>
 
-    <!-- Full-screen Navigation Overlay (appears when menu is toggled) -->
+    <!-- Full-screen Navigation Overlay (appears via portal activation) -->
     <nav class="nav-overlay" id="navOverlay">
         <button class="nav-overlay-close-btn" id="navCloseBtn">
             <i class="fas fa-times"></i>
         </button>
         <ul class="nav-list">
-            <li><a href="index.html">Home</a></li>
             <li><a href="portfolio.html">My Work</a></li>
             <li><a href="about.html">About Me</a></li>
             <li><a href="brainstormer.html">Brainstormer</a></li>
@@ -713,11 +635,12 @@
         </ul>
     </nav>
 
-    <!-- Legal Information & Privacy Policy Modal -->
+    <!-- Legal Modal (hidden by default, opens from footer link) -->
     <div id="legalModal" class="modal-overlay">
         <div class="modal-content">
             <button class="modal-close-btn">×</button>
             <h2>Legal Information & Privacy Policy</h2>
+
             <h3>1. General Disclaimer</h3>
             <p>This website is a personal portfolio created and maintained by iFlex. Its purpose is to showcase my projects, skills, and interests in web development and AI. All content is provided for informational and demonstration purposes only.</p>
 
@@ -752,23 +675,23 @@
                 </li>
                 <li>
                     <strong>Analytics (Optional - if you add any):</strong> If this site were to use web analytics services (like Google Analytics in the future), only anonymized usage data would be collected to understand site performance and visitor behavior. No personally identifiable information would be shared.
-                </li>
-            </ul>
+                 </li>
+                </ul>
 
-            <h4>Data Storage & Security:</h4>
+             <h4>Data Storage & Security:</h4>
                 <p>No user data is stored on my personal servers. Information processed by the AI bot is handled by Shapes.inc. Local browser storage (`localStorage`) is used for user/channel IDs as described above.</p>
 
                 <h4>Your Choices:</h4>
                 <p>You can clear your browser's `localStorage` at any time to remove the locally stored User ID and Channel ID, which will start a new chat session with the bot.</p>
 
-            <h3>4. Contact Information</h3>
-            <p>If you have any questions or concerns regarding this website or its privacy practices, please feel free to contact me at:</p>
-            <p>Email: <a href="mailto:ad.iflex@hotmail.com">ad.iflex@hotmail.com</a></p>
+             <h3>4. Contact Information</h3>
+             <p>If you have any questions or concerns regarding this website or its privacy practices, please feel free to contact me at:</p>
+             <p>Email: <a href="mailto:ad.iflex@hotmail.com">ad.iflex@hotmail.com</a></p>
                 <p>Last Updated: June 2, 2025</p>
             </div>
         </div>
 
-    <!-- Global Footer -->
+    <!-- Footer (always visible at the bottom of the page) -->
     <footer>
         <p>© 2025 iFlex. All rights reserved.</p>
         <div class="footer-buttons">
@@ -776,126 +699,20 @@
         </div>
     </footer>
 
-    <!-- Copyright message for right-click protection -->
-    <div id="copyrightMessage" class="copyright-message">
-        Content is protected. © iFlex. All rights reserved.
-    </div>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/uuid/8.3.2/uuid.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const chatDisplay = document.getElementById('chatDisplay');
-            const chatInput = document.getElementById('chatInput');
-            const sendMessageBtn = document.getElementById('sendMessageBtn');
-            const loadingDots = document.getElementById('loadingDots');
-            const resetChatBtn = document.getElementById('resetChatBtn');
-            // backToPortfolioLink was removed from HTML, so no need to select it here.
-
-            // Navigation and Modal Elements
-            const menuToggle = document.getElementById('menuToggle');
-            const navOverlay = document.getElementById('navOverlay');
-            const navCloseBtn = document.getElementById('navCloseBtn');
-            const navLinks = document.querySelectorAll('.nav-list a');
-            const legalBtn = document.getElementById('legalBtn');
-            const legalModal = document.getElementById('legalModal');
-            const modalCloseBtns = document.querySelectorAll('.modal-close-btn');
-            const copyrightMessage = document.getElementById('copyrightMessage');
-            const body = document.body;
-
-            // --- IMPORTANT CHANGE: Generate new IDs on every page load and DO NOT save to localStorage ---
-            const userId = crypto.randomUUID(); // Always generate a new user ID
-            const channelId = crypto.randomUUID(); // Always generate a new channel ID
-
-            // Remove any old localStorage items just in case, though the above lines make it redundant
-            localStorage.removeItem('aiSonUserId');
-            localStorage.removeItem('aiSonChannelId');
-
-            console.log('Frontend (son.html) - New User ID for this session:', userId);
-            console.log('Frontend (son.html) - New Channel ID for this session:', channelId);
-
-            function addMessage(text, sender) {
-                const messageDiv = document.createElement('div');
-                messageDiv.classList.add('message');
-                messageDiv.classList.add(sender === 'user' ? 'user-message' : 'bot-message');
-                messageDiv.textContent = text;
-                chatDisplay.appendChild(messageDiv);
-                chatDisplay.scrollTop = chatDisplay.scrollHeight; // Auto-scroll to latest message
-            }
-
-            async function sendMessage() {
-                const message = chatInput.value.trim();
-                if (!message) return; // Don't send empty messages
-
-                addMessage(message, 'user'); // Display user message
-                chatInput.value = ''; // Clear input
-                chatInput.style.height = 'auto'; // Reset input height
-                sendMessageBtn.disabled = true; // Disable send button
-                loadingDots.classList.add('active'); // Show loading dots
-
-                console.log('Frontend (son.html) - Sending with User ID:', userId);
-                console.log('Frontend (son.html) - Sending with Channel ID:', channelId);
-
-                try {
-                    // Fetch call to Netlify Function
-                    const response = await fetch('/.netlify/functions/shapes-chat', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-User-Id': userId,     // Pass user ID
-                            'X-Channel-Id': channelId // Pass channel ID for conversation context
-                        },
-                        body: JSON.stringify({ message: message })
-                    });
-
-                    if (!response.ok) {
-                        const errorData = await response.json();
-                        throw new Error(`API Error: ${response.status} - ${errorData.error || 'Unknown error'}`);
-                    }
-
-                    const data = await response.json();
-                    addMessage(data.response, 'bot'); // Display bot response
-
-                } catch (error) {
-                    console.error('Error sending message:', error);
-                    addMessage(`Error: ${error.message}. Please try again.`, 'bot');
-                } finally {
-                    sendMessageBtn.disabled = false; // Re-enable send button
-                    loadingDots.classList.remove('active'); // Hide loading dots
-                }
-            }
-
-            // Event Listeners for Chat
-            sendMessageBtn.addEventListener('click', sendMessage);
-            chatInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter' && !e.shiftKey) { // Send on Enter, allow Shift+Enter for new line
-                    e.preventDefault();
-                    sendMessage();
-                }
-            });
-
-            // Auto-resize textarea based on content
-            chatInput.addEventListener('input', () => {
-                chatInput.style.height = 'auto';
-                chatInput.style.height = (chatInput.scrollHeight) + 'px';
-            });
-
-            // Reset Chat functionality: Simply reload the page to get new, fresh IDs
-            resetChatBtn.addEventListener('click', () => {
-                window.location.reload(); 
-            });
-
-            /* --- Particle Background Setup (existing code, ensure z-index is compatible) --- */
+            // Particle Background Setup
             const particleCanvas = document.getElementById('particleCanvas');
             const particleCtx = particleCanvas.getContext('2d');
             let particles = [];
-            const particleCount = 70; /* Increased particle count for more density */
-            const maxRadius = 1.2;
-            const minRadius = 0.4;
-            const maxSpeed = 0.4;
+            const particleCount = 50;
+            const maxRadius = 1.5;
+            const minRadius = 0.5;
+            const maxSpeed = 0.3;
 
-            function resizeParticleCanvas() {
-                particleCanvas.width = window.innerWidth;
-                particleCanvas.height = window.innerHeight;
+            function resizeCanvas(canvas) {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
             }
 
             class Particle {
@@ -903,7 +720,7 @@
                     this.x = Math.random() * particleCanvas.width;
                     this.y = Math.random() * particleCanvas.height;
                     this.radius = Math.random() * (maxRadius - minRadius) + minRadius;
-                    this.color = `rgba(77, 241, 241, ${Math.random() * 0.15 + 0.03})`; /* Cyan particles */
+                    this.color = `rgba(255, 255, 255, ${Math.random() * 0.2 + 0.05})`;
                     this.speedX = (Math.random() - 0.5) * maxSpeed;
                     this.speedY = (Math.random() - 0.5) * maxSpeed;
                 }
@@ -912,17 +729,13 @@
                     particleCtx.beginPath();
                     particleCtx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
                     particleCtx.fillStyle = this.color;
-                    particleCtx.shadowBlur = 5; /* Subtle glow */
-                    particleCtx.shadowColor = this.color;
                     particleCtx.fill();
-                    particleCtx.shadowBlur = 0; /* Reset for next drawings */
                 }
 
                 update() {
                     this.x += this.speedX;
                     this.y += this.speedY;
 
-                    /* Wrap particles around edges */
                     if (this.x < 0 - this.radius) this.x = particleCanvas.width + this.radius;
                     if (this.x > particleCanvas.width + this.radius) this.x = 0 - this.radius;
                     if (this.y < 0 - this.radius) this.y = particleCanvas.height + this.radius;
@@ -947,34 +760,122 @@
                 });
             }
 
-            resizeParticleCanvas();
+            resizeCanvas(particleCanvas);
             initParticles();
             animateParticles();
             window.addEventListener('resize', () => {
-                resizeParticleCanvas();
+                resizeCanvas(particleCanvas);
                 initParticles();
             });
 
-            /* --- Navigation and Modal Functionality (Re-used from other pages) --- */
-            menuToggle.addEventListener('click', () => {
-                navOverlay.classList.add('open');
-                body.classList.add('modal-open'); /* Adds blur effect to main content */
-                menuToggle.classList.add('hidden'); /* Hide hamburger when menu is open */
+            // Cursor Trail Particles
+            const cursorTrailCanvas = document.getElementById('cursorTrailCanvas');
+            const cursorTrailCtx = cursorTrailCanvas.getContext('2d');
+            let cursorParticles = [];
+            const cursorParticleMaxAge = 60;
+            const cursorParticleSize = 1;
+            const cursorParticleDensity = 2;
+
+            class CursorParticle {
+                constructor(x, y) {
+                    this.x = x;
+                    this.y = y;
+                    this.radius = cursorParticleSize;
+                    this.alpha = 0.5;
+                    this.life = 0;
+                    this.speedX = (Math.random() - 0.5) * 0.5;
+                    this.speedY = (Math.random() - 0.5) * 0.5;
+                }
+
+                draw() {
+                    cursorTrailCtx.beginPath();
+                    cursorTrailCtx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                    cursorTrailCtx.fillStyle = `rgba(255, 255, 255, ${this.alpha})`;
+                    cursorTrailCtx.fill();
+                }
+
+                update() {
+                    this.x += this.speedX;
+                    this.y += this.speedY;
+                    this.life++;
+                    this.alpha = 0.5 - (this.life / cursorParticleMaxAge) * 0.5;
+                    if (this.alpha < 0) this.alpha = 0;
+                }
+            }
+
+            function animateCursorTrail() {
+                requestAnimationFrame(animateCursorTrail);
+                cursorTrailCtx.clearRect(0, 0, cursorTrailCanvas.width, cursorTrailCanvas.height);
+
+                for (let i = cursorParticles.length - 1; i >= 0; i--) {
+                    cursorParticles[i].update();
+                    if (cursorParticles[i].life >= cursorParticleMaxAge || cursorParticles[i].alpha <= 0) {
+                        cursorParticles.splice(i, 1);
+                    } else {
+                        cursorParticles[i].draw();
+                    }
+                }
+            }
+
+            document.addEventListener('mousemove', (e) => {
+                for (let i = 0; i < cursorParticleDensity; i++) {
+                    cursorParticles.push(new CursorParticle(e.clientX, e.clientY));
+                }
+            });
+
+            resizeCanvas(cursorTrailCanvas);
+            animateCursorTrail();
+            window.addEventListener('resize', () => resizeCanvas(cursorTrailCanvas));
+
+            // Portal Activator Button & Navigation Logic
+            const portalActivator = document.getElementById('portalActivator');
+            const portalTransitionCircle = document.getElementById('portalTransitionCircle');
+            const navOverlay = document.getElementById('navOverlay');
+            const navCloseBtn = document.getElementById('navCloseBtn');
+            const navLinks = document.querySelectorAll('.nav-list a');
+            const body = document.body;
+            const menuToggle = document.getElementById('menuToggle'); // Hamburger menu for sub-pages
+
+            portalActivator.addEventListener('click', () => {
+                const rect = portalActivator.getBoundingClientRect();
+                // Set initial position of circle to button's center
+                portalTransitionCircle.style.left = `${rect.left + rect.width / 2}px`;
+                portalTransitionCircle.style.top = `${rect.top + rect.height / 2}px`;
+                
+                portalTransitionCircle.classList.add('active'); // Start the bloom animation
+
+                // After the bloom animation completes, open the navigation
+                portalTransitionCircle.addEventListener('transitionend', () => {
+                    navOverlay.classList.add('open');
+                    body.classList.add('modal-open'); // Adds blur effect to main content
+                    portalTransitionCircle.classList.remove('active'); // Reset circle for next use
+                    portalActivator.style.display = 'none'; // Hide portal activator
+                    menuToggle.classList.add('active'); // Show hamburger menu for navigation
+                }, { once: true }); // Ensure this listener only fires once
             });
 
             navCloseBtn.addEventListener('click', () => {
                 navOverlay.classList.remove('open');
                 body.classList.remove('modal-open');
-                menuToggle.classList.remove('hidden'); /* Show hamburger when menu is closed */
+                portalActivator.style.display = 'flex'; // Show portal activator again
+                menuToggle.classList.remove('active'); // Hide hamburger menu
             });
 
+            // If a navigation link is clicked, close overlay and potentially navigate
             navLinks.forEach(link => {
                 link.addEventListener('click', () => {
                     navOverlay.classList.remove('open');
                     body.classList.remove('modal-open');
-                    menuToggle.classList.remove('hidden');
+                    portalActivator.style.display = 'flex'; // Show portal activator again
+                    menuToggle.classList.remove('active'); // Hide hamburger menu
+                    // Actual navigation will happen due to href
                 });
             });
+
+            // Legal Modal Functionality (same as before)
+            const legalBtn = document.getElementById('legalBtn');
+            const legalModal = document.getElementById('legalModal');
+            const modalCloseBtns = document.querySelectorAll('.modal-close-btn');
 
             function openModal(modalElement) {
                 modalElement.classList.add('show');
@@ -1006,15 +907,27 @@
                 }
             });
 
-            /* --- Right-click Protection (consistent across pages) --- */
-            document.addEventListener('contextmenu', function(e) {
-                e.preventDefault();
-                copyrightMessage.style.left = `${e.clientX + 10}px`;
-                copyrightMessage.style.top = `${e.clientY + 10}px`;
-                copyrightMessage.classList.add('show');
-                setTimeout(() => {
-                    copyrightMessage.classList.remove('show');
-                }, 1500);
+            // Micro-parallax effect for background elements
+            const heroSection = document.querySelector('.hero-section');
+            const volumetricOverlay = document.querySelector('.volumetric-overlay');
+
+            document.addEventListener('mousemove', (e) => {
+                const mouseX = e.clientX / window.innerWidth - 0.5; // -0.5 to 0.5
+                const mouseY = e.clientY / window.innerHeight - 0.5; // -0.5 to 0.5
+
+                // Apply subtle transforms to background elements
+                volumetricOverlay.style.transform = `scale(1.2) translate(${mouseX * 10}px, ${mouseY * 10}px)`;
+                // Can add similar transforms to particleCanvas if ctx supports it directly
+                // (less practical for canvas without redrawing, but possible)
+            });
+
+            // Also for touch devices (simulated mousemove)
+            document.addEventListener('touchmove', (e) => {
+                if (e.touches.length > 0) {
+                    const touchX = e.touches[0].clientX / window.innerWidth - 0.5;
+                    const touchY = e.touches[0].clientY / window.innerHeight - 0.5;
+                    volumetricOverlay.style.transform = `scale(1.2) translate(${touchX * 10}px, ${touchY * 10}px)`;
+                }
             });
         });
     </script>
