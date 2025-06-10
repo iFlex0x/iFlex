@@ -23,10 +23,11 @@ exports.handler = async function(event, context) {
 
         const body = JSON.parse(event.body);
         const userMessage = body.message;
-        const userId = event.headers['x-user-id'];
-        const channelId = event.headers['x-channel-id'];
+        const userId = event.headers['x-user-id']; // X-User-Id for user identification
+        const channelId = event.headers['x-channel-id']; // X-Channel-Id for conversation context
 
-        // Debugging: Log received headers
+        // Debugging: Log received headers and message
+        console.log('Netlify Function - Received Message:', userMessage);
         console.log('Netlify Function - Received X-User-Id:', userId);
         console.log('Netlify Function - Received X-Channel-Id:', channelId);
 
@@ -42,6 +43,9 @@ exports.handler = async function(event, context) {
             baseURL: "https://api.shapes.inc/v1",
         });
 
+        // The 'store: false' parameter instructs the API not to persist chat history server-side.
+        // This, combined with fresh X-User-Id/X-Channel-Id, ensures new sessions.
+        console.log('Calling Shapes.inc API with store: false');
         const response = await shapes_client.chat.completions.create({
             model: `shapesinc/${shapesShapeUsername}`,
             messages: [
@@ -51,10 +55,6 @@ exports.handler = async function(event, context) {
                 "X-User-Id": userId,
                 "X-Channel-Id": channelId,
             },
-            // --- IMPORTANT ADDITION: Prevent API from storing chat history by default ---
-            // This is based on OpenAI API's 'store' parameter, which Shapes.inc
-            // being OpenAI-compatible, likely supports.
-            // If it doesn't work, we'll rely solely on !wack and fresh IDs.
             store: false 
         });
 
