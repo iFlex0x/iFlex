@@ -8,28 +8,26 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* Global Styles & Reset */
         html, body {
             margin: 0;
             padding: 0;
-            height: 100vh; /* Full viewport height */
-            width: 100vw;  /* Full viewport width */
+            height: 100vh;
+            width: 100vw;
             box-sizing: border-box;
             font-family: 'Inter', sans-serif;
-            background-color: #0d0d0d; /* Dark base background */
-            color: #e0e0e0; /* Light text for contrast */
+            background-color: #0d0d0d;
+            color: #e0e0e0;
             display: flex;
             flex-direction: column;
-            justify-content: space-between; /* Space out chat container and footer */
+            justify-content: space-between;
             align-items: center;
-            overflow-x: hidden; /* Prevent horizontal scroll */
-            overflow-y: auto; /* Allow vertical scrolling for chat messages */
+            overflow-x: hidden;
+            overflow-y: auto;
             scroll-behavior: smooth;
-            cursor: url(images/cursor.png), auto; /* Custom cursor */
+            cursor: url(images/cursor.png), auto;
             position: relative;
         }
 
-        /* Digital Grid Overlay */
         body::before {
             content: '';
             position: fixed;
@@ -37,16 +35,15 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: 
+            background:
                 linear-gradient(to right, rgba(17, 17, 17, 0.8) 1px, transparent 1px),
                 linear-gradient(to bottom, rgba(17, 17, 17, 0.8) 1px, transparent 1px);
-            background-size: 40px 40px; /* Adjust grid density */
+            background-size: 40px 40px;
             animation: grid-pulse 15s ease-in-out infinite alternate;
             pointer-events: none;
-            z-index: -1; /* Behind all content */
+            z-index: -1;
         }
         
-        /* Subtle radial gradient for depth over grid */
         body::after {
             content: '';
             position: fixed;
@@ -56,57 +53,53 @@
             bottom: 0;
             background: radial-gradient(circle at center, rgba(20, 20, 20, 0) 0%, rgba(13, 13, 13, 0.8) 70%, rgba(13, 13, 13, 1) 100%);
             pointer-events: none;
-            z-index: 0; /* Above grid, below content */
+            z-index: 0;
         }
 
-        /* Particle Canvas: Dynamic background particles */
         #particleCanvas {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: -2; /* Furthest back */
+            z-index: -2;
             pointer-events: none;
         }
 
-        /* Cursor Trail Canvas */
         #cursorTrailCanvas {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: 1001; /* Above particles, below chat content */
+            z-index: 1001;
             pointer-events: none;
         }
 
-        /* Main Chat Container - Adjusted for size and responsiveness */
         .chat-container {
-            background-color: rgba(25, 25, 25, 0.7); /* More transparent dark background */
-            border-radius: 25px; /* More pronounced rounded corners */
+            background-color: rgba(25, 25, 25, 0.7);
+            border-radius: 25px;
             padding: clamp(25px, 5vw, 50px);
-            box-shadow: 0 10px 30px rgba(0, 255, 255, 0.2), inset 0 0 20px rgba(0, 255, 255, 0.1); /* Cyan glow shadow */
+            box-shadow: 0 10px 30px rgba(0, 255, 255, 0.2), inset 0 0 20px rgba(0, 255, 255, 0.1);
             text-align: center;
-            width: 90%; /* Use a percentage for fluid width */
-            max-width: 950px; /* Increased max width for a larger feel */
-            height: clamp(600px, 80vh, 900px); /* Increased height for larger chat area */
+            width: 90%;
+            max-width: 950px;
+            height: clamp(700px, 85vh, 950px); /* Increased height */
             display: flex;
             flex-direction: column;
             gap: 15px;
-            z-index: 2; /* Ensures content is above background elements */
+            z-index: 2;
             box-sizing: border-box;
-            opacity: 0; /* For entrance animation */
-            transform: translateY(20px); /* For entrance animation */
+            opacity: 0;
+            transform: translateY(20px);
             animation: fadeIn 1s ease-out 0.3s forwards;
-            backdrop-filter: blur(10px); /* Frosted glass effect */
+            backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(77, 241, 241, 0.3); /* Subtle cyan border */
-            margin-top: clamp(30px, 6vh, 60px); /* Top margin for spacing */
-            margin-bottom: 20px; /* Space above footer */
+            border: 1px solid rgba(77, 241, 241, 0.3);
+            margin-top: clamp(30px, 6vh, 60px);
+            margin-bottom: 20px;
         }
 
-        /* Authentication overlay styles */
         .auth-overlay {
             position: fixed;
             top: 0;
@@ -117,7 +110,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 1002; /* Above everything but modals */
+            z-index: 1002;
             opacity: 1;
             transition: opacity 0.3s ease;
             backdrop-filter: blur(10px);
@@ -194,11 +187,9 @@
             color: #999;
         }
 
-
-        /* Page Title */
         .page-title {
             font-size: clamp(2.5em, 7vw, 4em);
-            color: #4df1f1; /* Cyan glow for title */
+            color: #4df1f1;
             margin-bottom: clamp(20px, 4vh, 40px);
             letter-spacing: 2px;
             text-shadow: 0 0 15px rgba(77, 241, 241, 0.8), 0 0 30px rgba(77, 241, 241, 0.5);
@@ -209,26 +200,24 @@
             text-align: center;
         }
 
-        /* Chat Display Area */
         .chat-display {
             flex-grow: 1;
-            background-color: rgba(0, 0, 0, 0.5); /* Very transparent, almost black */
+            background-color: rgba(0, 0, 0, 0.5);
             border-radius: 20px;
             padding: 15px;
             overflow-y: auto;
             text-align: left;
-            box-shadow: inset 0 0 10px rgba(0, 255, 255, 0.1); /* Inner cyan glow */
+            box-shadow: inset 0 0 10px rgba(0, 255, 255, 0.1);
             display: flex;
             flex-direction: column;
             gap: 10px;
-            border: 1px solid rgba(77, 241, 241, 0.1); /* Lighter border */
+            border: 1px solid rgba(77, 241, 241, 0.1);
         }
 
-        /* Individual Message Styling */
         .message {
             max-width: 80%;
             padding: 12px 18px;
-            border-radius: 20px; /* More rounded */
+            border-radius: 20px;
             word-wrap: break-word;
             line-height: 1.5;
             color: #ffffff;
@@ -237,24 +226,23 @@
         }
 
         .user-message {
-            background-color: rgba(76, 175, 80, 0.8); /* Slightly transparent green */
+            background-color: rgba(76, 175, 80, 0.8);
             align-self: flex-end;
-            border-bottom-right-radius: 8px; /* Softer corner on bottom right */
+            border-bottom-right-radius: 8px;
             box-shadow: 0 4px 10px rgba(76, 175, 80, 0.3);
             border: 1px solid rgba(76, 175, 80, 0.5);
             animation: message-slide-in-right 0.3s ease-out forwards;
         }
 
         .bot-message {
-            background-color: rgba(52, 152, 219, 0.7); /* Slightly transparent blue */
+            background-color: rgba(52, 152, 219, 0.7);
             align-self: flex-start;
-            border-bottom-left-radius: 8px; /* Softer corner on bottom left */
+            border-bottom-left-radius: 8px;
             box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
             border: 1px solid rgba(52, 152, 219, 0.5);
             animation: message-slide-in-left 0.3s ease-out forwards;
         }
 
-        /* Chat Input Area */
         .chat-input-area {
             display: flex;
             gap: 12px;
@@ -286,10 +274,9 @@
             opacity: 0.8;
         }
 
-        /* Send Button */
         .chat-button {
-            background: linear-gradient(45deg, #4df1f1, #21c2c2); /* Cyan gradient */
-            color: #0d0d0d; /* Dark text on bright button */
+            background: linear-gradient(45deg, #4df1f1, #21c2c2);
+            color: #0d0d0d;
             padding: 15px 25px;
             border-radius: 20px;
             border: none;
@@ -315,12 +302,11 @@
             color: #999;
         }
 
-        /* Loading Dots for Bot Response */
         .loading-dots {
             display: none;
             align-self: flex-start;
             margin-top: 10px;
-            color: #4df1f1; /* Cyan dots */
+            color: #4df1f1;
             font-size: clamp(1.5em, 2.8vw, 2em);
             position: relative;
             padding-left: 30px;
@@ -339,10 +325,9 @@
             display: block;
         }
         .loading-dots.active::before {
-             width: auto;
+            width: auto;
         }
 
-        /* Action Buttons (Reset, Back to Portfolio) */
         .action-buttons {
             display: flex;
             justify-content: center;
@@ -352,7 +337,7 @@
         }
         .action-button {
             background-color: rgba(30, 30, 30, 0.8);
-            color: #4df1f1; /* Cyan text */
+            color: #4df1f1;
             padding: clamp(12px, 2vw, 18px) clamp(20px, 3.5vw, 35px);
             border-radius: 15px;
             border: 1px solid rgba(77, 241, 241, 0.2);
@@ -370,7 +355,6 @@
             color: #ffffff;
         }
 
-        /* Global Footer Styles */
         footer {
             width: 100%;
             text-align: center;
@@ -407,7 +391,6 @@
             box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
         }
 
-        /* Legal Modal (retained for legal/privacy) */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -508,7 +491,6 @@
             text-decoration: underline;
         }
 
-        /* Keyframe Animations */
         @keyframes grid-pulse {
             0% { background-color: rgba(17, 17, 17, 0.8); }
             50% { background-color: rgba(25, 25, 25, 0.8); }
@@ -542,14 +524,13 @@
             100% { width: 1.5em; }
         }
 
-        /* Media Queries for Responsiveness */
         @media (max-width: 768px) {
             .chat-container {
                 padding: 15px;
                 height: 90vh;
                 margin-top: 20px;
                 margin-bottom: 10px;
-                max-width: 95%; /* Make it slightly wider on smaller screens */
+                max-width: 95%;
             }
             .page-title {
                 font-size: 2em;
@@ -629,7 +610,6 @@
     <canvas id="particleCanvas"></canvas>
     <canvas id="cursorTrailCanvas"></canvas>
 
-    <!-- Authentication Overlay -->
     <div id="authOverlay" class="auth-overlay">
         <div class="auth-card">
             <h2>Welcome to My AI Assistant!</h2>
@@ -647,7 +627,6 @@
     <div class="chat-container">
         <h1 class="page-title">My AI Assistant</h1>
         <div id="chatDisplay" class="chat-display">
-            <!-- Initial greeting will be added after successful authentication -->
         </div>
         <div id="loadingDots" class="loading-dots"></div>
         <div class="chat-input-area">
@@ -660,7 +639,6 @@
         </div>
     </div>
 
-    <!-- Legal Modal (hidden by default) -->
     <div id="legalModal" class="modal-overlay">
         <div class="modal-content">
             <button class="modal-close-btn">×</button>
@@ -700,23 +678,22 @@
                 </li>
                 <li>
                     <strong>Analytics (Optional - if you add any):</strong> If this site were to use web analytics services (like Google Analytics in the future), only anonymized usage data would be collected to understand site performance and visitor behavior. No personally identifiable information would be shared.
-                 </li>
+                   </li>
                 </ul>
 
-             <h4>Data Storage & Security:</h4>
+              <h4>Data Storage & Security:</h4>
                 <p>No user data is stored on my personal servers. Information processed by the AI bot is handled by Shapes.inc. Local browser storage (`localStorage`) is used for user/channel IDs as described above.</p>
 
                 <h4>Your Choices:</h4>
                 <p>You can clear your browser's `localStorage` at any time to remove the locally stored User ID and Channel ID, which will start a new chat session with the bot.</p>
 
-             <h3>4. Contact Information</h3>
-             <p>If you have any questions or concerns regarding this website or its privacy practices, please feel free to contact me at:</p>
-             <p>Email: <a href="mailto:ad.iflex@hotmail.com">ad.iflex@hotmail.com</a></p>
+              <h3>4. Contact Information</h3>
+              <p>If you have any questions or concerns regarding this website or its privacy practices, please feel free to contact me at:</p>
+              <p>Email: <a href="mailto:ad.iflex@hotmail.com">ad.iflex@hotmail.com</a></p>
                 <p>Last Updated: June 2, 2025</p>
             </div>
         </div>
 
-    <!-- Footer -->
     <footer>
         <p>© 2025 iFlex. All rights reserved.</p>
         <div class="footer-buttons">
@@ -736,7 +713,6 @@
             const legalModal = document.getElementById('legalModal');
             const modalCloseBtns = document.querySelectorAll('.modal-close-btn');
 
-            // Auth specific elements
             const authOverlay = document.getElementById('authOverlay');
             const loginBtn = document.getElementById('loginBtn');
             const codeEntry = document.getElementById('codeEntry');
@@ -744,28 +720,20 @@
             const submitCodeBtn = document.getElementById('submitCodeBtn');
             const authStatus = document.getElementById('authStatus');
 
-            // Configuration values (these will be set via Netlify environment variables in production)
-            // For local development, you might hardcode them or use a build step to inject.
-            const SHAPESINC_APP_ID = 'ae8658cf-5f6b-4ca8-b234-16c23e85a49f'; // Updated to your provided App ID
+            const SHAPESINC_APP_ID = 'ae8658cf-5f6b-4ca8-b234-16c23e85a49f';
             const SHAPESINC_SITE_URL = 'https://shapes.inc';
 
             let userAuthToken = null;
-            let currentChannelId; // Unique for each session/page load
+            let currentChannelId;
 
-            // Helper for displaying messages to user
             function showStatus(message, isError = false) {
                 authStatus.textContent = message;
                 authStatus.style.color = isError ? '#ff6b6b' : '#4df1f1';
             }
 
-            /**
-             * Initializes a new conversation channel for the current authenticated user.
-             * This should be called on page load and when the "Reset Chat" button is clicked.
-             */
             function initializeNewChannel() {
-                // Generate a new channel ID for each new chat session/page load
                 currentChannelId = crypto.randomUUID();
-                sessionStorage.setItem('aiSonChannelId', currentChannelId); // Store in sessionStorage for current tab
+                sessionStorage.setItem('aiSonChannelId', currentChannelId);
 
                 console.log('Frontend (son.html) - New Channel Initialized. Channel ID:', currentChannelId);
 
@@ -773,8 +741,6 @@
                 chatInput.value = '';
                 chatInput.style.height = 'auto';
 
-                // Send a silent '!wack' to the bot immediately to clear its short-term context
-                // for this specific new channel.
                 if (userAuthToken) {
                     console.log('Sending silent !wack to Shapes.inc for new channel...');
                     sendToBot('!wack', true).then(() => {
@@ -785,344 +751,17 @@
                 }
             }
 
-            /**
-             * Handles the initial login/authorization flow.
-             */
             async function handleUserAuth() {
-                // Try to load an existing token from sessionStorage
                 const storedToken = sessionStorage.getItem('shapesUserAuthToken');
                 if (storedToken) {
                     userAuthToken = storedToken;
-                    console.log('User auth token loaded from sessionStorage.');
-                    proceedToChat();
-                    return;
-                }
-
-                // If no token, show the authentication overlay
-                authOverlay.classList.remove('hidden');
-
-                // Listener for login button click
-                loginBtn.addEventListener('click', () => {
-                    const authorizeUrl = `${SHAPESINC_SITE_URL}/authorize?app_id=${SHAPESINC_APP_ID}`;
-                    window.open(authorizeUrl, '_blank', 'noopener,noreferrer');
-                    loginBtn.style.display = 'none'; // Hide login button
-                    codeEntry.style.display = 'block'; // Show code input
-                    showStatus('Please login/authorize in the new window. Then, copy the one-time code and paste it below.');
-                });
-
-                // Listener for one-time code input
-                oneTimeCodeInput.addEventListener('input', () => {
-                    submitCodeBtn.disabled = oneTimeCodeInput.value.trim() === '';
-                });
-
-                // Listener for submit code button
-                submitCodeBtn.addEventListener('click', async () => {
-                    const oneTimeCode = oneTimeCodeInput.value.trim();
-                    if (!oneTimeCode) {
-                        showStatus('Please enter the one-time code.', true);
-                        return;
-                    }
-
-                    submitCodeBtn.disabled = true;
-                    showStatus('Exchanging code for token...');
-
-                    try {
-                        // Call your Netlify function to exchange the one-time code
-                        const response = await fetch('/.netlify/functions/exchange-token', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ oneTimeCode: oneTimeCode, appId: SHAPESINC_APP_ID }),
-                        });
-
-                        const data = await response.json();
-
-                        if (response.ok && data.auth_token) {
-                            userAuthToken = data.auth_token;
-                            sessionStorage.setItem('shapesUserAuthToken', userAuthToken); // Store token
-                            showStatus('Authentication successful!');
-                            console.log('User auth token received and stored.');
-                            proceedToChat();
-                        } else {
-                            const errorMsg = data.message || 'Failed to exchange code for token. Ensure it is correct and not expired.';
-                            showStatus(errorMsg, true);
-                            console.error('Token exchange failed:', errorMsg);
-                        }
-                    } catch (error) {
-                        showStatus(`Network error during token exchange: ${error.message}`, true);
-                        console.error('Network error:', error);
-                    } finally {
-                        submitCodeBtn.disabled = false;
-                    }
-                });
-            }
-
-            /**
-             * Proceeds to display the chat interface and enables controls.
-             */
-            function proceedToChat() {
-                authOverlay.classList.add('hidden'); // Hide authentication overlay
-                chatInput.disabled = false;
-                sendMessageBtn.disabled = false;
-                resetChatBtn.disabled = false;
-                initializeNewChannel(); // Start a new channel for this authenticated user
-            }
-
-            /**
-             * Sends a message to the Shapes.inc bot via the Netlify function.
-             * @param {string} messageToSend - The message content.
-             * @param {boolean} isSilent - If true, the message and bot response are not added to the chat display.
-             */
-            async function sendToBot(messageToSend, isSilent = false) {
-                if (!userAuthToken) {
-                    console.error("No user authentication token available.");
-                    if (!isSilent) addMessage("Authentication required to chat.", 'bot');
-                    return;
-                }
-
-                if (!isSilent) {
-                    sendMessageBtn.disabled = true;
-                    loadingDots.classList.add('active');
-                }
-
-                try {
-                    const response = await fetch('/.netlify/functions/shapes-chat', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-App-ID': SHAPESINC_APP_ID,     // Application ID
-                            'X-User-Auth': userAuthToken,    // User-specific auth token
-                            'X-Channel-Id': currentChannelId // Unique channel for this session
-                        },
-                        body: JSON.stringify({ message: messageToSend })
-                    });
-
-                    if (!response.ok) {
-                        const errorData = await response.json();
-                        throw new Error(`API Error: ${response.status} - ${errorData.error || 'Unknown error'}`);
-                    }
-
-                    const data = await response.json();
-                    if (!isSilent) {
-                        addMessage(data.response, 'bot');
-                    }
-                    return data.response; // Return bot's response if needed
-                } catch (error) {
-                    console.error('Error sending message:', error);
-                    if (!isSilent) {
-                        addMessage(`Error: ${error.message}. Please try again.`, 'bot');
-                    }
-                    return null;
-                } finally {
-                    if (!isSilent) {
-                        sendMessageBtn.disabled = false;
-                        loadingDots.classList.remove('active');
-                    }
+                    authOverlay.classList.add('hidden');
+                    chatInput.disabled = false;
+                    sendMessageBtn.disabled = false;
+                    resetChatBtn.disabled = false;
+                    initializeNewChannel();
                 }
             }
-
-            function addMessage(text, sender) {
-                const messageDiv = document.createElement('div');
-                messageDiv.classList.add('message');
-                messageDiv.classList.add(sender === 'user' ? 'user-message' : 'bot-message');
-                messageDiv.textContent = text;
-                chatDisplay.appendChild(messageDiv);
-                chatDisplay.scrollTop = chatDisplay.scrollHeight;
-            }
-
-            async function handleSendMessage() {
-                const message = chatInput.value.trim();
-                if (!message) return;
-
-                addMessage(message, 'user');
-                chatInput.value = '';
-                chatInput.style.height = 'auto'; // Reset textarea height
-
-                // Send the actual user message
-                await sendToBot(message, false);
-            }
-
-            sendMessageBtn.addEventListener('click', handleSendMessage);
-            chatInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault();
-                    handleSendMessage();
-                }
-            });
-
-            chatInput.addEventListener('input', () => {
-                chatInput.style.height = 'auto';
-                chatInput.style.height = (chatInput.scrollHeight) + 'px';
-            });
-
-            resetChatBtn.addEventListener('click', () => {
-                // Manually trigger a new channel initialization
-                initializeNewChannel();
-                console.log('Manual chat reset initiated (new channel).');
-            });
-
-            backToPortfolioBtn.addEventListener('click', () => {
-                window.location.href = 'index.html';
-            });
-
-            // Legal Modal Functionality (retained)
-            function openModal(modalElement) {
-                modalElement.classList.add('show');
-                document.body.classList.add('modal-open');
-            }
-
-            function closeModal(modalElement) {
-                modalElement.classList.remove('show');
-                document.body.classList.remove('modal-open');
-            }
-
-            legalBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                openModal(legalModal);
-            });
-
-            modalCloseBtns.forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    const modalOverlay = e.target.closest('.modal-overlay');
-                    if (modalOverlay) {
-                        closeModal(modalOverlay);
-                    }
-                });
-            });
-
-            legalModal.addEventListener('click', (e) => {
-                if (e.target === legalModal) {
-                    closeModal(legalModal);
-                }
-            });
-
-            // Particle Background Setup (retained)
-            const particleCanvas = document.getElementById('particleCanvas');
-            const particleCtx = particleCanvas.getContext('2d');
-            let particles = [];
-            const particleCount = 50;
-            const maxRadius = 1.5;
-            const minRadius = 0.5;
-            const maxSpeed = 0.3;
-
-            function resizeCanvas(canvas) {
-                canvas.width = window.innerWidth;
-                canvas.height = window.innerHeight;
-            }
-
-            class Particle {
-                constructor() {
-                    this.x = Math.random() * particleCanvas.width;
-                    this.y = Math.random() * particleCanvas.height;
-                    this.radius = Math.random() * (maxRadius - minRadius) + minRadius;
-                    this.color = `rgba(255, 255, 255, ${Math.random() * 0.2 + 0.05})`;
-                    this.speedX = (Math.random() - 0.5) * maxSpeed;
-                    this.speedY = (Math.random() - 0.5) * maxSpeed;
-                }
-
-                draw() {
-                    particleCtx.beginPath();
-                    particleCtx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-                    particleCtx.fillStyle = this.color;
-                    particleCtx.fill();
-                }
-
-                update() {
-                    this.x += this.speedX;
-                    this.y += this.speedY;
-
-                    if (this.x < 0 - this.radius) this.x = particleCanvas.width + this.radius;
-                    if (this.x > particleCanvas.width + this.radius) this.x = 0 - this.radius;
-                    if (this.y < 0 - this.radius) this.y = particleCanvas.height + this.radius;
-                    if (this.y > particleCanvas.height + this.radius) this.y = 0 - this.radius;
-                }
-            }
-
-            function initParticles() {
-                particles = [];
-                for (let i = 0; i < particleCount; i++) {
-                    particles.push(new Particle());
-                }
-            }
-
-            function animateParticles() {
-                requestAnimationFrame(animateParticles);
-                particleCtx.clearRect(0, 0, particleCanvas.width, particleCanvas.height);
-
-                particles.forEach(particle => {
-                    particle.update();
-                    particle.draw();
-                });
-            }
-
-            resizeCanvas(particleCanvas);
-            initParticles();
-            animateParticles();
-            window.addEventListener('resize', () => {
-                resizeCanvas(particleCanvas);
-                initParticles();
-            });
-
-            // Cursor Trail Particles (retained)
-            const cursorTrailCanvas = document.getElementById('cursorTrailCanvas');
-            const cursorTrailCtx = cursorTrailCanvas.getContext('2d');
-            let cursorParticles = [];
-            const cursorParticleMaxAge = 60;
-            const cursorParticleSize = 1;
-            const cursorParticleDensity = 2;
-
-            class CursorParticle {
-                constructor(x, y) {
-                    this.x = x;
-                    this.y = y;
-                    this.radius = cursorParticleSize;
-                    this.alpha = 0.5;
-                    this.life = 0;
-                    this.speedX = (Math.random() - 0.5) * 0.5;
-                    this.speedY = (Math.random() - 0.5) * 0.5;
-                }
-
-                draw() {
-                    cursorTrailCtx.beginPath();
-                    cursorTrailCtx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-                    cursorTrailCtx.fillStyle = `rgba(255, 255, 255, ${this.alpha})`;
-                    cursorTrailCtx.fill();
-                }
-
-                update() {
-                    this.x += this.speedX;
-                    this.y += this.speedY;
-                    this.life++;
-                    this.alpha = 0.5 - (this.life / cursorParticleMaxAge) * 0.5;
-                    if (this.alpha < 0) this.alpha = 0;
-                }
-            }
-
-            function animateCursorTrail() {
-                requestAnimationFrame(animateCursorTrail);
-                cursorTrailCtx.clearRect(0, 0, cursorTrailCanvas.width, cursorTrailCanvas.height);
-
-                for (let i = cursorParticles.length - 1; i >= 0; i--) {
-                    cursorParticles[i].update();
-                    if (cursorParticles[i].life >= cursorParticleMaxAge || cursorParticles[i].alpha <= 0) {
-                        cursorParticles.splice(i, 1);
-                    } else {
-                        cursorParticles[i].draw();
-                    }
-                }
-            }
-
-            document.addEventListener('mousemove', (e) => {
-                for (let i = 0; i < cursorParticleDensity; i++) {
-                    cursorParticles.push(new CursorParticle(e.clientX, e.clientY));
-                }
-            });
-
-            resizeCanvas(cursorTrailCanvas);
-            animateCursorTrail();
-            window.addEventListener('resize', () => resizeCanvas(cursorTrailCanvas));
-
-            // Start the user authentication flow on DOMContentLoaded
-            handleUserAuth();
         });
     </script>
 </body>
