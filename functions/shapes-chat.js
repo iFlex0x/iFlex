@@ -50,7 +50,12 @@ exports.handler = async function(event, context) {
             extra_headers: {
                 "X-User-Id": userId,
                 "X-Channel-Id": channelId,
-            }
+            },
+            // --- IMPORTANT ADDITION: Prevent API from storing chat history by default ---
+            // This is based on OpenAI API's 'store' parameter, which Shapes.inc
+            // being OpenAI-compatible, likely supports.
+            // If it doesn't work, we'll rely solely on !wack and fresh IDs.
+            store: false 
         });
 
         const botResponse = response.choices[0].message.content;
