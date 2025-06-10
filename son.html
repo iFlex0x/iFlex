@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>iFlex - My AI Assistant</title> <link rel="icon" href="images/iflexnew.png" type="image/png">
+    <title>iFlex - My AI Assistant</title>
+    <link rel="icon" href="images/iflexnew.png" type="image/png">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
@@ -104,6 +105,95 @@
             margin-top: clamp(30px, 6vh, 60px); /* Top margin for spacing */
             margin-bottom: 20px; /* Space above footer */
         }
+
+        /* Authentication overlay styles */
+        .auth-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1002; /* Above everything but modals */
+            opacity: 1;
+            transition: opacity 0.3s ease;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            flex-direction: column;
+            gap: 20px;
+        }
+        .auth-overlay.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        .auth-card {
+            background-color: rgba(25, 25, 25, 0.8);
+            border-radius: 25px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 255, 255, 0.3), inset 0 0 20px rgba(0, 255, 255, 0.15);
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            border: 1px solid rgba(77, 241, 241, 0.4);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .auth-card h2 {
+            font-size: 2em;
+            color: #4df1f1;
+            margin-bottom: 15px;
+        }
+        .auth-card p {
+            font-size: 0.9em;
+            color: #ccc;
+        }
+        .auth-card input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid rgba(77, 241, 241, 0.3);
+            background-color: rgba(0, 0, 0, 0.5);
+            color: #e0e0e0;
+            font-size: 1em;
+            box-sizing: border-box;
+            outline: none;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .auth-card input[type="text"]:focus {
+            border-color: #4df1f1;
+            box-shadow: 0 0 10px rgba(77, 241, 241, 0.5);
+        }
+        .auth-card .button {
+            background: linear-gradient(45deg, #4df1f1, #21c2c2);
+            color: #0d0d0d;
+            padding: 12px 20px;
+            border-radius: 15px;
+            border: none;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+            box-shadow: 0 5px 15px rgba(77, 241, 241, 0.4);
+            font-weight: 700;
+            width: 100%;
+        }
+        .auth-card .button:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 20px rgba(77, 241, 241, 0.6);
+            filter: brightness(1.1);
+        }
+        .auth-card .button:disabled {
+            background: #333;
+            box-shadow: none;
+            cursor: not-allowed;
+            transform: none;
+            filter: none;
+            color: #999;
+        }
+
 
         /* Page Title */
         .page-title {
@@ -491,6 +581,9 @@
             .modal-close-btn {
                 font-size: 1.8em;
             }
+            .auth-card {
+                padding: 20px;
+            }
         }
 
         @media (max-width: 480px) {
@@ -529,27 +622,45 @@
             .modal-close-btn {
                 font-size: 1.5em;
             }
-        </style>
+        }
+    </style>
 </head>
 <body>
     <canvas id="particleCanvas"></canvas>
     <canvas id="cursorTrailCanvas"></canvas>
 
+    <!-- Authentication Overlay -->
+    <div id="authOverlay" class="auth-overlay">
+        <div class="auth-card">
+            <h2>Welcome to My AI Assistant!</h2>
+            <p>To ensure personalized conversations, please authorize with Shapes.inc. This connects your chat history to your Shapes.inc account.</p>
+            <button id="loginBtn" class="button"><i class="fas fa-sign-in-alt"></i> Login with Shapes.inc</button>
+            <div id="codeEntry" style="display:none;">
+                <p>After logging in/authorizing, copy the one-time code and paste it below:</p>
+                <input type="text" id="oneTimeCodeInput" placeholder="Paste one-time code here">
+                <button id="submitCodeBtn" class="button" disabled><i class="fas fa-check"></i> Submit Code</button>
+            </div>
+            <p id="authStatus" style="color:#4df1f1; font-size:0.9em;"></p>
+        </div>
+    </div>
+
     <div class="chat-container">
-        <h1 class="page-title">My AI Assistant</h1> <div id="chatDisplay" class="chat-display">
-            <div class="bot-message message">Hello there! I'm an AI designed to assist and chat. How can I help you today?</div>
+        <h1 class="page-title">My AI Assistant</h1>
+        <div id="chatDisplay" class="chat-display">
+            <!-- Initial greeting will be added after successful authentication -->
         </div>
         <div id="loadingDots" class="loading-dots"></div>
         <div class="chat-input-area">
-            <textarea id="chatInput" placeholder="Type your message..."></textarea>
-            <button id="sendMessageBtn" class="chat-button">Send</button>
+            <textarea id="chatInput" placeholder="Type your message..." disabled></textarea>
+            <button id="sendMessageBtn" class="chat-button" disabled>Send</button>
         </div>
         <div class="action-buttons">
-            <button id="resetChatBtn" class="action-button">Reset Chat</button>
+            <button id="resetChatBtn" class="action-button" disabled>Reset Chat</button>
             <button id="backToPortfolioBtn" class="action-button">Back to Portfolio</button>
         </div>
     </div>
 
+    <!-- Legal Modal (hidden by default) -->
     <div id="legalModal" class="modal-overlay">
         <div class="modal-content">
             <button class="modal-close-btn">×</button>
@@ -563,7 +674,8 @@
             <p>This site may contain links to third-party websites. I am not responsible for the content or privacy practices of these external sites.</p>
             <p>By using this website, you agree to these terms and conditions.</p>
 
-            <h3>2. AI Bot Disclaimer ("My AI Assistant")</h3> <p>The "My AI Assistant" bot featured on this site is an AI chatbot developed for demonstration and entertainment purposes only. It is powered by a third-party AI service, <a href="https://shapes.inc/" target="_blank" rel="noopener noreferrer">Shapes.inc</a>.</p>
+            <h3>2. AI Bot Disclaimer ("My AI Assistant")</h3>
+            <p>The "My AI Assistant" bot featured on this site is an AI chatbot developed for demonstration and entertainment purposes only. It is powered by a third-party AI service, <a href="https://shapes.inc/" target="_blank" rel="noopener noreferrer">Shapes.inc</a>.</p>
             <ul>
                 <li>The bot's responses are generated by artificial intelligence and may be inaccurate, incomplete, or offensive.</li>
                 <li>Do not share any sensitive personal, financial, or confidential information with the bot.</li>
@@ -580,7 +692,8 @@
                     <strong>No Direct Personal Data Collection:</strong> This website does not directly collect any personally identifiable information (e.g., your name, email address, IP address) from visitors, other than what you voluntarily provide through interactions with the AI bot.
                 </li>
                 <li>
-                    <strong>AI Bot Interaction Data:</strong> When you interact with the "My AI Assistant" bot: <ul>
+                    <strong>AI Bot Interaction Data:</strong> When you interact with the "My AI Assistant" bot:
+                    <ul>
                         <li>Your messages are sent to a third-party AI service, <strong>Shapes.inc</strong>. Shapes.inc processes these messages to generate responses and maintain conversation context. Please refer to <strong>Shapes.inc's own privacy policy</strong> for detailed information on their data collection, storage, and usage practices.</li>
                         <li>To maintain your individual conversation context, a unique User ID and Channel ID are generated and stored locally in your browser's `localStorage`. This information is used solely to differentiate your chat sessions and is not linked to any personal data collected by me. These IDs can be reset by clearing your browser's data or by using the "Reset Chat" button on the bot page.</li>
                     </ul>
@@ -603,6 +716,7 @@
             </div>
         </div>
 
+    <!-- Footer -->
     <footer>
         <p>© 2025 iFlex. All rights reserved.</p>
         <div class="footer-buttons">
@@ -622,46 +736,136 @@
             const legalModal = document.getElementById('legalModal');
             const modalCloseBtns = document.querySelectorAll('.modal-close-btn');
 
-            let userId;
-            let channelId;
+            // Auth specific elements
+            const authOverlay = document.getElementById('authOverlay');
+            const loginBtn = document.getElementById('loginBtn');
+            const codeEntry = document.getElementById('codeEntry');
+            const oneTimeCodeInput = document.getElementById('oneTimeCodeInput');
+            const submitCodeBtn = document.getElementById('submitCodeBtn');
+            const authStatus = document.getElementById('authStatus');
+
+            // Configuration values (these will be set via Netlify environment variables in production)
+            // For local development, you might hardcode them or use a build step to inject.
+            const SHAPESINC_APP_ID = 'ae8658cf-5f6b-4ca8-b234-16c23e85a49f'; // Updated to your provided App ID
+            const SHAPESINC_SITE_URL = 'https://shapes.inc';
+
+            let userAuthToken = null;
+            let currentChannelId; // Unique for each session/page load
+
+            // Helper for displaying messages to user
+            function showStatus(message, isError = false) {
+                authStatus.textContent = message;
+                authStatus.style.color = isError ? '#ff6b6b' : '#4df1f1';
+            }
 
             /**
-             * Initializes or regenerates User and Channel IDs, always creating a new session.
-             * This function is called on page load and when the "Reset Chat" button is clicked.
+             * Initializes a new conversation channel for the current authenticated user.
+             * This should be called on page load and when the "Reset Chat" button is clicked.
              */
-            function initializeNewSession() {
-                // Clear any existing IDs to ensure a fresh session for Shapes.inc context
-                localStorage.removeItem('aiSonUserId');
-                localStorage.removeItem('aiSonChannelId');
+            function initializeNewChannel() {
+                // Generate a new channel ID for each new chat session/page load
+                currentChannelId = crypto.randomUUID();
+                sessionStorage.setItem('aiSonChannelId', currentChannelId); // Store in sessionStorage for current tab
 
-                // Generate new IDs for a unique session
-                userId = crypto.randomUUID();
-                channelId = crypto.randomUUID();
-                
-                // Store them (though they'll be cleared on next page load for "always new session" behavior)
-                // These are used for passing to the Netlify function's headers.
-                localStorage.setItem('aiSonUserId', userId);
-                localStorage.setItem('aiSonChannelId', channelId);
+                console.log('Frontend (son.html) - New Channel Initialized. Channel ID:', currentChannelId);
 
-                console.log('Frontend (son.html) - New Session Initialized. User ID:', userId, 'Channel ID:', channelId);
-
-                // Clear chat display and add initial greeting
-                chatDisplay.innerHTML = '<div class="bot-message message">Hello there! I\'m an AI designed to assist and chat. How can I help you today?</div>';
+                chatDisplay.innerHTML = '<div class="bot-message message">hello there! i\'m an ai designed to assist and chat. how can i help you today?</div>';
                 chatInput.value = '';
                 chatInput.style.height = 'auto';
 
-                // Send a silent '!wack' to the bot immediately to clear its context for this new session.
-                // This explicitly tells Shapes.inc to clear the memory associated with these new IDs.
-                console.log('Sending silent !wack to Shapes.inc for new session...');
-                sendToBot('!wack', true).then(() => {
-                    console.log('Silent !wack sent successfully for new session.');
-                }).catch(error => {
-                    console.error('Failed to send silent !wack for new session:', error);
+                // Send a silent '!wack' to the bot immediately to clear its short-term context
+                // for this specific new channel.
+                if (userAuthToken) {
+                    console.log('Sending silent !wack to Shapes.inc for new channel...');
+                    sendToBot('!wack', true).then(() => {
+                        console.log('Silent !wack sent successfully for new channel.');
+                    }).catch(error => {
+                        console.error('Failed to send silent !wack for new channel:', error);
+                    });
+                }
+            }
+
+            /**
+             * Handles the initial login/authorization flow.
+             */
+            async function handleUserAuth() {
+                // Try to load an existing token from sessionStorage
+                const storedToken = sessionStorage.getItem('shapesUserAuthToken');
+                if (storedToken) {
+                    userAuthToken = storedToken;
+                    console.log('User auth token loaded from sessionStorage.');
+                    proceedToChat();
+                    return;
+                }
+
+                // If no token, show the authentication overlay
+                authOverlay.classList.remove('hidden');
+
+                // Listener for login button click
+                loginBtn.addEventListener('click', () => {
+                    const authorizeUrl = `${SHAPESINC_SITE_URL}/authorize?app_id=${SHAPESINC_APP_ID}`;
+                    window.open(authorizeUrl, '_blank', 'noopener,noreferrer');
+                    loginBtn.style.display = 'none'; // Hide login button
+                    codeEntry.style.display = 'block'; // Show code input
+                    showStatus('Please login/authorize in the new window. Then, copy the one-time code and paste it below.');
+                });
+
+                // Listener for one-time code input
+                oneTimeCodeInput.addEventListener('input', () => {
+                    submitCodeBtn.disabled = oneTimeCodeInput.value.trim() === '';
+                });
+
+                // Listener for submit code button
+                submitCodeBtn.addEventListener('click', async () => {
+                    const oneTimeCode = oneTimeCodeInput.value.trim();
+                    if (!oneTimeCode) {
+                        showStatus('Please enter the one-time code.', true);
+                        return;
+                    }
+
+                    submitCodeBtn.disabled = true;
+                    showStatus('Exchanging code for token...');
+
+                    try {
+                        // Call your Netlify function to exchange the one-time code
+                        const response = await fetch('/.netlify/functions/exchange-token', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ oneTimeCode: oneTimeCode, appId: SHAPESINC_APP_ID }),
+                        });
+
+                        const data = await response.json();
+
+                        if (response.ok && data.auth_token) {
+                            userAuthToken = data.auth_token;
+                            sessionStorage.setItem('shapesUserAuthToken', userAuthToken); // Store token
+                            showStatus('Authentication successful!');
+                            console.log('User auth token received and stored.');
+                            proceedToChat();
+                        } else {
+                            const errorMsg = data.message || 'Failed to exchange code for token. Ensure it is correct and not expired.';
+                            showStatus(errorMsg, true);
+                            console.error('Token exchange failed:', errorMsg);
+                        }
+                    } catch (error) {
+                        showStatus(`Network error during token exchange: ${error.message}`, true);
+                        console.error('Network error:', error);
+                    } finally {
+                        submitCodeBtn.disabled = false;
+                    }
                 });
             }
 
-            // Initialize a new session immediately on page load
-            initializeNewSession();
+            /**
+             * Proceeds to display the chat interface and enables controls.
+             */
+            function proceedToChat() {
+                authOverlay.classList.add('hidden'); // Hide authentication overlay
+                chatInput.disabled = false;
+                sendMessageBtn.disabled = false;
+                resetChatBtn.disabled = false;
+                initializeNewChannel(); // Start a new channel for this authenticated user
+            }
 
             /**
              * Sends a message to the Shapes.inc bot via the Netlify function.
@@ -669,6 +873,12 @@
              * @param {boolean} isSilent - If true, the message and bot response are not added to the chat display.
              */
             async function sendToBot(messageToSend, isSilent = false) {
+                if (!userAuthToken) {
+                    console.error("No user authentication token available.");
+                    if (!isSilent) addMessage("Authentication required to chat.", 'bot');
+                    return;
+                }
+
                 if (!isSilent) {
                     sendMessageBtn.disabled = true;
                     loadingDots.classList.add('active');
@@ -679,8 +889,9 @@
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
-                            'X-User-Id': userId, // Pass the current unique user ID
-                            'X-Channel-Id': channelId // Pass the current unique channel ID
+                            'X-App-ID': SHAPESINC_APP_ID,     // Application ID
+                            'X-User-Auth': userAuthToken,    // User-specific auth token
+                            'X-Channel-Id': currentChannelId // Unique channel for this session
                         },
                         body: JSON.stringify({ message: messageToSend })
                     });
@@ -744,16 +955,16 @@
             });
 
             resetChatBtn.addEventListener('click', () => {
-                // Manually trigger a new session initialization
-                initializeNewSession();
-                console.log('Manual chat reset initiated.');
+                // Manually trigger a new channel initialization
+                initializeNewChannel();
+                console.log('Manual chat reset initiated (new channel).');
             });
 
             backToPortfolioBtn.addEventListener('click', () => {
                 window.location.href = 'index.html';
             });
 
-            // Legal Modal Functionality
+            // Legal Modal Functionality (retained)
             function openModal(modalElement) {
                 modalElement.classList.add('show');
                 document.body.classList.add('modal-open');
@@ -784,7 +995,7 @@
                 }
             });
 
-            // Particle Background Setup
+            // Particle Background Setup (retained)
             const particleCanvas = document.getElementById('particleCanvas');
             const particleCtx = particleCanvas.getContext('2d');
             let particles = [];
@@ -909,6 +1120,9 @@
             resizeCanvas(cursorTrailCanvas);
             animateCursorTrail();
             window.addEventListener('resize', () => resizeCanvas(cursorTrailCanvas));
+
+            // Start the user authentication flow on DOMContentLoaded
+            handleUserAuth();
         });
     </script>
 </body>
