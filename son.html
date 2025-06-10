@@ -81,16 +81,16 @@
             pointer-events: none;
         }
 
-        /* Main Chat Container */
+        /* Main Chat Container - Adjusted for size and responsiveness */
         .chat-container {
             background-color: rgba(25, 25, 25, 0.7); /* More transparent dark background */
             border-radius: 25px; /* More pronounced rounded corners */
             padding: clamp(25px, 5vw, 50px);
             box-shadow: 0 10px 30px rgba(0, 255, 255, 0.2), inset 0 0 20px rgba(0, 255, 255, 0.1); /* Cyan glow shadow */
             text-align: center;
-            width: 100%;
-            max-width: 900px; /* Max width for readability */
-            height: clamp(500px, 75vh, 800px); /* Responsive height for chat area */
+            width: 90%; /* Use a percentage for fluid width */
+            max-width: 950px; /* Increased max width for a larger feel */
+            height: clamp(600px, 80vh, 900px); /* Increased height for larger chat area */
             display: flex;
             flex-direction: column;
             gap: 15px;
@@ -102,7 +102,7 @@
             backdrop-filter: blur(10px); /* Frosted glass effect */
             -webkit-backdrop-filter: blur(10px);
             border: 1px solid rgba(77, 241, 241, 0.3); /* Subtle cyan border */
-            margin-top: clamp(40px, 8vh, 80px); /* Top margin for spacing */
+            margin-top: clamp(30px, 6vh, 60px); /* Top margin for spacing */
             margin-bottom: 20px; /* Space above footer */
         }
 
@@ -460,6 +460,7 @@
                 height: 90vh;
                 margin-top: 20px;
                 margin-bottom: 10px;
+                max-width: 95%; /* Make it slightly wider on smaller screens */
             }
             .page-title {
                 font-size: 2em;
@@ -539,7 +540,8 @@
     <div class="chat-container">
         <h1 class="page-title">My AI Son</h1>
         <div id="chatDisplay" class="chat-display">
-            <div class="bot-message message">Hello! I'm your AI Son. How can I help you today?</div>
+            <!-- Initial greeting, intentionally neutral -->
+            <div class="bot-message message">Hello there! I'm an AI designed to assist and chat. How can I help you today?</div>
         </div>
         <div id="loadingDots" class="loading-dots"></div>
         <div class="chat-input-area">
@@ -628,31 +630,53 @@
             const legalModal = document.getElementById('legalModal');
             const modalCloseBtns = document.querySelectorAll('.modal-close-btn');
 
-            let userId = localStorage.getItem('aiSonUserId');
-            let channelId = localStorage.getItem('aiSonChannelId');
-            let isFirstMessageOfSession = false; // Flag to track if it's the very first user message in this session
+            let userId;
+            let channelId;
 
-            // Initialize or retrieve User and Channel IDs
-            if (!userId) {
-                userId = crypto.randomUUID(); // Use crypto.randomUUID() directly
+            /**
+             * Initializes or regenerates User and Channel IDs, always creating a new session.
+             * This function is called on page load and when the "Reset Chat" button is clicked.
+             */
+            function initializeNewSession() {
+                // Clear any existing IDs to ensure a fresh session
+                localStorage.removeItem('aiSonUserId');
+                localStorage.removeItem('aiSonChannelId');
+
+                // Generate new IDs
+                userId = crypto.randomUUID();
+                channelId = crypto.randomUUID();
+                
+                // Store them (though they'll be cleared on next page load for "always new session" behavior)
                 localStorage.setItem('aiSonUserId', userId);
-                isFirstMessageOfSession = true; // New user, so first message needs '!wack'
-            }
-            if (!channelId) {
-                channelId = crypto.randomUUID(); // Use crypto.randomUUID() directly
                 localStorage.setItem('aiSonChannelId', channelId);
-                isFirstMessageOfSession = true; // New channel, so first message needs '!wack'
+
+                console.log('Frontend (son.html) - New Session Initialized. User ID:', userId, 'Channel ID:', channelId);
+
+                // Clear chat display and add initial greeting
+                chatDisplay.innerHTML = '<div class="bot-message message">Hello there! I\'m an AI designed to assist and chat. How can I help you today?</div>';
+                chatInput.value = '';
+                chatInput.style.height = 'auto';
+
+                // Send a silent '!wack' to the bot immediately to clear its context for this new session
+                console.log('Sending silent !wack to Shapes.inc for new session...');
+                sendToBot('!wack', true).then(() => {
+                    console.log('Silent !wack sent successfully for new session.');
+                }).catch(error => {
+                    console.error('Failed to send silent !wack for new session:', error);
+                });
             }
 
-            // Debugging: Log IDs on page load
-            console.log('Frontend (son.html) - Loaded User ID:', userId);
-            console.log('Frontend (son.html) - Loaded Channel ID:', channelId);
-            console.log('Frontend (son.html) - Is first message of session:', isFirstMessageOfSession);
+            // Initialize a new session immediately on page load
+            initializeNewSession();
 
-            // Function to send a message to the bot (internal or user-initiated)
+            /**
+             * Sends a message to the Shapes.inc bot via the Netlify function.
+             * @param {string} messageToSend - The message content.
+             * @param {boolean} isSilent - If true, the message and bot response are not added to the chat display.
+             */
             async function sendToBot(messageToSend, isSilent = false) {
-                sendMessageBtn.disabled = true;
                 if (!isSilent) {
+                    sendMessageBtn.disabled = true;
                     loadingDots.classList.add('active');
                 }
 
@@ -673,7 +697,7 @@
                     }
 
                     const data = await response.json();
-                    if (!isSilent) { // Only add bot's response to display if it's not a silent '!wack'
+                    if (!isSilent) {
                         addMessage(data.response, 'bot');
                     }
                     return data.response; // Return bot's response if needed
@@ -691,7 +715,15 @@
                 }
             }
 
-            // Function to handle user's message input
+            function addMessage(text, sender) {
+                const messageDiv = document.createElement('div');
+                messageDiv.classList.add('message');
+                messageDiv.classList.add(sender === 'user' ? 'user-message' : 'bot-message');
+                messageDiv.textContent = text;
+                chatDisplay.appendChild(messageDiv);
+                chatDisplay.scrollTop = chatDisplay.scrollHeight;
+            }
+
             async function handleSendMessage() {
                 const message = chatInput.value.trim();
                 if (!message) return;
@@ -700,39 +732,8 @@
                 chatInput.value = '';
                 chatInput.style.height = 'auto'; // Reset textarea height
 
-                // If this is the first user message in this session, prepend '!wack' silently
-                if (isFirstMessageOfSession) {
-                    console.log('Sending silent !wack for new session...');
-                    await sendToBot('!wack', true); // Send !wack silently
-                    isFirstMessageOfSession = false; // Reset flag after sending
-                }
-
                 // Send the actual user message
                 await sendToBot(message, false);
-            }
-
-            // Initial silent !wack on load if it's a new session
-            // This ensures the bot's short-term memory is cleared on every page visit
-            // or when a new user/channel ID is generated.
-            if (isFirstMessageOfSession) {
-                 // Send the !wack command immediately, but silently, so it doesn't clutter chat.
-                // The bot's initial greeting is already in the display.
-                sendToBot('!wack', true).then(() => {
-                    console.log('Silent !wack sent on page load.');
-                    isFirstMessageOfSession = false; // Reset flag after successful silent wack
-                }).catch(error => {
-                    console.error('Failed to send silent !wack on load:', error);
-                    // Decide if you want to notify user about failed wack, or just proceed
-                });
-            }
-
-            function addMessage(text, sender) {
-                const messageDiv = document.createElement('div');
-                messageDiv.classList.add('message');
-                messageDiv.classList.add(sender === 'user' ? 'user-message' : 'bot-message');
-                messageDiv.textContent = text;
-                chatDisplay.appendChild(messageDiv);
-                chatDisplay.scrollTop = chatDisplay.scrollHeight;
             }
 
             sendMessageBtn.addEventListener('click', handleSendMessage);
@@ -748,26 +749,10 @@
                 chatInput.style.height = (chatInput.scrollHeight) + 'px';
             });
 
-            resetChatBtn.addEventListener('click', async () => {
-                // Clear localStorage for channelId and generate a new one
-                localStorage.removeItem('aiSonChannelId');
-                channelId = crypto.randomUUID();
-                localStorage.setItem('aiSonChannelId', channelId);
-                
-                // Set flag so the next user message triggers a silent !wack
-                isFirstMessageOfSession = true;
-
-                // Clear chat display and add initial greeting
-                chatDisplay.innerHTML = '<div class="bot-message message">Chat has been reset. Hello! How can I help you today?</div>';
-                chatInput.value = '';
-                chatInput.style.height = 'auto';
-
-                // Debugging: Log new Channel ID after reset
-                console.log('Frontend (son.html) - Chat Reset. New Channel ID:', channelId);
-
-                // Optionally send a silent !wack immediately after local reset (optional, as isFirstMessageOfSession will handle next user input)
-                // await sendToBot('!wack', true); 
-                // console.log('Silent !wack sent after manual reset.');
+            resetChatBtn.addEventListener('click', () => {
+                // Manually trigger a new session initialization
+                initializeNewSession();
+                console.log('Manual chat reset initiated.');
             });
 
             backToPortfolioBtn.addEventListener('click', () => {
@@ -805,7 +790,7 @@
                 }
             });
 
-            // Particle Background (retained)
+            // Particle Background Setup
             const particleCanvas = document.getElementById('particleCanvas');
             const particleCtx = particleCanvas.getContext('2d');
             let particles = [];
