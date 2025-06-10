@@ -1,5 +1,4 @@
-// netlify/functions/exchange-token.js
-const axios = require('axios'); // You might need to add "axios" to your package.json dependencies
+const axios = require('axios');
 const AUTH_BASE_URL = "https://api.shapes.inc/auth";
 
 exports.handler = async function(event, context) {
@@ -11,10 +10,8 @@ exports.handler = async function(event, context) {
     }
 
     try {
-        // Retrieve your primary API key from environment variables.
-        // This key is used by your application to authenticate with Shapes.inc's auth service.
         const shapesApiKey = process.env.SHAPESINC_API_KEY;
-        const shapesAppId = process.env.SHAPESINC_APP_ID; // Your application's App ID
+        const shapesAppId = process.env.SHAPESINC_APP_ID;
 
         if (!shapesApiKey || !shapesAppId) {
             console.error("Missing SHAPESINC_API_KEY or SHAPESINC_APP_ID environment variables.");
@@ -26,7 +23,6 @@ exports.handler = async function(event, context) {
 
         const body = JSON.parse(event.body);
         const oneTimeCode = body.oneTimeCode;
-        // The appId is also passed from the frontend for consistency, but primarily derived from env.
 
         console.log('Exchange-token function - Received oneTimeCode:', oneTimeCode);
         console.log('Exchange-token function - Using App ID:', shapesAppId);
@@ -38,20 +34,17 @@ exports.handler = async function(event, context) {
             };
         }
 
-        // Make the POST request to Shapes.inc's /nonce endpoint
-        // This exchanges the one-time code for a long-lived user authentication token.
-        // The Authorization header should use your primary API key.
         const response = await axios.post(`${AUTH_BASE_URL}/nonce`, {
             app_id: shapesAppId,
             code: oneTimeCode,
         }, {
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${shapesApiKey}` // Authenticate this request with your primary API key
+                'Authorization': `Bearer ${shapesApiKey}`
             }
         });
 
-        const data = response.data; // Axios wraps response data in .data
+        const data = response.data;
 
         if (response.status === 200 && data.auth_token) {
             console.log('Successfully exchanged code for auth_token.');
