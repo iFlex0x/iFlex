@@ -1,4 +1,3 @@
-// netlify/functions/shapes-chat.js
 const { OpenAI } = require("openai");
 
 exports.handler = async function(event, context) {
@@ -10,7 +9,6 @@ exports.handler = async function(event, context) {
     }
 
     try {
-        // Retrieve SHAPESINC_SHAPE_USERNAME from environment variables
         const shapesShapeUsername = process.env.SHAPESINC_SHAPE_USERNAME;
 
         if (!shapesShapeUsername) {
@@ -24,12 +22,10 @@ exports.handler = async function(event, context) {
         const body = JSON.parse(event.body);
         const userMessage = body.message;
 
-        // Retrieve authentication headers passed from the frontend
-        const appId = event.headers['x-app-id'];       // Application ID for Shapes.inc
-        const userAuthToken = event.headers['x-user-auth']; // User's authentication token from Shapes.inc
-        const channelId = event.headers['x-channel-id']; // Channel ID for conversation context
+        const appId = event.headers['x-app-id'];
+        const userAuthToken = event.headers['x-user-auth'];
+        const channelId = event.headers['x-channel-id'];
 
-        // Debugging: Log received headers and message
         console.log('Shapes-chat function - Received Message:', userMessage);
         console.log('Shapes-chat function - Received X-App-ID:', appId);
         console.log('Shapes-chat function - Received X-User-Auth (partial):', userAuthToken ? userAuthToken.substring(0, 10) + '...' : 'N/A');
@@ -42,11 +38,8 @@ exports.handler = async function(event, context) {
             };
         }
 
-        // Initialize OpenAI client.
-        // When X-App-ID and X-User-Auth are provided in defaultHeaders,
-        // the apiKey can be "not-needed" or empty string as authentication is via the user token.
         const shapes_client = new OpenAI({
-            apiKey: "not-needed", // API key not required here if authenticated via X-User-Auth
+            apiKey: "not-needed",
             baseURL: "https://api.shapes.inc/v1",
             defaultHeaders: {
                 "X-App-ID": appId,
@@ -54,8 +47,6 @@ exports.handler = async function(event, context) {
             },
         });
 
-        // The 'store: false' parameter instructs the API not to persist chat history server-side.
-        // This is still good practice to explicitly state, though user auth handles much of it.
         console.log('Calling Shapes.inc API with user auth and store: false');
         const response = await shapes_client.chat.completions.create({
             model: `shapesinc/${shapesShapeUsername}`,
@@ -63,10 +54,8 @@ exports.handler = async function(event, context) {
                 { role: "user", content: userMessage }
             ],
             extra_headers: {
-                // X-Channel-Id is still useful for distinguishing multiple concurrent chats
-                // from the same authenticated user.
                 "X-Channel-Id": channelId,
-                "store": "false" // Shapes API documentation implies this for explicit storage control
+                "store": "false"
             }
         });
 
