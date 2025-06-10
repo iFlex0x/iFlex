@@ -8,28 +8,28 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* Global Styles & Reset: Ensures full viewport coverage and consistent base */
+        /* Global Styles & Reset */
         html, body {
             margin: 0;
             padding: 0;
-            height: 100vh;
-            width: 100vw;
+            height: 100vh; /* Full viewport height */
+            width: 100vw;  /* Full viewport width */
             box-sizing: border-box;
             font-family: 'Inter', sans-serif;
-            background-color: #0d0d0d; /* Even darker base background */
+            background-color: #0d0d0d; /* Dark base background */
             color: #e0e0e0; /* Light text for contrast */
             display: flex;
             flex-direction: column;
-            justify-content: space-between; /* Pushes content to center, footer to bottom */
+            justify-content: space-between; /* Space out chat container and footer */
             align-items: center;
             overflow-x: hidden; /* Prevent horizontal scroll */
-            overflow-y: auto; /* Allow vertical scrolling for content */
+            overflow-y: auto; /* Allow vertical scrolling for chat messages */
             scroll-behavior: smooth;
             cursor: url(images/cursor.png), auto; /* Custom cursor */
             position: relative;
         }
 
-        /* Digital Grid Overlay: New background effect */
+        /* Digital Grid Overlay */
         body::before {
             content: '';
             position: fixed;
@@ -59,7 +59,7 @@
             z-index: 0; /* Above grid, below content */
         }
 
-        /* Particle Canvas: Dynamic background particles (retained for depth) */
+        /* Particle Canvas: Dynamic background particles */
         #particleCanvas {
             position: fixed;
             top: 0;
@@ -70,34 +70,18 @@
             pointer-events: none;
         }
 
-        /* Main container for page content (chat area) */
-        .main-container {
-            flex-grow: 1; /* Allows it to expand and fill space */
+        /* Cursor Trail Canvas */
+        #cursorTrailCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
-            max-width: 900px; /* Max width for readability */
-            padding: clamp(60px, 8vh, 100px) clamp(20px, 5vw, 50px) clamp(40px, 6vh, 80px); /* Responsive padding */
-            box-sizing: border-box;
-            z-index: 2; /* Ensures content is above background elements */
-            display: flex;
-            flex-direction: column;
-            align-items: center; /* Center content horizontally */
-            text-align: center; /* Default text alignment for page title */
+            height: 100%;
+            z-index: 1001; /* Above particles, below chat content */
+            pointer-events: none;
         }
 
-        /* Page Title */
-        .page-title {
-            font-size: clamp(2.5em, 7vw, 4em);
-            color: #4df1f1; /* Cyan glow for title */
-            margin-bottom: clamp(30px, 5vh, 60px);
-            letter-spacing: 2px;
-            text-shadow: 0 0 15px rgba(77, 241, 241, 0.8), 0 0 30px rgba(77, 241, 241, 0.5);
-            font-weight: 800;
-            opacity: 0;
-            transform: translateY(-20px);
-            animation: slideIn 0.8s ease-out forwards, text-neon-glow 3s infinite alternate ease-in-out;
-        }
-
-        /* Chat Container (main interactive area) */
+        /* Main Chat Container */
         .chat-container {
             background-color: rgba(25, 25, 25, 0.7); /* More transparent dark background */
             border-radius: 25px; /* More pronounced rounded corners */
@@ -105,18 +89,35 @@
             box-shadow: 0 10px 30px rgba(0, 255, 255, 0.2), inset 0 0 20px rgba(0, 255, 255, 0.1); /* Cyan glow shadow */
             text-align: center;
             width: 100%;
+            max-width: 900px; /* Max width for readability */
             height: clamp(500px, 75vh, 800px); /* Responsive height for chat area */
             display: flex;
             flex-direction: column;
             gap: 15px;
-            z-index: 2;
+            z-index: 2; /* Ensures content is above background elements */
             box-sizing: border-box;
-            opacity: 0;
-            transform: translateY(20px);
+            opacity: 0; /* For entrance animation */
+            transform: translateY(20px); /* For entrance animation */
             animation: fadeIn 1s ease-out 0.3s forwards;
-            backdrop-filter: blur(10px); /* Stronger frosted glass effect */
+            backdrop-filter: blur(10px); /* Frosted glass effect */
             -webkit-backdrop-filter: blur(10px);
             border: 1px solid rgba(77, 241, 241, 0.3); /* Subtle cyan border */
+            margin-top: clamp(40px, 8vh, 80px); /* Top margin for spacing */
+            margin-bottom: 20px; /* Space above footer */
+        }
+
+        /* Page Title */
+        .page-title {
+            font-size: clamp(2.5em, 7vw, 4em);
+            color: #4df1f1; /* Cyan glow for title */
+            margin-bottom: clamp(20px, 4vh, 40px);
+            letter-spacing: 2px;
+            text-shadow: 0 0 15px rgba(77, 241, 241, 0.8), 0 0 30px rgba(77, 241, 241, 0.5);
+            font-weight: 800;
+            opacity: 0;
+            transform: translateY(-20px);
+            animation: slideIn 0.8s ease-out forwards, text-neon-glow 3s infinite alternate ease-in-out;
+            text-align: center;
         }
 
         /* Chat Display Area */
@@ -143,7 +144,7 @@
             line-height: 1.5;
             color: #ffffff;
             font-size: clamp(0.9em, 1.8vw, 1em);
-            position: relative; /* For glow effect */
+            position: relative;
         }
 
         .user-message {
@@ -167,28 +168,28 @@
         /* Chat Input Area */
         .chat-input-area {
             display: flex;
-            gap: 12px; /* Slightly more space */
+            gap: 12px;
             margin-top: 15px;
         }
 
         .chat-input-area textarea {
             flex-grow: 1;
             padding: 15px 20px;
-            border-radius: 20px; /* More rounded */
-            border: 1px solid rgba(77, 241, 241, 0.3); /* Cyan border */
-            background-color: rgba(25, 25, 25, 0.6); /* Transparent dark */
+            border-radius: 20px;
+            border: 1px solid rgba(77, 241, 241, 0.3);
+            background-color: rgba(25, 25, 25, 0.6);
             color: #e0e0e0;
             font-size: clamp(0.95em, 1.8vw, 1.1em);
             resize: none;
-            min-height: 50px; /* Taller input */
-            max-height: 120px; /* Increased max height */
+            min-height: 50px;
+            max-height: 120px;
             box-shadow: inset 0 0 10px rgba(0, 255, 255, 0.1);
             outline: none;
             transition: border-color 0.3s ease, box-shadow 0.3s ease;
             box-sizing: border-box;
         }
         .chat-input-area textarea:focus {
-            border-color: #4df1f1; /* Brighter cyan on focus */
+            border-color: #4df1f1;
             box-shadow: inset 0 0 10px rgba(0, 255, 255, 0.3), 0 0 20px rgba(77, 241, 241, 0.5);
         }
         .chat-input-area textarea::placeholder {
@@ -200,16 +201,16 @@
         .chat-button {
             background: linear-gradient(45deg, #4df1f1, #21c2c2); /* Cyan gradient */
             color: #0d0d0d; /* Dark text on bright button */
-            padding: 15px 25px; /* Larger padding */
-            border-radius: 20px; /* More rounded */
+            padding: 15px 25px;
+            border-radius: 20px;
             border: none;
             font-size: clamp(1em, 1.8vw, 1.1em);
             cursor: pointer;
             transition: all 0.3s ease-in-out;
             box-shadow: 0 8px 20px rgba(77, 241, 241, 0.4);
             white-space: nowrap;
-            font-weight: 700; /* Bolder text */
-            text-transform: uppercase; /* More impactful */
+            font-weight: 700;
+            text-transform: uppercase;
         }
         .chat-button:hover {
             transform: translateY(-5px) scale(1.05);
@@ -227,29 +228,29 @@
 
         /* Loading Dots for Bot Response */
         .loading-dots {
-            display: none; /* Hidden by default */
+            display: none;
             align-self: flex-start;
             margin-top: 10px;
             color: #4df1f1; /* Cyan dots */
-            font-size: clamp(1.5em, 2.8vw, 2em); /* Larger dots */
+            font-size: clamp(1.5em, 2.8vw, 2em);
             position: relative;
-            padding-left: 30px; /* Space for dots */
-            line-height: 1; /* Aligns dots better */
+            padding-left: 30px;
+            line-height: 1;
         }
         .loading-dots::before {
-            content: '...'; /* Actual dots animated via steps() */
+            content: '...';
             position: absolute;
             left: 0;
             top: 0;
             overflow: hidden;
-            width: 0; /* Hidden by default */
+            width: 0;
             animation: typing-dots-reveal 1s infinite steps(3, end);
         }
         .loading-dots.active {
             display: block;
         }
         .loading-dots.active::before {
-             width: auto; /* Show dots when active */
+             width: auto;
         }
 
         /* Action Buttons (Reset, Back to Portfolio) */
@@ -257,15 +258,15 @@
             display: flex;
             justify-content: center;
             gap: clamp(15px, 2.5vw, 25px);
-            margin-top: clamp(20px, 3.5vh, 35px); /* More spacing */
+            margin-top: clamp(20px, 3.5vh, 35px);
             flex-wrap: wrap;
         }
         .action-button {
-            background-color: rgba(30, 30, 30, 0.8); /* Darker transparent */
+            background-color: rgba(30, 30, 30, 0.8);
             color: #4df1f1; /* Cyan text */
             padding: clamp(12px, 2vw, 18px) clamp(20px, 3.5vw, 35px);
-            border-radius: 15px; /* More rounded */
-            border: 1px solid rgba(77, 241, 241, 0.2); /* Subtle cyan border */
+            border-radius: 15px;
+            border: 1px solid rgba(77, 241, 241, 0.2);
             font-size: clamp(0.9em, 1.8vw, 1em);
             cursor: pointer;
             transition: all 0.3s ease-in-out;
@@ -274,13 +275,13 @@
         }
         .action-button:hover {
             background-color: rgba(40, 40, 40, 0.9);
-            border-color: #4df1f1; /* Brighter cyan border on hover */
+            border-color: #4df1f1;
             transform: translateY(-3px);
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5), 0 0 15px rgba(77, 241, 241, 0.4);
-            color: #ffffff; /* White text on hover for contrast */
+            color: #ffffff;
         }
 
-        /* Global Footer Styles: Always visible at the bottom of the page */
+        /* Global Footer Styles */
         footer {
             width: 100%;
             text-align: center;
@@ -288,7 +289,7 @@
             color: #999;
             padding: clamp(10px, 1.5vh, 20px) 0;
             z-index: 2;
-            background-color: #0d0d0d; /* Matches new body background */
+            background-color: #0d0d0d;
             position: relative;
             flex-shrink: 0;
         }
@@ -300,7 +301,7 @@
             flex-wrap: wrap;
         }
         .footer-button {
-            background-color: #1a1a1a; /* Darker footer button */
+            background-color: #1a1a1a;
             color: #e0e0e0;
             padding: clamp(8px, 1.5vw, 10px) clamp(15px, 3vw, 20px);
             border-radius: 10px;
@@ -317,172 +318,49 @@
             box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
         }
 
-        /* Hamburger Menu & Overlay Navigation (reused from index.html) */
-        .menu-toggle {
-            position: fixed;
-            top: clamp(20px, 4vh, 40px);
-            right: clamp(20px, 4vw, 40px);
-            z-index: 1004;
-            background: none;
-            border: none;
-            color: #e0e0e0;
-            font-size: clamp(1.8em, 3.5vw, 2.5em);
-            cursor: pointer;
-            padding: 10px;
-            transition: transform 0.3s ease, color 0.3s ease, visibility 0.3s ease, opacity 0.3s ease; /* Added visibility and opacity */
-            text-shadow: 0 0 10px rgba(0,0,0,0.5);
-            touch-action: manipulation;
-        }
-        .menu-toggle:hover {
-            transform: scale(1.1);
-            color: #4df1f1; /* Cyan tint on hover */
-        }
-        /* State for when menu is open */
-        .menu-toggle.hidden {
-            visibility: hidden;
-            opacity: 0;
-            pointer-events: none; /* Ensure it's not clickable when hidden */
-        }
-
-        .nav-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.98);
-            display: flex;
-            flex-direction: column;
-            justify-content: center; /* This centers the content vertically */
-            align-items: center;
-            z-index: 1003;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.4s ease, visibility 0.4s ease;
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            pointer-events: none;
-            padding-top: clamp(80px, 12vh, 120px); /* Ensures space for the close button */
-            padding-bottom: clamp(40px, 8vh, 80px); /* Ensures space at the bottom */
-            box-sizing: border-box; /* Include padding in height calculation */
-        }
-        .nav-overlay.open {
-            opacity: 1;
-            visibility: visible;
-            pointer-events: auto;
-        }
-        .nav-overlay-close-btn {
-            position: absolute;
-            top: clamp(20px, 4vh, 40px);
-            right: clamp(20px, 4vw, 40px);
-            z-index: 1004; /* Ensure close button is above nav items */
-            background: none;
-            border: none;
-            color: #e0e0e0;
-            font-size: clamp(2.5em, 5vw, 3em);
-            cursor: pointer;
-            transition: transform 0.3s ease, color 0.3s ease;
-            touch-action: manipulation;
-        }
-        .nav-overlay-close-btn:hover {
-            transform: rotate(90deg);
-            color: #4df1f1; /* Cyan close button */
-        }
-        .nav-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            text-align: center;
-        
-        }
-        .nav-list li {
-            margin: clamp(20px, 4vh, 40px) 0;
-            opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 0.4s ease, transform 0.4s ease;
-        }
-        .nav-overlay.open .nav-list li {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        .nav-overlay.open .nav-list li:nth-child(1) { transition-delay: 0.1s; }
-        .nav-overlay.open .nav-list li:nth-child(2) { transition-delay: 0.2s; }
-        .nav-overlay.open .nav-list li:nth-child(3) { transition-delay: 0.3s; }
-        .nav-overlay.open .nav-list li:nth-child(4) { transition-delay: 0.4s; }
-        .nav-overlay.open .nav-list li:nth-child(5) { transition-delay: 0.5s; }
-        .nav-list a {
-            color: #ffffff;
-            text-decoration: none;
-            font-size: clamp(2em, 5vw, 3em);
-            font-weight: 700;
-            letter-spacing: 1.5px;
-            transition: color 0.3s ease, text-shadow 0.3s ease;
-            position: relative;
-            overflow: hidden;
-            display: inline-block;
-            padding: 5px 0;
-        }
-        .nav-list a::before {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: -100%;
-            width: 100%;
-            height: 4px;
-            background-color: #4df1f1; /* Cyan underline */
-            transition: left 0.3s ease-out;
-        }
-        .nav-list a:hover::before {
-            left: 0;
-        }
-        .nav-list a:hover {
-            color: #4df1f1;
-            text-shadow: 0 0 20px rgba(77, 241, 241, 0.8);
-        }
-
-        /* Modal Styles (for Legal information, opens on top of everything) */
+        /* Legal Modal (retained for legal/privacy) */
         .modal-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.8); /* Darker overlay */
+            background-color: rgba(0, 0, 0, 0.8);
             display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 1005; /* Highest z-index for modals */
+            z-index: 1005;
             opacity: 0;
-            pointer-events: none; /* Invisible and non-interactive by default */
+            pointer-events: none;
             transition: opacity 0.3s ease;
-            backdrop-filter: blur(8px); /* Blur effect */
+            backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
         }
 
         .modal-overlay.show {
             opacity: 1;
-            pointer-events: auto; /* Becomes interactive when shown */
+            pointer-events: auto;
         }
 
         .modal-content {
-            background-color: #1a1a1a; /* Darker modal background */
+            background-color: #1a1a1a;
             border-radius: 20px;
-            padding: clamp(20px, 5vw, 40px); /* Responsive padding */
+            padding: clamp(20px, 5vw, 40px);
             box-shadow:
                 inset 5px 5px 10px rgba(0, 0, 0, 0.3),
                 inset -5px -5px 10px rgba(70, 70, 70, 0.1),
-                0 10px 30px rgba(0, 0, 0, 0.7); /* More prominent shadow */
+                0 10px 30px rgba(0, 0, 0, 0.7);
             text-align: left;
-            max-width: 700px; /* Increased max-width */
-            width: 90%; /* Occupies 90% width on smaller screens */
+            max-width: 700px;
+            width: 90%;
             position: relative;
-            transform: scale(0.8); /* Initial smaller scale for entrance animation */
+            transform: scale(0.8);
             opacity: 0;
             transition: transform 0.3s ease, opacity 0.3s ease;
             box-sizing: border-box;
-            max-height: 90vh; /* Allow content to scroll if too long */
-            overflow-y: auto; /* Enable vertical scrolling */
-            border: 1px solid rgba(77, 241, 241, 0.2); /* Subtle cyan border */
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 1px solid rgba(77, 241, 241, 0.2);
         }
 
         .modal-overlay.show .modal-content {
@@ -502,12 +380,12 @@
             transition: color 0.2s ease;
         }
         .modal-close-btn:hover {
-            color: #4df1f1; /* Cyan close button */
+            color: #4df1f1;
         }
 
         .modal-content h2 {
             font-size: clamp(1.8em, 4vw, 2.5em);
-            color: #4df1f1; /* Cyan heading */
+            color: #4df1f1;
             margin-bottom: 20px;
             text-align: center;
         }
@@ -532,110 +410,149 @@
             margin-bottom: 5px;
         }
         .modal-content a {
-            color: #4df1f1; /* Cyan links */
+            color: #4df1f1;
             text-decoration: none;
             transition: color 0.2s ease;
         }
         .modal-content a:hover {
-            color: #21c2c2; /* Darker cyan on hover */
+            color: #21c2c2;
             text-decoration: underline;
         }
 
-        /* Keyframe Animations for Cinematic Effect */
-        @keyframes background-pulse {
-            0% { background-color: #1a1a1a; }
-            50% { background-color: #202020; }
-            100% { background-color: #1a1a1a; }
+        /* Keyframe Animations */
+        @keyframes grid-pulse {
+            0% { background-color: rgba(17, 17, 17, 0.8); }
+            50% { background-color: rgba(25, 25, 25, 0.8); }
+            100% { background-color: rgba(17, 17, 17, 0.8); }
         }
-        @keyframes initial-glow {
-            0% { box-shadow: 0 0 50px rgba(77, 241, 241, 0.2); } /* Cyan glow */
-            50% { box-shadow: 0 0 80px rgba(77, 241, 241, 0.4); }
-            100% { box-shadow: 0 0 50px rgba(77, 241, 241, 0.2); }
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
         }
-        @keyframes fluid-shift {
-            0% { transform: scale(1.2) translate(0, 0); opacity: 0.3; }
-            25% { transform: scale(1.2) translate(5%, 5%); opacity: 0.4; }
-            50% { transform: scale(1.2) translate(0, 10%); opacity: 0.3; }
-            75% { transform: scale(1.2) translate(-5%, 5%); opacity: 0.4; }
-            100% { transform: scale(1.2) translate(0, 0); opacity: 0.3; }
+        @keyframes slideIn {
+            0% { opacity: 0; transform: translateY(-20px); }
+            100% { opacity: 1; transform: translateY(0); }
         }
-        @keyframes hero-fade-in {
-            0% { opacity: 0; }
-            100% { opacity: 1; }
+        @keyframes text-neon-glow {
+            0% { text-shadow: 0 0 15px rgba(77, 241, 241, 0.8), 0 0 30px rgba(77, 241, 241, 0.5); }
+            50% { text-shadow: 0 0 25px rgba(77, 241, 241, 1), 0 0 40px rgba(77, 241, 241, 0.7); }
+            100% { text-shadow: 0 0 15px rgba(77, 241, 241, 0.8), 0 0 30px rgba(77, 241, 241, 0.5); }
         }
-        @keyframes logo-pulsar-entrance {
-            0% { opacity: 0; transform: scale(0.2); filter: drop-shadow(0 0 0 rgba(77, 241, 241, 0)); }
-            50% { opacity: 1; transform: scale(1.2); filter: drop-shadow(0 0 50px rgba(77, 241, 241, 1)); } /* Intense peak cyan glow */
-            100% { opacity: 1; transform: scale(1); filter: drop-shadow(0 0 25px rgba(77, 241, 241, 0.7)); }
+        @keyframes message-slide-in-right {
+            0% { opacity: 0; transform: translateX(20px); }
+            100% { opacity: 1; transform: translateX(0); }
         }
-        @keyframes logo-pulse {
-            0% { transform: scale(1); filter: drop-shadow(0 0 25px rgba(77, 241, 241, 0.7)); }
-            50% { transform: scale(1.02); filter: drop-shadow(0 0 35px rgba(77, 241, 241, 0.9)); }
-            100% { transform: scale(1); filter: drop-shadow(0 0 25px rgba(77, 241, 241, 0.7)); }
+        @keyframes message-slide-in-left {
+            0% { opacity: 0; transform: translateX(-20px); }
+            100% { opacity: 1; transform: translateX(0); }
         }
-        @keyframes logo-ripple {
-            0% { transform: scale(0.8); opacity: 0.5; }
-            100% { transform: scale(1.5); opacity: 0; }
+        @keyframes typing-dots-reveal {
+            0% { width: 0; }
+            33% { width: 0.5em; }
+            66% { width: 1em; }
+            100% { width: 1.5em; }
         }
-        @keyframes kinetic-title-entrance {
-            0% { opacity: 0; transform: translateY(-80px) scale(0.8); letter-spacing: 20px; }
-            60% { opacity: 1; transform: translateY(10px) scale(1.05); letter-spacing: 3px; }
-            100% { opacity: 1; transform: translateY(0) scale(1); letter-spacing: 5px; }
+
+        /* Media Queries for Responsiveness */
+        @media (max-width: 768px) {
+            .chat-container {
+                padding: 15px;
+                height: 90vh;
+                margin-top: 20px;
+                margin-bottom: 10px;
+            }
+            .page-title {
+                font-size: 2em;
+                margin-bottom: 15px;
+            }
+            .chat-input-area {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .chat-button {
+                width: 100%;
+                padding: 12px 20px;
+                font-size: 1em;
+            }
+            .action-buttons {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .action-button {
+                width: 100%;
+                padding: 10px 20px;
+                font-size: 0.9em;
+            }
+            .modal-content {
+                padding: 20px;
+                width: 95%;
+                max-height: 85vh;
+            }
+            .modal-close-btn {
+                font-size: 1.8em;
+            }
         }
-        @keyframes fade-in {
-            0% { opacity: 0; }
-            100% { opacity: 1; }
-        }
-        @keyframes button-pop-in {
-            0% { opacity: 0; transform: scale(0.5); }
-            70% { opacity: 1; transform: scale(1.1); }
-            100% { opacity: 1; transform: scale(1); }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            .chat-container {
+                padding: 10px;
+                height: 95vh;
+                margin-top: 10px;
+            }
+            .page-title {
+                font-size: 1.5em;
+                margin-bottom: 10px;
+            }
+            .message {
+                padding: 8px 12px;
+                font-size: 0.9em;
+            }
+            .chat-input-area textarea {
+                padding: 10px;
+                font-size: 0.9em;
+            }
+            .chat-button {
+                padding: 10px 15px;
+                font-size: 0.9em;
+            }
+            .action-button {
+                padding: 8px 15px;
+                font-size: 0.8em;
+            }
+            .modal-content {
+                padding: 15px;
+                width: 90%;
+            }
+            .modal-close-btn {
+                font-size: 1.5em;
+            }
         }
     </style>
 </head>
 <body>
     <canvas id="particleCanvas"></canvas>
     <canvas id="cursorTrailCanvas"></canvas>
-    <div class="vignette-overlay"></div>
-    <div class="volumetric-overlay"></div> <!-- New fluid/light overlay -->
 
-    <!-- Main Hero Section - This will take up most of the viewport height -->
-    <div class="hero-section">
-        <div class="hero-logo-container">
-            <img src="images/iflexnew.png" alt="iFlex Logo">
+    <div class="chat-container">
+        <h1 class="page-title">My AI Son</h1>
+        <div id="chatDisplay" class="chat-display">
+            <div class="bot-message message">Hello! I'm your AI Son. How can I help you today?</div>
         </div>
-        <h1 class="hero-title">iFlex</h1>
-        <p class="hero-subtitle">Crafting immersive digital experiences through cutting-edge web development and AI innovation.</p>
-        
-        <!-- Portal Activator Button -->
-        <button class="portal-activator-button" id="portalActivator">
-            <i class="fas fa-arrow-right"></i> <!-- Example glyph: right arrow -->
-        </button>
+        <div id="loadingDots" class="loading-dots"></div>
+        <div class="chat-input-area">
+            <textarea id="chatInput" placeholder="Type your message..."></textarea>
+            <button id="sendMessageBtn" class="chat-button">Send</button>
+        </div>
+        <div class="action-buttons">
+            <button id="resetChatBtn" class="action-button">Reset Chat</button>
+            <button id="backToPortfolioBtn" class="action-button">Back to Portfolio</button>
+        </div>
     </div>
 
-    <!-- Portal Transition Circle (initially hidden) -->
-    <div class="portal-transition-circle" id="portalTransitionCircle"></div>
-
-    <!-- Hamburger Menu Toggle (initially hidden on landing page, appears on sub-pages) -->
-    <button class="menu-toggle" id="menuToggle">
-        <i class="fas fa-bars"></i>
-    </button>
-
-    <!-- Full-screen Navigation Overlay (appears via portal activation) -->
-    <nav class="nav-overlay" id="navOverlay">
-        <button class="nav-overlay-close-btn" id="navCloseBtn">
-            <i class="fas fa-times"></i>
-        </button>
-        <ul class="nav-list">
-            <li><a href="portfolio.html">My Work</a></li>
-            <li><a href="about.html">About Me</a></li>
-            <li><a href="brainstormer.html">Brainstormer</a></li>
-            <li><a href="son.html">My AI Son</a></li>
-            <li><a href="links.html">Links</a></li>
-        </ul>
-    </nav>
-
-    <!-- Legal Modal (hidden by default, opens from footer link) -->
+    <!-- Legal Modal (hidden by default) -->
     <div id="legalModal" class="modal-overlay">
         <div class="modal-content">
             <button class="modal-close-btn">×</button>
@@ -691,7 +608,7 @@
             </div>
         </div>
 
-    <!-- Footer (always visible at the bottom of the page) -->
+    <!-- Footer -->
     <footer>
         <p>© 2025 iFlex. All rights reserved.</p>
         <div class="footer-buttons">
@@ -701,7 +618,194 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Particle Background Setup
+            const chatDisplay = document.getElementById('chatDisplay');
+            const chatInput = document.getElementById('chatInput');
+            const sendMessageBtn = document.getElementById('sendMessageBtn');
+            const loadingDots = document.getElementById('loadingDots');
+            const resetChatBtn = document.getElementById('resetChatBtn');
+            const backToPortfolioBtn = document.getElementById('backToPortfolioBtn');
+            const legalBtn = document.getElementById('legalBtn');
+            const legalModal = document.getElementById('legalModal');
+            const modalCloseBtns = document.querySelectorAll('.modal-close-btn');
+
+            let userId = localStorage.getItem('aiSonUserId');
+            let channelId = localStorage.getItem('aiSonChannelId');
+            let isFirstMessageOfSession = false; // Flag to track if it's the very first user message in this session
+
+            // Initialize or retrieve User and Channel IDs
+            if (!userId) {
+                userId = crypto.randomUUID(); // Use crypto.randomUUID() directly
+                localStorage.setItem('aiSonUserId', userId);
+                isFirstMessageOfSession = true; // New user, so first message needs '!wack'
+            }
+            if (!channelId) {
+                channelId = crypto.randomUUID(); // Use crypto.randomUUID() directly
+                localStorage.setItem('aiSonChannelId', channelId);
+                isFirstMessageOfSession = true; // New channel, so first message needs '!wack'
+            }
+
+            // Debugging: Log IDs on page load
+            console.log('Frontend (son.html) - Loaded User ID:', userId);
+            console.log('Frontend (son.html) - Loaded Channel ID:', channelId);
+            console.log('Frontend (son.html) - Is first message of session:', isFirstMessageOfSession);
+
+            // Function to send a message to the bot (internal or user-initiated)
+            async function sendToBot(messageToSend, isSilent = false) {
+                sendMessageBtn.disabled = true;
+                if (!isSilent) {
+                    loadingDots.classList.add('active');
+                }
+
+                try {
+                    const response = await fetch('/.netlify/functions/shapes-chat', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-User-Id': userId,
+                            'X-Channel-Id': channelId
+                        },
+                        body: JSON.stringify({ message: messageToSend })
+                    });
+
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(`API Error: ${response.status} - ${errorData.error || 'Unknown error'}`);
+                    }
+
+                    const data = await response.json();
+                    if (!isSilent) { // Only add bot's response to display if it's not a silent '!wack'
+                        addMessage(data.response, 'bot');
+                    }
+                    return data.response; // Return bot's response if needed
+                } catch (error) {
+                    console.error('Error sending message:', error);
+                    if (!isSilent) {
+                        addMessage(`Error: ${error.message}. Please try again.`, 'bot');
+                    }
+                    return null;
+                } finally {
+                    if (!isSilent) {
+                        sendMessageBtn.disabled = false;
+                        loadingDots.classList.remove('active');
+                    }
+                }
+            }
+
+            // Function to handle user's message input
+            async function handleSendMessage() {
+                const message = chatInput.value.trim();
+                if (!message) return;
+
+                addMessage(message, 'user');
+                chatInput.value = '';
+                chatInput.style.height = 'auto'; // Reset textarea height
+
+                // If this is the first user message in this session, prepend '!wack' silently
+                if (isFirstMessageOfSession) {
+                    console.log('Sending silent !wack for new session...');
+                    await sendToBot('!wack', true); // Send !wack silently
+                    isFirstMessageOfSession = false; // Reset flag after sending
+                }
+
+                // Send the actual user message
+                await sendToBot(message, false);
+            }
+
+            // Initial silent !wack on load if it's a new session
+            // This ensures the bot's short-term memory is cleared on every page visit
+            // or when a new user/channel ID is generated.
+            if (isFirstMessageOfSession) {
+                 // Send the !wack command immediately, but silently, so it doesn't clutter chat.
+                // The bot's initial greeting is already in the display.
+                sendToBot('!wack', true).then(() => {
+                    console.log('Silent !wack sent on page load.');
+                    isFirstMessageOfSession = false; // Reset flag after successful silent wack
+                }).catch(error => {
+                    console.error('Failed to send silent !wack on load:', error);
+                    // Decide if you want to notify user about failed wack, or just proceed
+                });
+            }
+
+            function addMessage(text, sender) {
+                const messageDiv = document.createElement('div');
+                messageDiv.classList.add('message');
+                messageDiv.classList.add(sender === 'user' ? 'user-message' : 'bot-message');
+                messageDiv.textContent = text;
+                chatDisplay.appendChild(messageDiv);
+                chatDisplay.scrollTop = chatDisplay.scrollHeight;
+            }
+
+            sendMessageBtn.addEventListener('click', handleSendMessage);
+            chatInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    handleSendMessage();
+                }
+            });
+
+            chatInput.addEventListener('input', () => {
+                chatInput.style.height = 'auto';
+                chatInput.style.height = (chatInput.scrollHeight) + 'px';
+            });
+
+            resetChatBtn.addEventListener('click', async () => {
+                // Clear localStorage for channelId and generate a new one
+                localStorage.removeItem('aiSonChannelId');
+                channelId = crypto.randomUUID();
+                localStorage.setItem('aiSonChannelId', channelId);
+                
+                // Set flag so the next user message triggers a silent !wack
+                isFirstMessageOfSession = true;
+
+                // Clear chat display and add initial greeting
+                chatDisplay.innerHTML = '<div class="bot-message message">Chat has been reset. Hello! How can I help you today?</div>';
+                chatInput.value = '';
+                chatInput.style.height = 'auto';
+
+                // Debugging: Log new Channel ID after reset
+                console.log('Frontend (son.html) - Chat Reset. New Channel ID:', channelId);
+
+                // Optionally send a silent !wack immediately after local reset (optional, as isFirstMessageOfSession will handle next user input)
+                // await sendToBot('!wack', true); 
+                // console.log('Silent !wack sent after manual reset.');
+            });
+
+            backToPortfolioBtn.addEventListener('click', () => {
+                window.location.href = 'index.html';
+            });
+
+            // Legal Modal Functionality
+            function openModal(modalElement) {
+                modalElement.classList.add('show');
+                document.body.classList.add('modal-open');
+            }
+
+            function closeModal(modalElement) {
+                modalElement.classList.remove('show');
+                document.body.classList.remove('modal-open');
+            }
+
+            legalBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                openModal(legalModal);
+            });
+
+            modalCloseBtns.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const modalOverlay = e.target.closest('.modal-overlay');
+                    if (modalOverlay) {
+                        closeModal(modalOverlay);
+                    }
+                });
+            });
+
+            legalModal.addEventListener('click', (e) => {
+                if (e.target === legalModal) {
+                    closeModal(legalModal);
+                }
+            });
+
+            // Particle Background (retained)
             const particleCanvas = document.getElementById('particleCanvas');
             const particleCtx = particleCanvas.getContext('2d');
             let particles = [];
@@ -768,7 +872,7 @@
                 initParticles();
             });
 
-            // Cursor Trail Particles
+            // Cursor Trail Particles (retained)
             const cursorTrailCanvas = document.getElementById('cursorTrailCanvas');
             const cursorTrailCtx = cursorTrailCanvas.getContext('2d');
             let cursorParticles = [];
@@ -826,109 +930,6 @@
             resizeCanvas(cursorTrailCanvas);
             animateCursorTrail();
             window.addEventListener('resize', () => resizeCanvas(cursorTrailCanvas));
-
-            // Portal Activator Button & Navigation Logic
-            const portalActivator = document.getElementById('portalActivator');
-            const portalTransitionCircle = document.getElementById('portalTransitionCircle');
-            const navOverlay = document.getElementById('navOverlay');
-            const navCloseBtn = document.getElementById('navCloseBtn');
-            const navLinks = document.querySelectorAll('.nav-list a');
-            const body = document.body;
-            const menuToggle = document.getElementById('menuToggle'); // Hamburger menu for sub-pages
-
-            portalActivator.addEventListener('click', () => {
-                const rect = portalActivator.getBoundingClientRect();
-                // Set initial position of circle to button's center
-                portalTransitionCircle.style.left = `${rect.left + rect.width / 2}px`;
-                portalTransitionCircle.style.top = `${rect.top + rect.height / 2}px`;
-                
-                portalTransitionCircle.classList.add('active'); // Start the bloom animation
-
-                // After the bloom animation completes, open the navigation
-                portalTransitionCircle.addEventListener('transitionend', () => {
-                    navOverlay.classList.add('open');
-                    body.classList.add('modal-open'); // Adds blur effect to main content
-                    portalTransitionCircle.classList.remove('active'); // Reset circle for next use
-                    portalActivator.style.display = 'none'; // Hide portal activator
-                    menuToggle.classList.add('active'); // Show hamburger menu for navigation
-                }, { once: true }); // Ensure this listener only fires once
-            });
-
-            navCloseBtn.addEventListener('click', () => {
-                navOverlay.classList.remove('open');
-                body.classList.remove('modal-open');
-                portalActivator.style.display = 'flex'; // Show portal activator again
-                menuToggle.classList.remove('active'); // Hide hamburger menu
-            });
-
-            // If a navigation link is clicked, close overlay and potentially navigate
-            navLinks.forEach(link => {
-                link.addEventListener('click', () => {
-                    navOverlay.classList.remove('open');
-                    body.classList.remove('modal-open');
-                    portalActivator.style.display = 'flex'; // Show portal activator again
-                    menuToggle.classList.remove('active'); // Hide hamburger menu
-                    // Actual navigation will happen due to href
-                });
-            });
-
-            // Legal Modal Functionality (same as before)
-            const legalBtn = document.getElementById('legalBtn');
-            const legalModal = document.getElementById('legalModal');
-            const modalCloseBtns = document.querySelectorAll('.modal-close-btn');
-
-            function openModal(modalElement) {
-                modalElement.classList.add('show');
-                body.classList.add('modal-open');
-            }
-
-            function closeModal(modalElement) {
-                modalElement.classList.remove('show');
-                body.classList.remove('modal-open');
-            }
-
-            legalBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                openModal(legalModal);
-            });
-
-            modalCloseBtns.forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    const modalOverlay = e.target.closest('.modal-overlay');
-                    if (modalOverlay) {
-                        closeModal(modalOverlay);
-                    }
-                });
-            });
-
-            legalModal.addEventListener('click', (e) => {
-                if (e.target === legalModal) {
-                    closeModal(legalModal);
-                }
-            });
-
-            // Micro-parallax effect for background elements
-            const heroSection = document.querySelector('.hero-section');
-            const volumetricOverlay = document.querySelector('.volumetric-overlay');
-
-            document.addEventListener('mousemove', (e) => {
-                const mouseX = e.clientX / window.innerWidth - 0.5; // -0.5 to 0.5
-                const mouseY = e.clientY / window.innerHeight - 0.5; // -0.5 to 0.5
-
-                // Apply subtle transforms to background elements
-                volumetricOverlay.style.transform = `scale(1.2) translate(${mouseX * 10}px, ${mouseY * 10}px)`;
-                // Can add similar transforms to particleCanvas if ctx supports it directly
-                // (less practical for canvas without redrawing, but possible)
-            });
-
-            // Also for touch devices (simulated mousemove)
-            document.addEventListener('touchmove', (e) => {
-                if (e.touches.length > 0) {
-                    const touchX = e.touches[0].clientX / window.innerWidth - 0.5;
-                    const touchY = e.touches[0].clientY / window.innerHeight - 0.5;
-                    volumetricOverlay.style.transform = `scale(1.2) translate(${touchX * 10}px, ${touchY * 10}px)`;
-                }
-            });
         });
     </script>
 </body>
