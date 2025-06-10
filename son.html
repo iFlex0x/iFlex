@@ -35,7 +35,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background:
+            background: 
                 linear-gradient(to right, rgba(17, 17, 17, 0.8) 1px, transparent 1px),
                 linear-gradient(to bottom, rgba(17, 17, 17, 0.8) 1px, transparent 1px);
             background-size: 40px 40px;
@@ -84,7 +84,7 @@
             text-align: center;
             width: 90%;
             max-width: 950px;
-            height: clamp(700px, 85vh, 950px); /* Increased height */
+            height: clamp(600px, 80vh, 900px);
             display: flex;
             flex-direction: column;
             gap: 15px;
@@ -186,6 +186,7 @@
             filter: none;
             color: #999;
         }
+
 
         .page-title {
             font-size: clamp(2.5em, 7vw, 4em);
@@ -325,7 +326,7 @@
             display: block;
         }
         .loading-dots.active::before {
-            width: auto;
+             width: auto;
         }
 
         .action-buttons {
@@ -678,18 +679,18 @@
                 </li>
                 <li>
                     <strong>Analytics (Optional - if you add any):</strong> If this site were to use web analytics services (like Google Analytics in the future), only anonymized usage data would be collected to understand site performance and visitor behavior. No personally identifiable information would be shared.
-                   </li>
+                 </li>
                 </ul>
 
-              <h4>Data Storage & Security:</h4>
+             <h4>Data Storage & Security:</h4>
                 <p>No user data is stored on my personal servers. Information processed by the AI bot is handled by Shapes.inc. Local browser storage (`localStorage`) is used for user/channel IDs as described above.</p>
 
                 <h4>Your Choices:</h4>
                 <p>You can clear your browser's `localStorage` at any time to remove the locally stored User ID and Channel ID, which will start a new chat session with the bot.</p>
 
-              <h3>4. Contact Information</h3>
-              <p>If you have any questions or concerns regarding this website or its privacy practices, please feel free to contact me at:</p>
-              <p>Email: <a href="mailto:ad.iflex@hotmail.com">ad.iflex@hotmail.com</a></p>
+             <h3>4. Contact Information</h3>
+             <p>If you have any questions or concerns regarding this website or its privacy practices, please feel free to contact me at:</p>
+             <p>Email: <a href="mailto:ad.iflex@hotmail.com">ad.iflex@hotmail.com</a></p>
                 <p>Last Updated: June 2, 2025</p>
             </div>
         </div>
@@ -755,13 +756,317 @@
                 const storedToken = sessionStorage.getItem('shapesUserAuthToken');
                 if (storedToken) {
                     userAuthToken = storedToken;
-                    authOverlay.classList.add('hidden');
-                    chatInput.disabled = false;
-                    sendMessageBtn.disabled = false;
-                    resetChatBtn.disabled = false;
-                    initializeNewChannel();
+                    console.log('User auth token loaded from sessionStorage.');
+                    proceedToChat();
+                    return;
+                }
+
+                authOverlay.classList.remove('hidden');
+
+                loginBtn.addEventListener('click', () => {
+                    const authorizeUrl = `${SHAPESINC_SITE_URL}/authorize?app_id=${SHAPESINC_APP_ID}`;
+                    window.open(authorizeUrl, '_blank', 'noopener,noreferrer');
+                    loginBtn.style.display = 'none';
+                    codeEntry.style.display = 'block';
+                    showStatus('Please login/authorize in the new window. Then, copy the one-time code and paste it below.');
+                });
+
+                oneTimeCodeInput.addEventListener('input', () => {
+                    submitCodeBtn.disabled = oneTimeCodeInput.value.trim() === '';
+                });
+
+                submitCodeBtn.addEventListener('click', async () => {
+                    const oneTimeCode = oneTimeCodeInput.value.trim();
+                    if (!oneTimeCode) {
+                        showStatus('Please enter the one-time code.', true);
+                        return;
+                    }
+
+                    submitCodeBtn.disabled = true;
+                    showStatus('Exchanging code for token...');
+
+                    try {
+                        const response = await fetch('/.netlify/functions/exchange-token', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ oneTimeCode: oneTimeCode, appId: SHAPESINC_APP_ID }),
+                        });
+
+                        const data = await response.json();
+
+                        if (response.ok && data.auth_token) {
+                            userAuthToken = data.auth_token;
+                            sessionStorage.setItem('shapesUserAuthToken', userAuthToken);
+                            showStatus('Authentication successful!');
+                            console.log('User auth token received and stored.');
+                            proceedToChat();
+                        } else {
+                            const errorMsg = data.message || 'Failed to exchange code for token. Ensure it is correct and not expired.';
+                            showStatus(errorMsg, true);
+                            console.error('Token exchange failed:', errorMsg);
+                        }
+                    } catch (error) {
+                        showStatus(`Network error during token exchange: ${error.message}`, true);
+                        console.error('Network error:', error);
+                    } finally {
+                        submitCodeBtn.disabled = false;
+                    }
+                });
+            }
+
+            function proceedToChat() {
+                authOverlay.classList.add('hidden');
+                chatInput.disabled = false;
+                sendMessageBtn.disabled = false;
+                resetChatBtn.disabled = false;
+                initializeNewChannel();
+            }
+
+            async function sendToBot(messageToSend, isSilent = false) {
+                if (!userAuthToken) {
+                    console.error("No user authentication token available.");
+                    if (!isSilent) addMessage("Authentication required to chat.", 'bot');
+                    return;
+                }
+
+                if (!isSilent) {
+                    sendMessageBtn.disabled = true;
+                    loadingDots.classList.add('active');
+                }
+
+                try {
+                    const response = await fetch('/.netlify/functions/shapes-chat', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-App-ID': SHAPESINC_APP_ID,
+                            'X-User-Auth': userAuthToken,
+                            'X-Channel-Id': currentChannelId
+                        },
+                        body: JSON.stringify({ message: messageToSend })
+                    });
+
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(`API Error: ${response.status} - ${errorData.error || 'Unknown error'}`);
+                    }
+
+                    const data = await response.json();
+                    if (!isSilent) {
+                        addMessage(data.response, 'bot');
+                    }
+                    return data.response;
+                } catch (error) {
+                    console.error('Error sending message:', error);
+                    if (!isSilent) {
+                        addMessage(`Error: ${error.message}. Please try again.`, 'bot');
+                    }
+                    return null;
+                } finally {
+                    if (!isSilent) {
+                        sendMessageBtn.disabled = false;
+                        loadingDots.classList.remove('active');
+                    }
                 }
             }
+
+            function addMessage(text, sender) {
+                const messageDiv = document.createElement('div');
+                messageDiv.classList.add('message');
+                messageDiv.classList.add(sender === 'user' ? 'user-message' : 'bot-message');
+                messageDiv.textContent = text;
+                chatDisplay.appendChild(messageDiv);
+                chatDisplay.scrollTop = chatDisplay.scrollHeight;
+            }
+
+            async function handleSendMessage() {
+                const message = chatInput.value.trim();
+                if (!message) return;
+
+                addMessage(message, 'user');
+                chatInput.value = '';
+                chatInput.style.height = 'auto';
+
+                await sendToBot(message, false);
+            }
+
+            sendMessageBtn.addEventListener('click', handleSendMessage);
+            chatInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    handleSendMessage();
+                }
+            });
+
+            chatInput.addEventListener('input', () => {
+                chatInput.style.height = 'auto';
+                chatInput.style.height = (chatInput.scrollHeight) + 'px';
+            });
+
+            resetChatBtn.addEventListener('click', () => {
+                initializeNewChannel();
+                console.log('Manual chat reset initiated (new channel).');
+            });
+
+            backToPortfolioBtn.addEventListener('click', () => {
+                window.location.href = 'index.html';
+            });
+
+            function openModal(modalElement) {
+                modalElement.classList.add('show');
+                document.body.classList.add('modal-open');
+            }
+
+            function closeModal(modalElement) {
+                modalElement.classList.remove('show');
+                document.body.classList.remove('modal-open');
+            }
+
+            legalBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                openModal(legalModal);
+            });
+
+            modalCloseBtns.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const modalOverlay = e.target.closest('.modal-overlay');
+                    if (modalOverlay) {
+                        closeModal(modalOverlay);
+                    }
+                });
+            });
+
+            legalModal.addEventListener('click', (e) => {
+                if (e.target === legalModal) {
+                    closeModal(legalModal);
+                }
+            });
+
+            const particleCanvas = document.getElementById('particleCanvas');
+            const particleCtx = particleCanvas.getContext('2d');
+            let particles = [];
+            const particleCount = 50;
+            const maxRadius = 1.5;
+            const minRadius = 0.5;
+            const maxSpeed = 0.3;
+
+            function resizeCanvas(canvas) {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+
+            class Particle {
+                constructor() {
+                    this.x = Math.random() * particleCanvas.width;
+                    this.y = Math.random() * particleCanvas.height;
+                    this.radius = Math.random() * (maxRadius - minRadius) + minRadius;
+                    this.color = `rgba(255, 255, 255, ${Math.random() * 0.2 + 0.05})`;
+                    this.speedX = (Math.random() - 0.5) * 0.3;
+                    this.speedY = (Math.random() - 0.5) * 0.3;
+                }
+
+                draw() {
+                    particleCtx.beginPath();
+                    particleCtx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                    particleCtx.fillStyle = this.color;
+                    particleCtx.fill();
+                }
+
+                update() {
+                    this.x += this.speedX;
+                    this.y += this.speedY;
+
+                    if (this.x < 0 - this.radius) this.x = particleCanvas.width + this.radius;
+                    if (this.x > particleCanvas.width + this.radius) this.x = 0 - this.radius;
+                    if (this.y < 0 - this.radius) this.y = particleCanvas.height + this.radius;
+                    if (this.y > particleCanvas.height + this.radius) this.y = 0 - this.radius;
+                }
+            }
+
+            function initParticles() {
+                particles = [];
+                for (let i = 0; i < particleCount; i++) {
+                    particles.push(new Particle());
+                }
+            }
+
+            function animateParticles() {
+                requestAnimationFrame(animateParticles);
+                particleCtx.clearRect(0, 0, particleCanvas.width, particleCanvas.height);
+
+                particles.forEach(particle => {
+                    particle.update();
+                    particle.draw();
+                });
+            }
+
+            resizeCanvas(particleCanvas);
+            initParticles();
+            animateParticles();
+            window.addEventListener('resize', () => {
+                resizeCanvas(particleCanvas);
+                initParticles();
+            });
+
+            const cursorTrailCanvas = document.getElementById('cursorTrailCanvas');
+            const cursorTrailCtx = cursorTrailCanvas.getContext('2d');
+            let cursorParticles = [];
+            const cursorParticleMaxAge = 60;
+            const cursorParticleSize = 1;
+            const cursorParticleDensity = 2;
+
+            class CursorParticle {
+                constructor(x, y) {
+                    this.x = x;
+                    this.y = y;
+                    this.radius = cursorParticleSize;
+                    this.alpha = 0.5;
+                    this.life = 0;
+                    this.speedX = (Math.random() - 0.5) * 0.5;
+                    this.speedY = (Math.random() - 0.5) * 0.5;
+                }
+
+                draw() {
+                    cursorTrailCtx.beginPath();
+                    cursorTrailCtx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                    cursorTrailCtx.fillStyle = `rgba(255, 255, 255, ${this.alpha})`;
+                    cursorTrailCtx.fill();
+                }
+
+                update() {
+                    this.x += this.speedX;
+                    this.y += this.speedY;
+                    this.life++;
+                    this.alpha = 0.5 - (this.life / cursorParticleMaxAge) * 0.5;
+                    if (this.alpha < 0) this.alpha = 0;
+                }
+            }
+
+            function animateCursorTrail() {
+                requestAnimationFrame(animateCursorTrail);
+                cursorTrailCtx.clearRect(0, 0, cursorTrailCanvas.width, cursorTrailCanvas.height);
+
+                for (let i = cursorParticles.length - 1; i >= 0; i--) {
+                    cursorParticles[i].update();
+                    if (cursorParticles[i].life >= cursorParticleMaxAge || cursorParticles[i].alpha <= 0) {
+                        cursorParticles.splice(i, 1);
+                    } else {
+                        cursorParticles[i].draw();
+                    }
+                }
+            }
+
+            document.addEventListener('mousemove', (e) => {
+                for (let i = 0; i < cursorParticleDensity; i++) {
+                    cursorParticles.push(new CursorParticle(e.clientX, e.clientY));
+                }
+            });
+
+            resizeCanvas(cursorTrailCanvas);
+            animateCursorTrail();
+            window.addEventListener('resize', () => resizeCanvas(cursorTrailCanvas));
+
+            handleUserAuth();
         });
     </script>
 </body>
